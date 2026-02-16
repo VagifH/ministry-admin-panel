@@ -24,24 +24,24 @@ export default function Dashboard() {
   };
 
   const statCards = stats ? [
-    { label: 'Draft', value: stats.draft, color: '#8a8886' },
-    { label: 'Submitted', value: stats.submitted, color: '#0078d4' },
-    { label: 'Producing', value: stats.producing, color: '#8764b8' },
-    { label: 'Review', value: stats.review, color: '#ffaa44' },
-    { label: 'Scheduled', value: stats.scheduled, color: '#107c10' },
-    { label: 'Published', value: stats.published, color: '#498205' },
-    { label: 'Rejected', value: stats.rejected, color: '#d13438' },
+    { label: 'Draft', value: stats.draft, color: 'text-ministry-status-draft' },
+    { label: 'Submitted', value: stats.submitted, color: 'text-ministry-status-submitted' },
+    { label: 'Producing', value: stats.producing, color: 'text-ministry-status-producing' },
+    { label: 'Review', value: stats.review, color: 'text-ministry-status-review' },
+    { label: 'Scheduled', value: stats.scheduled, color: 'text-ministry-status-scheduled' },
+    { label: 'Published', value: stats.published, color: 'text-ministry-status-published' },
+    { label: 'Rejected', value: stats.rejected, color: 'text-ministry-status-rejected' },
   ] : [];
 
   return (
     <div className="p-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-[#323130]">Dashboard</h1>
-        <p className="text-sm text-[#605e5c] mt-1">Overview of task statuses</p>
+        <h1 className="text-2xl font-semibold text-ministry-text-primary">Dashboard</h1>
+        <p className="text-sm text-ministry-text-secondary mt-1">Overview of task statuses</p>
       </div>
 
       {loading ? (
-        <div className="text-[#605e5c]">Loading...</div>
+        <div className="text-ministry-text-secondary">Loading...</div>
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -49,22 +49,22 @@ export default function Dashboard() {
               <div
                 key={stat.label}
                 data-testid={`stat-card-${stat.label.toLowerCase()}`}
-                className="bg-white rounded-lg border border-[#e5e5e5] p-6 shadow-sm"
+                className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default p-6 shadow-ministry-card"
               >
-                <div className="text-sm text-[#605e5c] mb-1">{stat.label}</div>
-                <div className="text-3xl font-semibold" style={{ color: stat.color }}>
+                <div className="text-sm text-ministry-text-secondary mb-1">{stat.label}</div>
+                <div className={`text-3xl font-semibold ${stat.color}`}>
                   {stat.value}
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="bg-white rounded-lg border border-[#e5e5e5] p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-[#323130] mb-2">Scheduled This Week</h2>
-            <div className="text-3xl font-semibold text-[#107c10]">
+          <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default p-6 shadow-ministry-card">
+            <h2 className="text-lg font-semibold text-ministry-text-primary mb-2">Scheduled This Week</h2>
+            <div className="text-3xl font-semibold text-ministry-status-scheduled">
               {stats?.scheduled_this_week || 0}
             </div>
-            <p className="text-sm text-[#605e5c] mt-2">Tasks scheduled for publication this week</p>
+            <p className="text-sm text-ministry-text-secondary mt-2">Tasks scheduled for publication this week</p>
           </div>
         </>
       )}
