@@ -71,7 +71,7 @@ export default function VideoTab({ taskId, taskStatus }) {
     // Validate file
     const validation = validateVideoFile(file);
     if (!validation.valid) {
-      showToast(validation.error, 'error');
+      showToast.error(validation.error);
       return;
     }
 
@@ -84,7 +84,7 @@ export default function VideoTab({ taskId, taskStatus }) {
         setUploadProgress(progress);
       });
       setVideo(result);
-      showToast('Video uploaded successfully', 'success');
+      showToast.success('Video uploaded successfully');
     } catch (err) {
       const errorMessage = err.response?.data?.detail || err.message || 'Upload failed';
       setError(errorMessage);
