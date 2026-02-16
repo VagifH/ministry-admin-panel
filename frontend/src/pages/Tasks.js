@@ -89,8 +89,6 @@ export default function Tasks() {
     });
   };
 
-  const hasActiveFilters = filters.search || filters.status || filters.content_type || filters.avatar;
-
   const validateTask = () => {
     const newErrors = {};
     if (!newTask.title.trim()) newErrors.title = 'Title is required';
