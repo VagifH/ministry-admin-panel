@@ -182,26 +182,3 @@ export default function ActivityLog() {
     </div>
   );
 }
-                  <TableCell className="text-ministry-text-secondary">{log.action}</TableCell>
-                  <TableCell className="text-ministry-text-secondary">{log.object_type}</TableCell>
-                  <TableCell className="text-ministry-text-secondary max-w-xs truncate">
-                    {log.old_value && log.new_value ? (
-                      <span>{log.old_value} → {log.new_value}</span>
-                    ) : log.new_value ? (
-                      <span>{log.new_value}</span>
-                    ) : (
-                      '-'
-                    )}
-                  </TableCell>
-                  <TableCell className="text-ministry-text-secondary">
-                    {format(new Date(log.created_at), 'MMM dd, yyyy HH:mm')}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </div>
-    </div>
-  );
-}
