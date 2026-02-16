@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { DetailSkeleton } from '../components/ui/loading';
 import { ErrorState } from '../components/ui/empty-state';
 import { showToast, showApiError } from '../lib/toast';
+import VideoTab from '../components/VideoTab';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
