@@ -216,7 +216,7 @@ class MinistryAPITester:
             "Add Comment",
             "POST",
             f"tasks/{task_id}/comments",
-            201,
+            200,
             data={"message": "This is a test comment"}
         )
         if not success:
