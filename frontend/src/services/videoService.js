@@ -128,6 +128,80 @@ export const deleteVideo = async (taskId) => {
 };
 
 /**
+ * Upload a video file for a task
+ * @param {string} taskId - The task ID
+ * @param {File} file - The video file to upload
+ * @param {function} onProgress - Progress callback (0-100)
+ * @returns {Promise<Object>} Uploaded video record
+ */
+export const uploadVideo = async (taskId, file, onProgress) => {
+  // Validate file before upload
+  const validation = validateVideoFile(file);
+  if (!validation.valid) {
+    throw new Error(validation.error);
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await axios.post(
+    `${API_URL}/tasks/${taskId}/video/upload`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (progressEvent) => {
+        if (onProgress && progressEvent.total) {
+          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          onProgress(percent);
+        }
+      },
+    }
+  );
+
+  return response.data;
+};
+
+/**
+ * Validate a video file before upload
+ * @param {File} file - The file to validate
+ * @returns {Object} { valid: boolean, error?: string }
+ */
+export const validateVideoFile = (file) => {
+  if (!file) {
+    return { valid: false, error: 'No file selected' };
+  }
+
+  // Check file type
+  if (!VIDEO_CONFIG.ALLOWED_TYPES.includes(file.type)) {
+    return {
+      valid: false,
+      error: `Invalid file type. Only MP4 videos are allowed. Got: ${file.type || 'unknown'}`
+    };
+  }
+
+  // Check file extension
+  const extension = '.' + file.name.split('.').pop().toLowerCase();
+  if (!VIDEO_CONFIG.ALLOWED_EXTENSIONS.includes(extension)) {
+    return {
+      valid: false,
+      error: `Invalid file extension. Only .mp4 files are allowed.`
+    };
+  }
+
+  // Check file size
+  if (file.size > VIDEO_CONFIG.MAX_SIZE_BYTES) {
+    return {
+      valid: false,
+      error: `File too large. Maximum size is ${VIDEO_CONFIG.MAX_SIZE_MB}MB. Your file: ${(file.size / (1024 * 1024)).toFixed(1)}MB`
+    };
+  }
+
+  return { valid: true };
+};
+
+/**
  * Check if a task can be published (has ready video)
  * @param {string} taskId - The task ID
  * @returns {Promise<Object>} { canPublish: boolean, reason?: string }
