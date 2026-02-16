@@ -136,7 +136,7 @@ export default function VideoTab({ taskId, taskStatus }) {
     try {
       await deleteVideo(taskId);
       setVideo(null);
-      showToast('Video deleted successfully', 'success');
+      showToast.success('Video deleted successfully');
     } catch (err) {
       showApiError(err, 'Failed to delete video');
     } finally {
