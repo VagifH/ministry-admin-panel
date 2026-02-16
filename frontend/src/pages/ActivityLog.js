@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { X } from 'lucide-react';
 import { format } from 'date-fns';
+import { TableSkeleton } from '../components/ui/loading';
+import { EmptyState, NoResultsState, ErrorState } from '../components/ui/empty-state';
+import { showApiError } from '../lib/toast';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
@@ -18,6 +20,7 @@ export default function ActivityLog() {
   });
   const [loading, setLoading] = useState(true);
   const [fetching, setFetching] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchUsers();
@@ -38,6 +41,7 @@ export default function ActivityLog() {
 
   const fetchLogs = async () => {
     setFetching(true);
+    setError(null);
     try {
       const params = new URLSearchParams();
       if (filters.actor_id) params.append('actor_id', filters.actor_id);
@@ -45,8 +49,9 @@ export default function ActivityLog() {
 
       const response = await axios.get(`${API_URL}/audit-logs?${params.toString()}`);
       setLogs(response.data);
-    } catch (error) {
-      toast.error('Failed to load activity logs');
+    } catch (err) {
+      setError('Failed to load activity logs');
+      showApiError(err, 'Failed to load activity logs');
     } finally {
       setLoading(false);
       setFetching(false);
@@ -61,6 +66,65 @@ export default function ActivityLog() {
   };
 
   const hasActiveFilters = filters.actor_id || filters.action;
+
+  const renderContent = () => {
+    if (loading) {
+      return <TableSkeleton rows={8} columns={5} />;
+    }
+
+    if (error) {
+      return <ErrorState description={error} onRetry={fetchLogs} />;
+    }
+
+    if (logs.length === 0 && hasActiveFilters) {
+      return <NoResultsState onClearFilters={clearFilters} data-testid="no-logs-results" />;
+    }
+
+    if (logs.length === 0) {
+      return (
+        <EmptyState
+          title="No activity yet"
+          description="Actions will appear here as users interact with the system"
+          data-testid="empty-logs-state"
+        />
+      );
+    }
+
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow className="border-ministry-border-default">
+            <TableHead className="text-ministry-text-primary font-semibold">User</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">Action</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">Object Type</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">Details</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">Timestamp</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {logs.map((log) => (
+            <TableRow key={log.id} data-testid={`activity-log-${log.id}`} className="border-ministry-border-default">
+              <TableCell className="font-medium text-ministry-text-primary">{log.actor_name}</TableCell>
+              <TableCell className="text-ministry-text-secondary">{log.action}</TableCell>
+              <TableCell className="text-ministry-text-secondary">{log.object_type}</TableCell>
+              <TableCell className="text-ministry-text-secondary max-w-xs truncate">
+                {log.old_value && log.new_value ? (
+                  <span>{log.old_value} → {log.new_value}</span>
+                ) : log.new_value ? (
+                  <span>{log.new_value}</span>
+                ) : (
+                  '-'
+                )}
+              </TableCell>
+              <TableCell className="text-ministry-text-secondary">
+                {format(new Date(log.created_at), 'MMM dd, yyyy HH:mm')}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    );
+  };
 
   return (
     <div className="p-8">
