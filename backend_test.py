@@ -289,14 +289,8 @@ class MinistryAPITester:
             data=invalid_task_data
         )
         
-        # For validation tests, we expect failure (422), so we count it as success
-        if not success:
-            self.tests_passed += 1  # Adjust count since we expected this to fail
-            print("✅ Validation working correctly - rejected short script")
-            return True
-        else:
-            print("❌ Validation failed - short script was accepted")
-            return False
+        # For validation tests, we expect failure (422)
+        return success
 
 def main():
     print("🏛️  Ministry Admin Panel API Testing")
