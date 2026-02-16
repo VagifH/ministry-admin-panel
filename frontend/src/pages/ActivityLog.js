@@ -17,11 +17,15 @@ export default function ActivityLog() {
     action: '',
   });
   const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
 
   useEffect(() => {
     fetchUsers();
+  }, []);
+
+  useEffect(() => {
     fetchLogs();
-  }, [filters]);
+  }, [filters.actor_id, filters.action]);
 
   const fetchUsers = async () => {
     try {
@@ -33,6 +37,7 @@ export default function ActivityLog() {
   };
 
   const fetchLogs = async () => {
+    setFetching(true);
     try {
       const params = new URLSearchParams();
       if (filters.actor_id) params.append('actor_id', filters.actor_id);
@@ -44,8 +49,18 @@ export default function ActivityLog() {
       toast.error('Failed to load activity logs');
     } finally {
       setLoading(false);
+      setFetching(false);
     }
   };
+
+  const clearFilters = () => {
+    setFilters({
+      actor_id: '',
+      action: '',
+    });
+  };
+
+  const hasActiveFilters = filters.actor_id || filters.action;
 
   return (
     <div className="p-8">
