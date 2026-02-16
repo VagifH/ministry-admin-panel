@@ -352,14 +352,14 @@ export default function TaskDetails() {
               ) : (
                 <div className="space-y-3">
                   {comments.map((comment) => (
-                    <div key={comment.id} className="bg-[#f3f2f1] p-4 rounded-lg" data-testid={`comment-${comment.id}`}>
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="font-medium text-[#323130]">{comment.author_name}</span>
-                        <span className="text-xs text-[#605e5c]">
+                    <div key={comment.id} className="bg-[#f3f2f1] p-4 rounded-lg overflow-x-hidden" data-testid={`comment-${comment.id}`}>
+                      <div className="flex justify-between items-start mb-2 min-w-0">
+                        <span className="font-medium text-[#323130] min-w-0 flex-shrink-0">{comment.author_name}</span>
+                        <span className="text-xs text-[#605e5c] flex-shrink-0 ml-2">
                           {format(new Date(comment.created_at), 'MMM dd, yyyy HH:mm')}
                         </span>
                       </div>
-                      <p className="text-[#605e5c]">{comment.message}</p>
+                      <p className="text-[#605e5c] min-w-0 w-full" style={{ overflowWrap: 'anywhere', wordBreak: 'break-word', whiteSpace: 'pre-wrap', maxWidth: '100%' }}>{comment.message}</p>
                     </div>
                   ))}
                 </div>
