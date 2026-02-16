@@ -27,14 +27,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#fafafa]">
+    <div className="min-h-screen flex items-center justify-center bg-ministry-bg-primary">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg border border-[#e5e5e5] shadow-sm p-8">
-          <h1 className="text-2xl font-semibold text-[#323130] mb-6">Ministry Admin Panel</h1>
+        <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card p-8">
+          <h1 className="text-2xl font-semibold text-ministry-text-primary mb-6">Ministry Admin Panel</h1>
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="email" className="text-[#323130]">Email</Label>
+              <Label htmlFor="email" className="text-ministry-text-primary">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -42,12 +42,12 @@ export default function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 data-testid="login-email-input"
-                className="mt-1 border-[#e5e5e5] rounded-lg"
+                className="mt-1 border-ministry-border-default rounded-ministry"
               />
             </div>
             
             <div>
-              <Label htmlFor="password" className="text-[#323130]">Password</Label>
+              <Label htmlFor="password" className="text-ministry-text-primary">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -55,7 +55,7 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 data-testid="login-password-input"
-                className="mt-1 border-[#e5e5e5] rounded-lg"
+                className="mt-1 border-ministry-border-default rounded-ministry"
               />
             </div>
             
@@ -63,13 +63,13 @@ export default function Login() {
               type="submit"
               disabled={loading}
               data-testid="login-submit-button"
-              className="w-full bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg"
+              className="w-full bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry"
             >
               {loading ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
           
-          <div className="mt-6 text-sm text-[#605e5c]">
+          <div className="mt-6 text-sm text-ministry-text-secondary">
             <p>Default credentials:</p>
             <p className="font-mono text-xs mt-1">admin@ministry.local / ChangeMe123!</p>
           </div>
