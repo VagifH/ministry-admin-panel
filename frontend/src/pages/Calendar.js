@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth, startOfWeek, endOfWeek, addMonths, subMonths, addWeeks, subWeeks, startOfDay, endOfDay } from 'date-fns';
+import { CardSkeleton } from '../components/ui/loading';
+import { ErrorState } from '../components/ui/empty-state';
+import { showApiError } from '../lib/toast';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
@@ -25,17 +27,20 @@ export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState('month');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchTasks();
   }, []);
 
   const fetchTasks = async () => {
+    setError(null);
     try {
       const response = await axios.get(`${API_URL}/tasks`);
       setTasks(response.data);
-    } catch (error) {
-      toast.error('Failed to load tasks');
+    } catch (err) {
+      setError('Failed to load calendar data');
+      showApiError(err, 'Failed to load calendar data');
     } finally {
       setLoading(false);
     }
