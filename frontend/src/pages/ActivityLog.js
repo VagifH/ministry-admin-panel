@@ -65,16 +65,16 @@ export default function ActivityLog() {
   return (
     <div className="p-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-[#323130]">Activity Log</h1>
-        <p className="text-sm text-[#605e5c] mt-1">Audit trail of all actions</p>
+        <h1 className="text-2xl font-semibold text-ministry-text-primary">Activity Log</h1>
+        <p className="text-sm text-ministry-text-secondary mt-1">Audit trail of all actions</p>
       </div>
 
-      <div className="bg-white rounded-lg border border-[#e5e5e5] shadow-sm">
-        <div className="p-4 border-b border-[#e5e5e5]">
+      <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
+        <div className="p-4 border-b border-ministry-border-default">
           <div className="flex gap-4 items-center flex-wrap">
             {users.length > 0 && (
               <Select value={filters.actor_id || "all"} onValueChange={(value) => setFilters({ ...filters, actor_id: value === "all" ? "" : value })}>
-                <SelectTrigger className="w-[200px] border-[#e5e5e5] rounded-lg" data-testid="filter-user">
+                <SelectTrigger className="w-[200px] border-ministry-border-default rounded-ministry" data-testid="filter-user">
                   <SelectValue placeholder="Filter by user" />
                 </SelectTrigger>
                 <SelectContent>
@@ -86,7 +86,7 @@ export default function ActivityLog() {
               </Select>
             )}
             <Select value={filters.action || "all"} onValueChange={(value) => setFilters({ ...filters, action: value === "all" ? "" : value })}>
-              <SelectTrigger className="w-[200px] border-[#e5e5e5] rounded-lg" data-testid="filter-action">
+              <SelectTrigger className="w-[200px] border-ministry-border-default rounded-ministry" data-testid="filter-action">
                 <SelectValue placeholder="Filter by action" />
               </SelectTrigger>
               <SelectContent>
@@ -103,7 +103,7 @@ export default function ActivityLog() {
                 variant="outline"
                 onClick={clearFilters}
                 data-testid="clear-filters-button"
-                className="border-[#e5e5e5] rounded-lg text-[#605e5c] hover:bg-[#f3f2f1]"
+                className="border-ministry-border-default rounded-ministry text-ministry-text-secondary hover:bg-ministry-bg-tertiary"
                 size="sm"
               >
                 <X size={16} className="mr-2" />
@@ -114,29 +114,29 @@ export default function ActivityLog() {
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-[#605e5c]">Loading...</div>
+          <div className="p-8 text-center text-ministry-text-secondary">Loading...</div>
         ) : fetching ? (
-          <div className="p-8 text-center text-[#605e5c]">Updating...</div>
+          <div className="p-8 text-center text-ministry-text-secondary">Updating...</div>
         ) : logs.length === 0 ? (
-          <div className="p-8 text-center text-[#605e5c]">No activity logs found</div>
+          <div className="p-8 text-center text-ministry-text-secondary">No activity logs found</div>
         ) : (
           <Table>
             <TableHeader>
-              <TableRow className="border-[#e5e5e5]">
-                <TableHead className="text-[#323130] font-semibold">User</TableHead>
-                <TableHead className="text-[#323130] font-semibold">Action</TableHead>
-                <TableHead className="text-[#323130] font-semibold">Object Type</TableHead>
-                <TableHead className="text-[#323130] font-semibold">Details</TableHead>
-                <TableHead className="text-[#323130] font-semibold">Timestamp</TableHead>
+              <TableRow className="border-ministry-border-default">
+                <TableHead className="text-ministry-text-primary font-semibold">User</TableHead>
+                <TableHead className="text-ministry-text-primary font-semibold">Action</TableHead>
+                <TableHead className="text-ministry-text-primary font-semibold">Object Type</TableHead>
+                <TableHead className="text-ministry-text-primary font-semibold">Details</TableHead>
+                <TableHead className="text-ministry-text-primary font-semibold">Timestamp</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {logs.map((log) => (
-                <TableRow key={log.id} data-testid={`activity-log-${log.id}`} className="border-[#e5e5e5]">
-                  <TableCell className="font-medium text-[#323130]">{log.actor_name}</TableCell>
-                  <TableCell className="text-[#605e5c]">{log.action}</TableCell>
-                  <TableCell className="text-[#605e5c]">{log.object_type}</TableCell>
-                  <TableCell className="text-[#605e5c] max-w-xs truncate">
+                <TableRow key={log.id} data-testid={`activity-log-${log.id}`} className="border-ministry-border-default">
+                  <TableCell className="font-medium text-ministry-text-primary">{log.actor_name}</TableCell>
+                  <TableCell className="text-ministry-text-secondary">{log.action}</TableCell>
+                  <TableCell className="text-ministry-text-secondary">{log.object_type}</TableCell>
+                  <TableCell className="text-ministry-text-secondary max-w-xs truncate">
                     {log.old_value && log.new_value ? (
                       <span>{log.old_value} → {log.new_value}</span>
                     ) : log.new_value ? (
@@ -145,7 +145,7 @@ export default function ActivityLog() {
                       '-'
                     )}
                   </TableCell>
-                  <TableCell className="text-[#605e5c]">
+                  <TableCell className="text-ministry-text-secondary">
                     {format(new Date(log.created_at), 'MMM dd, yyyy HH:mm')}
                   </TableCell>
                 </TableRow>
