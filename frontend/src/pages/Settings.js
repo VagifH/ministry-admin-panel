@@ -124,7 +124,7 @@ export default function Settings() {
   if (currentUser?.role !== 'Admin') {
     return (
       <div className="p-8">
-        <div className="bg-[#fff4ce] border border-[#ffaa44] text-[#323130] p-4 rounded-lg">
+        <div className="bg-ministry-brand-light border border-ministry-status-review text-ministry-text-primary p-4 rounded-ministry">
           Access denied. Only Admins can access Settings.
         </div>
       </div>
@@ -135,43 +135,43 @@ export default function Settings() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-[#323130]">Settings</h1>
-          <p className="text-sm text-[#605e5c] mt-1">Manage users and roles</p>
+          <h1 className="text-2xl font-semibold text-ministry-text-primary">Settings</h1>
+          <p className="text-sm text-ministry-text-secondary mt-1">Manage users and roles</p>
         </div>
         <Button
           onClick={() => setShowCreateDialog(true)}
           data-testid="create-user-button"
-          className="bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg flex items-center gap-1.5"
+          className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry flex items-center gap-1.5"
         >
           <Plus size={16} />
           Create User
         </Button>
       </div>
 
-      <div className="bg-white rounded-lg border border-[#e5e5e5] shadow-sm">
+      <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
         {loading ? (
-          <div className="p-8 text-center text-[#605e5c]">Loading...</div>
+          <div className="p-8 text-center text-ministry-text-secondary">Loading...</div>
         ) : users.length === 0 ? (
-          <div className="p-8 text-center text-[#605e5c]">No users found</div>
+          <div className="p-8 text-center text-ministry-text-secondary">No users found</div>
         ) : (
           <Table>
             <TableHeader>
-              <TableRow className="border-[#e5e5e5]">
-                <TableHead className="text-[#323130] font-semibold">Name</TableHead>
-                <TableHead className="text-[#323130] font-semibold">Email</TableHead>
-                <TableHead className="text-[#323130] font-semibold">Role</TableHead>
-                <TableHead className="text-[#323130] font-semibold">Status</TableHead>
-                <TableHead className="text-[#323130] font-semibold">Actions</TableHead>
+              <TableRow className="border-ministry-border-default">
+                <TableHead className="text-ministry-text-primary font-semibold">Name</TableHead>
+                <TableHead className="text-ministry-text-primary font-semibold">Email</TableHead>
+                <TableHead className="text-ministry-text-primary font-semibold">Role</TableHead>
+                <TableHead className="text-ministry-text-primary font-semibold">Status</TableHead>
+                <TableHead className="text-ministry-text-primary font-semibold">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {users.map((user) => (
-                <TableRow key={user.id} data-testid={`user-row-${user.id}`} className="border-[#e5e5e5]">
-                  <TableCell className="font-medium text-[#323130]">{user.name}</TableCell>
-                  <TableCell className="text-[#605e5c]">{user.email}</TableCell>
-                  <TableCell className="text-[#605e5c]">{user.role}</TableCell>
+                <TableRow key={user.id} data-testid={`user-row-${user.id}`} className="border-ministry-border-default">
+                  <TableCell className="font-medium text-ministry-text-primary">{user.name}</TableCell>
+                  <TableCell className="text-ministry-text-secondary">{user.email}</TableCell>
+                  <TableCell className="text-ministry-text-secondary">{user.role}</TableCell>
                   <TableCell>
-                    <Badge className={user.is_active ? 'bg-[#107c10] text-white rounded-md' : 'bg-[#8a8886] text-white rounded-md'}>
+                    <Badge className={user.is_active ? 'bg-ministry-status-scheduled text-white rounded-md' : 'bg-ministry-status-draft text-white rounded-md'}>
                       {user.is_active ? 'Active' : 'Inactive'}
                     </Badge>
                   </TableCell>
@@ -182,7 +182,7 @@ export default function Settings() {
                         size="sm"
                         onClick={() => openEditDialog(user)}
                         data-testid={`edit-user-${user.id}`}
-                        className="text-[#0078d4] hover:bg-[#f3f2f1] rounded-lg"
+                        className="text-ministry-brand-primary hover:bg-ministry-bg-tertiary rounded-ministry"
                       >
                         <Pencil size={16} />
                       </Button>
@@ -192,7 +192,7 @@ export default function Settings() {
                           size="sm"
                           onClick={() => handleDeleteUser(user.id)}
                           data-testid={`delete-user-${user.id}`}
-                          className="text-[#d13438] hover:bg-[#f3f2f1] rounded-lg"
+                          className="text-ministry-status-rejected hover:bg-ministry-bg-tertiary rounded-ministry"
                         >
                           <Trash2 size={16} />
                         </Button>
