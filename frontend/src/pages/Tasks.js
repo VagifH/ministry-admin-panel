@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
@@ -13,6 +12,9 @@ import { Textarea } from '../components/ui/textarea';
 import { Plus, Search, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
+import { TableSkeleton } from '../components/ui/loading';
+import { EmptyState, NoResultsState, ErrorState } from '../components/ui/empty-state';
+import { showToast, showApiError } from '../lib/toast';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
@@ -32,7 +34,9 @@ export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetching, setFetching] = useState(false);
+  const [error, setError] = useState(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
     status: '',
@@ -57,6 +61,7 @@ export default function Tasks() {
 
   const fetchTasks = async () => {
     setFetching(true);
+    setError(null);
     try {
       const params = new URLSearchParams();
       if (filters.search.trim()) params.append('search', filters.search);
@@ -66,8 +71,9 @@ export default function Tasks() {
 
       const response = await axios.get(`${API_URL}/tasks?${params.toString()}`);
       setTasks(response.data);
-    } catch (error) {
-      toast.error('Failed to load tasks');
+    } catch (err) {
+      setError('Failed to load tasks');
+      showApiError(err, 'Failed to load tasks');
     } finally {
       setLoading(false);
       setFetching(false);
