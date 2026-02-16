@@ -153,6 +153,20 @@ export default function VideoTab({ taskId, taskStatus }) {
     }
   };
 
+  const handleDownload = async () => {
+    if (!video || video.status !== VIDEO_STATUS.READY) return;
+
+    setDownloading(true);
+    try {
+      await downloadVideo(taskId, video.original_filename);
+      showToast.success('Download started');
+    } catch (err) {
+      showApiError(err, 'Failed to download video');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   // Loading state
   if (loading) {
     return (
