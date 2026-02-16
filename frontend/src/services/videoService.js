@@ -1,12 +1,22 @@
 /**
  * Video Service Layer
  * Handles all video-related API calls and state management
- * Phase 3: Architecture skeleton - no upload logic
+ * Phase 4: Full upload implementation with local storage
  */
 
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
+
+/**
+ * Video upload configuration
+ */
+export const VIDEO_CONFIG = {
+  MAX_SIZE_MB: 200,
+  MAX_SIZE_BYTES: 200 * 1024 * 1024,
+  ALLOWED_TYPES: ['video/mp4'],
+  ALLOWED_EXTENSIONS: ['.mp4']
+};
 
 /**
  * Video status constants
