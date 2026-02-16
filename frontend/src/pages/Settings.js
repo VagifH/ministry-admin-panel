@@ -141,9 +141,9 @@ export default function Settings() {
         <Button
           onClick={() => setShowCreateDialog(true)}
           data-testid="create-user-button"
-          className="bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg"
+          className="bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg flex items-center gap-1.5"
         >
-          <Plus size={16} className="mr-2" />
+          <Plus size={16} />
           Create User
         </Button>
       </div>
