@@ -71,13 +71,14 @@ export default function Settings() {
 
   const handleCreateUser = async () => {
     if (!validateNewUser()) {
-      toast.error('Please fix the errors before submitting');
+      showToast.error('Please fix the errors before submitting');
       return;
     }
 
+    setSubmitting(true);
     try {
       await axios.post(`${API_URL}/users`, newUser);
-      toast.success('User created successfully');
+      showToast.success('User created successfully');
       setShowCreateDialog(false);
       setNewUser({
         name: '',
@@ -88,20 +89,25 @@ export default function Settings() {
       });
       setErrors({});
       fetchUsers();
-    } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to create user');
+    } catch (err) {
+      showApiError(err, 'Failed to create user');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleEditUser = async () => {
+    setSubmitting(true);
     try {
       await axios.patch(`${API_URL}/users/${selectedUser.id}`, editUser);
-      toast.success('User updated successfully');
+      showToast.success('User updated successfully');
       setShowEditDialog(false);
       setSelectedUser(null);
       fetchUsers();
-    } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to update user');
+    } catch (err) {
+      showApiError(err, 'Failed to update user');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -110,10 +116,10 @@ export default function Settings() {
 
     try {
       await axios.delete(`${API_URL}/users/${userId}`);
-      toast.success('User deleted successfully');
+      showToast.success('User deleted successfully');
       fetchUsers();
-    } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to delete user');
+    } catch (err) {
+      showApiError(err, 'Failed to delete user');
     }
   };
 
@@ -125,6 +131,80 @@ export default function Settings() {
       is_active: user.is_active,
     });
     setShowEditDialog(true);
+  };
+
+  const renderContent = () => {
+    if (loading) {
+      return <TableSkeleton rows={4} columns={5} />;
+    }
+
+    if (error) {
+      return <ErrorState description={error} onRetry={fetchUsers} />;
+    }
+
+    if (users.length === 0) {
+      return (
+        <EmptyState
+          title="No users yet"
+          description="Get started by creating your first user"
+          action={() => setShowCreateDialog(true)}
+          actionLabel="Create User"
+          data-testid="empty-users-state"
+        />
+      );
+    }
+
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow className="border-ministry-border-default">
+            <TableHead className="text-ministry-text-primary font-semibold">Name</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">Email</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">Role</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">Status</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {users.map((user) => (
+            <TableRow key={user.id} data-testid={`user-row-${user.id}`} className="border-ministry-border-default">
+              <TableCell className="font-medium text-ministry-text-primary">{user.name}</TableCell>
+              <TableCell className="text-ministry-text-secondary">{user.email}</TableCell>
+              <TableCell className="text-ministry-text-secondary">{user.role}</TableCell>
+              <TableCell>
+                <Badge className={user.is_active ? 'bg-ministry-status-scheduled text-white rounded-md' : 'bg-ministry-status-draft text-white rounded-md'}>
+                  {user.is_active ? 'Active' : 'Inactive'}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => openEditDialog(user)}
+                    data-testid={`edit-user-${user.id}`}
+                    className="text-ministry-brand-primary hover:bg-ministry-bg-tertiary rounded-ministry"
+                  >
+                    <Pencil size={16} />
+                  </Button>
+                  {user.id !== currentUser.id && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteUser(user.id)}
+                      data-testid={`delete-user-${user.id}`}
+                      className="text-ministry-status-rejected hover:bg-ministry-bg-tertiary rounded-ministry"
+                    >
+                      <Trash2 size={16} />
+                    </Button>
+                  )}
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    );
   };
 
   if (currentUser?.role !== 'Admin') {
