@@ -155,6 +155,8 @@ class Video(BaseModel):
     duration: Optional[float] = None  # seconds
     status: Literal["pending", "uploading", "processing", "ready", "failed"] = "pending"
     error_message: Optional[str] = None
+    storage_provider: Optional[str] = None  # "local", "s3", "gcs", etc.
+    storage_key: Optional[str] = None  # relative path or object key
     uploaded_by: str  # user id
     uploaded_by_name: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
