@@ -128,6 +128,38 @@ export const deleteVideo = async (taskId) => {
 };
 
 /**
+ * Download video file for a task
+ * @param {string} taskId - The task ID
+ * @param {string} filename - Original filename for the download
+ * @returns {Promise<void>}
+ */
+export const downloadVideo = async (taskId, filename = 'video.mp4') => {
+  const response = await axios.get(`${API_URL}/tasks/${taskId}/video/download`, {
+    responseType: 'blob'
+  });
+  
+  // Create blob URL and trigger download
+  const blob = new Blob([response.data], { type: 'video/mp4' });
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(url);
+};
+
+/**
+ * Get video stream URL (for in-browser preview)
+ * @param {string} taskId - The task ID
+ * @returns {string} Stream URL
+ */
+export const getVideoStreamUrl = (taskId) => {
+  return `${API_URL}/tasks/${taskId}/video/stream`;
+};
+
+/**
  * Upload a video file for a task
  * @param {string} taskId - The task ID
  * @param {File} file - The video file to upload
