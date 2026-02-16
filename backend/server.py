@@ -187,6 +187,8 @@ class VideoResponse(BaseModel):
     duration: Optional[float] = None
     status: str
     error_message: Optional[str] = None
+    storage_provider: Optional[str] = None
+    storage_key: Optional[str] = None
     uploaded_by: str
     uploaded_by_name: str
     created_at: datetime
