@@ -144,7 +144,7 @@ export default function Tasks() {
 
       <div className="bg-white rounded-lg border border-[#e5e5e5] shadow-sm">
         <div className="p-4 border-b border-[#e5e5e5]">
-          <div className="flex gap-4 flex-wrap">
+          <div className="flex gap-4 flex-wrap items-center">
             <div className="flex-1 min-w-[200px]">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#605e5c]" size={16} />
@@ -157,12 +157,12 @@ export default function Tasks() {
                 />
               </div>
             </div>
-            <Select value={filters.status} onValueChange={(value) => setFilters({ ...filters, status: value })}>
-              <SelectTrigger className="w-[150px] border-[#e5e5e5] rounded-lg">
+            <Select value={filters.status || "all"} onValueChange={(value) => setFilters({ ...filters, status: value === "all" ? "" : value })}>
+              <SelectTrigger className="w-[150px] border-[#e5e5e5] rounded-lg" data-testid="filter-status">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value=" ">All Statuses</SelectItem>
+                <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="Draft">Draft</SelectItem>
                 <SelectItem value="Submitted">Submitted</SelectItem>
                 <SelectItem value="Producing">Producing</SelectItem>
@@ -172,33 +172,47 @@ export default function Tasks() {
                 <SelectItem value="Rejected">Rejected</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={filters.content_type} onValueChange={(value) => setFilters({ ...filters, content_type: value })}>
-              <SelectTrigger className="w-[180px] border-[#e5e5e5] rounded-lg">
+            <Select value={filters.content_type || "all"} onValueChange={(value) => setFilters({ ...filters, content_type: value === "all" ? "" : value })}>
+              <SelectTrigger className="w-[180px] border-[#e5e5e5] rounded-lg" data-testid="filter-content-type">
                 <SelectValue placeholder="Content Type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value=" ">All Types</SelectItem>
+                <SelectItem value="all">All Types</SelectItem>
                 <SelectItem value="Announcement">Announcement</SelectItem>
                 <SelectItem value="Short Lesson">Short Lesson</SelectItem>
                 <SelectItem value="Full Lesson">Full Lesson</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={filters.avatar} onValueChange={(value) => setFilters({ ...filters, avatar: value })}>
-              <SelectTrigger className="w-[150px] border-[#e5e5e5] rounded-lg">
+            <Select value={filters.avatar || "all"} onValueChange={(value) => setFilters({ ...filters, avatar: value === "all" ? "" : value })}>
+              <SelectTrigger className="w-[150px] border-[#e5e5e5] rounded-lg" data-testid="filter-avatar">
                 <SelectValue placeholder="Avatar" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value=" ">All Avatars</SelectItem>
+                <SelectItem value="all">All Avatars</SelectItem>
                 <SelectItem value="Avatar 1">Avatar 1</SelectItem>
                 <SelectItem value="Avatar 2">Avatar 2</SelectItem>
                 <SelectItem value="Avatar 3">Avatar 3</SelectItem>
               </SelectContent>
             </Select>
+            {hasActiveFilters && (
+              <Button
+                variant="outline"
+                onClick={clearFilters}
+                data-testid="clear-filters-button"
+                className="border-[#e5e5e5] rounded-lg text-[#605e5c] hover:bg-[#f3f2f1]"
+                size="sm"
+              >
+                <X size={16} className="mr-1" />
+                Clear Filters
+              </Button>
+            )}
           </div>
         </div>
 
         {loading ? (
           <div className="p-8 text-center text-[#605e5c]">Loading...</div>
+        ) : fetching ? (
+          <div className="p-8 text-center text-[#605e5c]">Updating...</div>
         ) : tasks.length === 0 ? (
           <div className="p-8 text-center text-[#605e5c]">No tasks found</div>
         ) : (
