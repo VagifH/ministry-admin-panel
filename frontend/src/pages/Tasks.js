@@ -253,29 +253,29 @@ export default function Tasks() {
       </div>
 
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="max-w-2xl bg-white rounded-lg">
-          <DialogHeader>
+        <DialogContent className="max-w-[760px] bg-white rounded-lg p-0">
+          <DialogHeader className="px-6 pt-6 pb-4">
             <DialogTitle className="text-xl font-semibold text-[#323130]">Create New Task</DialogTitle>
           </DialogHeader>
           
-          <div className="space-y-4 py-4">
+          <div className="px-6 pb-4 space-y-4">
             <div>
-              <Label htmlFor="title" className="text-[#323130]">Title *</Label>
+              <Label htmlFor="title" className="text-[#323130] text-sm font-medium">Title *</Label>
               <Input
                 id="title"
                 value={newTask.title}
                 onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                 data-testid="task-title-input"
-                className="mt-1 border-[#e5e5e5] rounded-lg"
+                className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg"
               />
               {errors.title && <p className="text-xs text-[#d13438] mt-1">{errors.title}</p>}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label className="text-[#323130]">Content Type *</Label>
+                <Label className="text-[#323130] text-sm font-medium">Content Type *</Label>
                 <Select value={newTask.content_type} onValueChange={(value) => setNewTask({ ...newTask, content_type: value })}>
-                  <SelectTrigger className="mt-1 border-[#e5e5e5] rounded-lg">
+                  <SelectTrigger className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -287,9 +287,9 @@ export default function Tasks() {
               </div>
 
               <div>
-                <Label className="text-[#323130]">Avatar *</Label>
+                <Label className="text-[#323130] text-sm font-medium">Avatar *</Label>
                 <Select value={newTask.avatar} onValueChange={(value) => setNewTask({ ...newTask, avatar: value })}>
-                  <SelectTrigger className="mt-1 border-[#e5e5e5] rounded-lg">
+                  <SelectTrigger className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -302,58 +302,61 @@ export default function Tasks() {
             </div>
 
             <div>
-              <Label htmlFor="script" className="text-[#323130]">Script * (min 20 characters)</Label>
+              <Label htmlFor="script" className="text-[#323130] text-sm font-medium">Script * (min 20 characters)</Label>
               <Textarea
                 id="script"
                 value={newTask.script}
                 onChange={(e) => setNewTask({ ...newTask, script: e.target.value })}
                 data-testid="task-script-input"
                 rows={5}
-                className="mt-1 border-[#e5e5e5] rounded-lg"
+                className="mt-1.5 border-[#e5e5e5] rounded-lg resize-none"
               />
               {errors.script && <p className="text-xs text-[#d13438] mt-1">{errors.script}</p>}
             </div>
 
             <div>
-              <Label htmlFor="notes" className="text-[#323130]">Notes</Label>
+              <Label htmlFor="notes" className="text-[#323130] text-sm font-medium">Notes</Label>
               <Textarea
                 id="notes"
                 value={newTask.notes}
                 onChange={(e) => setNewTask({ ...newTask, notes: e.target.value })}
                 rows={3}
-                className="mt-1 border-[#e5e5e5] rounded-lg"
+                className="mt-1.5 border-[#e5e5e5] rounded-lg resize-none"
               />
             </div>
 
-            <div>
-              <Label htmlFor="publish_datetime" className="text-[#323130]">Publish Date & Time *</Label>
-              <Input
-                id="publish_datetime"
-                type="datetime-local"
-                value={newTask.publish_datetime}
-                onChange={(e) => setNewTask({ ...newTask, publish_datetime: e.target.value })}
-                data-testid="task-publish-datetime-input"
-                className="mt-1 border-[#e5e5e5] rounded-lg"
-              />
-              {errors.publish_datetime && <p className="text-xs text-[#d13438] mt-1">{errors.publish_datetime}</p>}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="publish_datetime" className="text-[#323130] text-sm font-medium">Publish Date & Time *</Label>
+                <Input
+                  id="publish_datetime"
+                  type="datetime-local"
+                  value={newTask.publish_datetime}
+                  onChange={(e) => setNewTask({ ...newTask, publish_datetime: e.target.value })}
+                  data-testid="task-publish-datetime-input"
+                  className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg max-w-[360px]"
+                />
+                {errors.publish_datetime && <p className="text-xs text-[#d13438] mt-1">{errors.publish_datetime}</p>}
+              </div>
+              <div></div>
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="px-6 py-4 border-t border-[#e5e5e5] flex justify-end gap-2">
             <Button
               variant="outline"
               onClick={() => {
                 setShowCreateDialog(false);
                 setErrors({});
               }}
-              className="border-[#e5e5e5] rounded-lg"
+              className="h-9 border-[#e5e5e5] rounded-lg"
             >
               Cancel
             </Button>
             <Button
               onClick={handleCreateTask}
               data-testid="submit-create-task-button"
-              className="bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg"
+              className="h-9 bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg"
             >
               Create Task
             </Button>
