@@ -235,29 +235,8 @@ export default function Settings() {
       </div>
 
       <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
-        {loading ? (
-          <div className="p-8 text-center text-ministry-text-secondary">Loading...</div>
-        ) : users.length === 0 ? (
-          <div className="p-8 text-center text-ministry-text-secondary">No users found</div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow className="border-ministry-border-default">
-                <TableHead className="text-ministry-text-primary font-semibold">Name</TableHead>
-                <TableHead className="text-ministry-text-primary font-semibold">Email</TableHead>
-                <TableHead className="text-ministry-text-primary font-semibold">Role</TableHead>
-                <TableHead className="text-ministry-text-primary font-semibold">Status</TableHead>
-                <TableHead className="text-ministry-text-primary font-semibold">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id} data-testid={`user-row-${user.id}`} className="border-ministry-border-default">
-                  <TableCell className="font-medium text-ministry-text-primary">{user.name}</TableCell>
-                  <TableCell className="text-ministry-text-secondary">{user.email}</TableCell>
-                  <TableCell className="text-ministry-text-secondary">{user.role}</TableCell>
-                  <TableCell>
-                    <Badge className={user.is_active ? 'bg-ministry-status-scheduled text-white rounded-md' : 'bg-ministry-status-draft text-white rounded-md'}>
+        {renderContent()}
+      </div>
                       {user.is_active ? 'Active' : 'Inactive'}
                     </Badge>
                   </TableCell>
