@@ -104,13 +104,14 @@ export default function Tasks() {
 
   const handleCreateTask = async () => {
     if (!validateTask()) {
-      toast.error('Please fix the errors before submitting');
+      showToast.error('Please fix the errors before submitting');
       return;
     }
 
+    setSubmitting(true);
     try {
       await axios.post(`${API_URL}/tasks`, newTask);
-      toast.success('Task created successfully');
+      showToast.success('Task created successfully');
       setShowCreateDialog(false);
       setNewTask({
         title: '',
@@ -122,12 +123,78 @@ export default function Tasks() {
       });
       setErrors({});
       fetchTasks();
-    } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to create task');
+    } catch (err) {
+      showApiError(err, 'Failed to create task');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const canCreateTask = user?.role !== 'Approver';
+  const hasActiveFilters = filters.search || filters.status || filters.content_type || filters.avatar;
+
+  // Determine content state
+  const renderContent = () => {
+    if (loading) {
+      return <TableSkeleton rows={5} columns={5} />;
+    }
+
+    if (error) {
+      return <ErrorState description={error} onRetry={fetchTasks} />;
+    }
+
+    if (tasks.length === 0 && hasActiveFilters) {
+      return <NoResultsState onClearFilters={clearFilters} data-testid="no-results-state" />;
+    }
+
+    if (tasks.length === 0) {
+      return (
+        <EmptyState
+          title="No tasks yet"
+          description="Get started by creating your first task"
+          action={canCreateTask ? () => setShowCreateDialog(true) : undefined}
+          actionLabel={canCreateTask ? "Create Task" : undefined}
+          data-testid="empty-tasks-state"
+        />
+      );
+    }
+
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow className="border-ministry-border-default">
+            <TableHead className="text-ministry-text-primary font-semibold">Title</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">Content Type</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">Avatar</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">Status</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">Publish Date</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {tasks.map((task) => (
+            <TableRow
+              key={task.id}
+              data-testid={`task-row-${task.id}`}
+              onClick={() => navigate(`/tasks/${task.id}`)}
+              className="cursor-pointer hover:bg-ministry-bg-tertiary border-ministry-border-default"
+            >
+              <TableCell className="font-medium text-ministry-text-primary">{task.title}</TableCell>
+              <TableCell className="text-ministry-text-secondary">{task.content_type}</TableCell>
+              <TableCell className="text-ministry-text-secondary">{task.avatar}</TableCell>
+              <TableCell>
+                <Badge className={`${statusColors[task.status]} rounded-md`}>
+                  {task.status}
+                </Badge>
+              </TableCell>
+              <TableCell className="text-ministry-text-secondary">
+                {format(new Date(task.publish_datetime), 'MMM dd, yyyy HH:mm')}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    );
+  };
 
   return (
     <div className="p-8">
