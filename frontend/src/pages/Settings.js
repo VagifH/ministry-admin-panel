@@ -207,54 +207,54 @@ export default function Settings() {
       </div>
 
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="max-w-[560px] bg-white rounded-lg p-0">
+        <DialogContent className="max-w-[560px] bg-ministry-bg-secondary rounded-ministry p-0">
           <DialogHeader className="px-6 pt-6 pb-4">
-            <DialogTitle className="text-xl font-semibold text-[#323130]">Create New User</DialogTitle>
+            <DialogTitle className="text-xl font-semibold text-ministry-text-primary">Create New User</DialogTitle>
           </DialogHeader>
           
           <div className="px-6 pb-4 space-y-4">
             <div>
-              <Label htmlFor="name" className="text-[#323130] text-sm font-medium">Name *</Label>
+              <Label htmlFor="name" className="text-ministry-text-primary text-sm font-medium">Name *</Label>
               <Input
                 id="name"
                 value={newUser.name}
                 onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
                 data-testid="user-name-input"
-                className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg"
+                className="mt-1.5 h-9 border-ministry-border-default rounded-ministry"
               />
-              {errors.name && <p className="text-xs text-[#d13438] mt-1">{errors.name}</p>}
+              {errors.name && <p className="text-xs text-ministry-status-error mt-1">{errors.name}</p>}
             </div>
 
             <div>
-              <Label htmlFor="email" className="text-[#323130] text-sm font-medium">Email *</Label>
+              <Label htmlFor="email" className="text-ministry-text-primary text-sm font-medium">Email *</Label>
               <Input
                 id="email"
                 type="email"
                 value={newUser.email}
                 onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                 data-testid="user-email-input"
-                className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg"
+                className="mt-1.5 h-9 border-ministry-border-default rounded-ministry"
               />
-              {errors.email && <p className="text-xs text-[#d13438] mt-1">{errors.email}</p>}
+              {errors.email && <p className="text-xs text-ministry-status-error mt-1">{errors.email}</p>}
             </div>
 
             <div>
-              <Label htmlFor="password" className="text-[#323130] text-sm font-medium">Password * (min 8 characters)</Label>
+              <Label htmlFor="password" className="text-ministry-text-primary text-sm font-medium">Password * (min 8 characters)</Label>
               <Input
                 id="password"
                 type="password"
                 value={newUser.password}
                 onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
                 data-testid="user-password-input"
-                className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg"
+                className="mt-1.5 h-9 border-ministry-border-default rounded-ministry"
               />
-              {errors.password && <p className="text-xs text-[#d13438] mt-1">{errors.password}</p>}
+              {errors.password && <p className="text-xs text-ministry-status-error mt-1">{errors.password}</p>}
             </div>
 
             <div>
-              <Label className="text-[#323130] text-sm font-medium">Role *</Label>
+              <Label className="text-ministry-text-primary text-sm font-medium">Role *</Label>
               <Select value={newUser.role} onValueChange={(value) => setNewUser({ ...newUser, role: value })}>
-                <SelectTrigger className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg">
+                <SelectTrigger className="mt-1.5 h-9 border-ministry-border-default rounded-ministry">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -266,21 +266,21 @@ export default function Settings() {
             </div>
           </div>
 
-          <DialogFooter className="px-6 py-4 border-t border-[#e5e5e5] flex justify-end gap-2">
+          <DialogFooter className="px-6 py-4 border-t border-ministry-border-default flex justify-end gap-2">
             <Button
               variant="outline"
               onClick={() => {
                 setShowCreateDialog(false);
                 setErrors({});
               }}
-              className="h-9 border-[#e5e5e5] rounded-lg"
+              className="h-9 border-ministry-border-default rounded-ministry"
             >
               Cancel
             </Button>
             <Button
               onClick={handleCreateUser}
               data-testid="submit-create-user-button"
-              className="h-9 bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg"
+              className="h-9 bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry"
             >
               Create User
             </Button>
@@ -289,27 +289,27 @@ export default function Settings() {
       </Dialog>
 
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="max-w-[560px] bg-white rounded-lg p-0">
+        <DialogContent className="max-w-[560px] bg-ministry-bg-secondary rounded-ministry p-0">
           <DialogHeader className="px-6 pt-6 pb-4">
-            <DialogTitle className="text-xl font-semibold text-[#323130]">Edit User</DialogTitle>
+            <DialogTitle className="text-xl font-semibold text-ministry-text-primary">Edit User</DialogTitle>
           </DialogHeader>
           
           <div className="px-6 pb-4 space-y-4">
             <div>
-              <Label htmlFor="edit-name" className="text-[#323130] text-sm font-medium">Name *</Label>
+              <Label htmlFor="edit-name" className="text-ministry-text-primary text-sm font-medium">Name *</Label>
               <Input
                 id="edit-name"
                 value={editUser.name}
                 onChange={(e) => setEditUser({ ...editUser, name: e.target.value })}
                 data-testid="edit-user-name-input"
-                className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg"
+                className="mt-1.5 h-9 border-ministry-border-default rounded-ministry"
               />
             </div>
 
             <div>
-              <Label className="text-[#323130] text-sm font-medium">Role *</Label>
+              <Label className="text-ministry-text-primary text-sm font-medium">Role *</Label>
               <Select value={editUser.role} onValueChange={(value) => setEditUser({ ...editUser, role: value })}>
-                <SelectTrigger className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg">
+                <SelectTrigger className="mt-1.5 h-9 border-ministry-border-default rounded-ministry">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -321,9 +321,9 @@ export default function Settings() {
             </div>
 
             <div>
-              <Label className="text-[#323130] text-sm font-medium">Status *</Label>
+              <Label className="text-ministry-text-primary text-sm font-medium">Status *</Label>
               <Select value={editUser.is_active.toString()} onValueChange={(value) => setEditUser({ ...editUser, is_active: value === 'true' })}>
-                <SelectTrigger className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg">
+                <SelectTrigger className="mt-1.5 h-9 border-ministry-border-default rounded-ministry">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -334,18 +334,18 @@ export default function Settings() {
             </div>
           </div>
 
-          <DialogFooter className="px-6 py-4 border-t border-[#e5e5e5] flex justify-end gap-2">
+          <DialogFooter className="px-6 py-4 border-t border-ministry-border-default flex justify-end gap-2">
             <Button
               variant="outline"
               onClick={() => setShowEditDialog(false)}
-              className="h-9 border-[#e5e5e5] rounded-lg"
+              className="h-9 border-ministry-border-default rounded-ministry"
             >
               Cancel
             </Button>
             <Button
               onClick={handleEditUser}
               data-testid="submit-edit-user-button"
-              className="h-9 bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg"
+              className="h-9 bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry"
             >
               Save Changes
             </Button>
