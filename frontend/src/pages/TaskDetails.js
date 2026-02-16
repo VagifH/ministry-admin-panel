@@ -364,11 +364,12 @@ export default function TaskDetails() {
             {!isReadOnly && (
               <Button
                 onClick={handleSaveTask}
+                disabled={saving}
                 data-testid="save-task-button"
-                className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry"
+                className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry disabled:opacity-50"
               >
                 <Save size={16} className="mr-2" />
-                Save Changes
+                {saving ? 'Saving...' : 'Save Changes'}
               </Button>
             )}
           </TabsContent>
