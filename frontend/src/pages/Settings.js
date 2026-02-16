@@ -237,39 +237,6 @@ export default function Settings() {
       <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
         {renderContent()}
       </div>
-                      {user.is_active ? 'Active' : 'Inactive'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => openEditDialog(user)}
-                        data-testid={`edit-user-${user.id}`}
-                        className="text-ministry-brand-primary hover:bg-ministry-bg-tertiary rounded-ministry"
-                      >
-                        <Pencil size={16} />
-                      </Button>
-                      {user.id !== currentUser.id && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteUser(user.id)}
-                          data-testid={`delete-user-${user.id}`}
-                          className="text-ministry-status-rejected hover:bg-ministry-bg-tertiary rounded-ministry"
-                        >
-                          <Trash2 size={16} />
-                        </Button>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </div>
 
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent className="max-w-[560px] bg-ministry-bg-secondary rounded-ministry p-0">
