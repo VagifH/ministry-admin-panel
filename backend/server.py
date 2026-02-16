@@ -653,6 +653,142 @@ async def get_dashboard_stats(current_user: User = Depends(get_current_user)):
         scheduled_this_week=scheduled_this_week
     )
 
+# ==================== VIDEO ENDPOINTS ====================
+
+@api_router.get("/tasks/{task_id}/video", response_model=Optional[VideoResponse])
+async def get_task_video(task_id: str, current_user: User = Depends(get_current_user)):
+    """Get video metadata for a specific task"""
+    # Verify task exists
+    task = await db.tasks.find_one({"id": task_id}, {"_id": 0})
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    
+    # Find video for this task
+    video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
+    if not video:
+        return None
+    
+    # Convert datetime strings if needed
+    if isinstance(video.get('created_at'), str):
+        video['created_at'] = datetime.fromisoformat(video['created_at'])
+    if isinstance(video.get('updated_at'), str):
+        video['updated_at'] = datetime.fromisoformat(video['updated_at'])
+    
+    return VideoResponse(**video)
+
+@api_router.post("/tasks/{task_id}/video", response_model=VideoResponse, status_code=status.HTTP_201_CREATED)
+async def create_video_record(task_id: str, video_data: VideoCreate, current_user: User = Depends(get_current_user)):
+    """Initialize a video record for a task (preparation for upload)"""
+    import uuid
+    
+    # Verify task exists
+    task = await db.tasks.find_one({"id": task_id}, {"_id": 0})
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    
+    # Check if video already exists for this task
+    existing_video = await db.videos.find_one({"task_id": task_id})
+    if existing_video:
+        raise HTTPException(status_code=400, detail="Video already exists for this task. Delete it first to upload a new one.")
+    
+    # Check permissions - Admins and Editors can upload videos
+    if current_user.role not in ["Admin", "Editor"]:
+        raise HTTPException(status_code=403, detail="Only Admin and Editor roles can upload videos")
+    
+    # Check task status - cannot upload to Published tasks
+    if task.get("status") == "Published":
+        raise HTTPException(status_code=400, detail="Cannot upload video to a published task")
+    
+    now = datetime.now(timezone.utc)
+    video_dict = {
+        "id": str(uuid.uuid4()),
+        "task_id": task_id,
+        "original_filename": video_data.original_filename,
+        "file_size": video_data.file_size,
+        "mime_type": video_data.mime_type,
+        "status": "pending",
+        "uploaded_by": current_user.id,
+        "uploaded_by_name": current_user.name,
+        "created_at": now.isoformat(),
+        "updated_at": now.isoformat()
+    }
+    
+    await db.videos.insert_one(video_dict)
+    await log_audit(current_user.id, current_user.name, "CREATE", "Video", video_dict["id"], None, video_data.original_filename)
+    
+    video_dict['created_at'] = now
+    video_dict['updated_at'] = now
+    
+    return VideoResponse(**video_dict)
+
+@api_router.patch("/tasks/{task_id}/video", response_model=VideoResponse)
+async def update_video_status(task_id: str, video_update: VideoUpdate, current_user: User = Depends(get_current_user)):
+    """Update video metadata (status, duration, etc.)"""
+    # Find existing video
+    video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
+    if not video:
+        raise HTTPException(status_code=404, detail="Video not found for this task")
+    
+    # Build update dict
+    update_data = video_update.model_dump(exclude_unset=True)
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No update data provided")
+    
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    # Track old status for audit
+    old_status = video.get("status")
+    new_status = update_data.get("status", old_status)
+    
+    await db.videos.update_one({"task_id": task_id}, {"$set": update_data})
+    
+    if old_status != new_status:
+        await log_audit(current_user.id, current_user.name, "STATUS_CHANGE", "Video", video["id"], old_status, new_status)
+    
+    # Fetch updated video
+    updated_video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
+    if isinstance(updated_video.get('created_at'), str):
+        updated_video['created_at'] = datetime.fromisoformat(updated_video['created_at'])
+    if isinstance(updated_video.get('updated_at'), str):
+        updated_video['updated_at'] = datetime.fromisoformat(updated_video['updated_at'])
+    
+    return VideoResponse(**updated_video)
+
+@api_router.delete("/tasks/{task_id}/video", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_video(task_id: str, current_user: User = Depends(get_current_user)):
+    """Delete video record for a task"""
+    # Find existing video
+    video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
+    if not video:
+        raise HTTPException(status_code=404, detail="Video not found for this task")
+    
+    # Check permissions
+    if current_user.role not in ["Admin", "Editor"]:
+        raise HTTPException(status_code=403, detail="Only Admin and Editor roles can delete videos")
+    
+    # Verify task isn't published
+    task = await db.tasks.find_one({"id": task_id}, {"_id": 0})
+    if task and task.get("status") == "Published":
+        raise HTTPException(status_code=400, detail="Cannot delete video from a published task")
+    
+    await db.videos.delete_one({"task_id": task_id})
+    await log_audit(current_user.id, current_user.name, "DELETE", "Video", video["id"], video.get("original_filename"), None)
+    
+    return None
+
+@api_router.get("/tasks/{task_id}/video/status")
+async def get_video_status(task_id: str, current_user: User = Depends(get_current_user)):
+    """Get just the video status for a task (lightweight endpoint)"""
+    video = await db.videos.find_one({"task_id": task_id}, {"_id": 0, "status": 1, "error_message": 1})
+    if not video:
+        return {"has_video": False, "status": None, "error_message": None}
+    
+    return {
+        "has_video": True,
+        "status": video.get("status"),
+        "error_message": video.get("error_message")
+    }
+
 # Include router
 app.include_router(api_router)
 
