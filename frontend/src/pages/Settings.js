@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -10,6 +9,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Badge } from '../components/ui/badge';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { TableSkeleton } from '../components/ui/loading';
+import { EmptyState, ErrorState } from '../components/ui/empty-state';
+import { showToast, showApiError } from '../lib/toast';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
@@ -17,8 +19,10 @@ export default function Settings() {
   const { user: currentUser } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [newUser, setNewUser] = useState({
     name: '',
@@ -42,11 +46,13 @@ export default function Settings() {
   }, [currentUser]);
 
   const fetchUsers = async () => {
+    setError(null);
     try {
       const response = await axios.get(`${API_URL}/users`);
       setUsers(response.data);
-    } catch (error) {
-      toast.error('Failed to load users');
+    } catch (err) {
+      setError('Failed to load users');
+      showApiError(err, 'Failed to load users');
     } finally {
       setLoading(false);
     }
