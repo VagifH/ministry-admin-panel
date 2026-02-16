@@ -441,12 +441,7 @@ export default function TaskDetails() {
           </TabsContent>
 
           <TabsContent value="video" className="mt-6">
-            <div className="text-center py-12 bg-ministry-bg-tertiary rounded-ministry">
-              <p className="text-ministry-text-secondary mb-4">No video uploaded yet</p>
-              <Button disabled className="bg-ministry-status-draft text-white rounded-ministry" data-testid="upload-video-button">
-                Upload Video (Coming in Phase 2)
-              </Button>
-            </div>
+            <VideoTab taskId={taskId} taskStatus={task?.status} />
           </TabsContent>
         </Tabs>
       </div>
