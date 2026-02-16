@@ -311,7 +311,8 @@ export default function TaskDetails() {
                 onChange={(e) => setEditedTask({ ...editedTask, publish_datetime: e.target.value })}
                 disabled={isReadOnly}
                 data-testid="edit-task-publish-datetime-input"
-                className="mt-1 border-[#e5e5e5] rounded-lg"
+                className="mt-1 border-[#e5e5e5] rounded-lg w-[320px] max-w-[340px] h-9 pr-3"
+                style={{ colorScheme: 'light' }}
               />
             </div>
 
