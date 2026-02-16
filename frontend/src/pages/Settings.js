@@ -207,54 +207,54 @@ export default function Settings() {
       </div>
 
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="bg-white rounded-lg">
-          <DialogHeader>
+        <DialogContent className="max-w-[560px] bg-white rounded-lg p-0">
+          <DialogHeader className="px-6 pt-6 pb-4">
             <DialogTitle className="text-xl font-semibold text-[#323130]">Create New User</DialogTitle>
           </DialogHeader>
           
-          <div className="space-y-4 py-4">
+          <div className="px-6 pb-4 space-y-4">
             <div>
-              <Label htmlFor="name" className="text-[#323130]">Name *</Label>
+              <Label htmlFor="name" className="text-[#323130] text-sm font-medium">Name *</Label>
               <Input
                 id="name"
                 value={newUser.name}
                 onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
                 data-testid="user-name-input"
-                className="mt-1 border-[#e5e5e5] rounded-lg"
+                className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg"
               />
               {errors.name && <p className="text-xs text-[#d13438] mt-1">{errors.name}</p>}
             </div>
 
             <div>
-              <Label htmlFor="email" className="text-[#323130]">Email *</Label>
+              <Label htmlFor="email" className="text-[#323130] text-sm font-medium">Email *</Label>
               <Input
                 id="email"
                 type="email"
                 value={newUser.email}
                 onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                 data-testid="user-email-input"
-                className="mt-1 border-[#e5e5e5] rounded-lg"
+                className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg"
               />
               {errors.email && <p className="text-xs text-[#d13438] mt-1">{errors.email}</p>}
             </div>
 
             <div>
-              <Label htmlFor="password" className="text-[#323130]">Password * (min 8 characters)</Label>
+              <Label htmlFor="password" className="text-[#323130] text-sm font-medium">Password * (min 8 characters)</Label>
               <Input
                 id="password"
                 type="password"
                 value={newUser.password}
                 onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
                 data-testid="user-password-input"
-                className="mt-1 border-[#e5e5e5] rounded-lg"
+                className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg"
               />
               {errors.password && <p className="text-xs text-[#d13438] mt-1">{errors.password}</p>}
             </div>
 
             <div>
-              <Label className="text-[#323130]">Role *</Label>
+              <Label className="text-[#323130] text-sm font-medium">Role *</Label>
               <Select value={newUser.role} onValueChange={(value) => setNewUser({ ...newUser, role: value })}>
-                <SelectTrigger className="mt-1 border-[#e5e5e5] rounded-lg">
+                <SelectTrigger className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -266,21 +266,21 @@ export default function Settings() {
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="px-6 py-4 border-t border-[#e5e5e5] flex justify-end gap-2">
             <Button
               variant="outline"
               onClick={() => {
                 setShowCreateDialog(false);
                 setErrors({});
               }}
-              className="border-[#e5e5e5] rounded-lg"
+              className="h-9 border-[#e5e5e5] rounded-lg"
             >
               Cancel
             </Button>
             <Button
               onClick={handleCreateUser}
               data-testid="submit-create-user-button"
-              className="bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg"
+              className="h-9 bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg"
             >
               Create User
             </Button>
