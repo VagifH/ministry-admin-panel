@@ -389,16 +389,18 @@ export default function Tasks() {
                 setShowCreateDialog(false);
                 setErrors({});
               }}
+              disabled={submitting}
               className="h-9 border-ministry-border-default rounded-ministry"
             >
               Cancel
             </Button>
             <Button
               onClick={handleCreateTask}
+              disabled={submitting}
               data-testid="submit-create-task-button"
-              className="h-9 bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry"
+              className="h-9 bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry disabled:opacity-50"
             >
-              Create Task
+              {submitting ? 'Creating...' : 'Create Task'}
             </Button>
           </DialogFooter>
         </DialogContent>
