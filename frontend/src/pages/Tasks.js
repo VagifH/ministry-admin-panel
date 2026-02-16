@@ -53,12 +53,13 @@ export default function Tasks() {
 
   useEffect(() => {
     fetchTasks();
-  }, [filters]);
+  }, [filters.search, filters.status, filters.content_type, filters.avatar]);
 
   const fetchTasks = async () => {
+    setFetching(true);
     try {
       const params = new URLSearchParams();
-      if (filters.search) params.append('search', filters.search);
+      if (filters.search.trim()) params.append('search', filters.search);
       if (filters.status) params.append('status', filters.status);
       if (filters.content_type) params.append('content_type', filters.content_type);
       if (filters.avatar) params.append('avatar', filters.avatar);
@@ -69,8 +70,20 @@ export default function Tasks() {
       toast.error('Failed to load tasks');
     } finally {
       setLoading(false);
+      setFetching(false);
     }
   };
+
+  const clearFilters = () => {
+    setFilters({
+      search: '',
+      status: '',
+      content_type: '',
+      avatar: '',
+    });
+  };
+
+  const hasActiveFilters = filters.search || filters.status || filters.content_type || filters.avatar;
 
   const validateTask = () => {
     const newErrors = {};
