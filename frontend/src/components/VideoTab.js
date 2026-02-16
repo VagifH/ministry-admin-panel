@@ -456,34 +456,55 @@ export default function VideoTab({ taskId, taskStatus }) {
       </div>
 
       {/* Actions */}
-      {!isReadOnly && (
-        <div className="flex gap-3">
+      <div className="flex gap-3 flex-wrap">
+        {/* Download - always available when video is ready */}
+        {isReady && (
           <Button 
-            onClick={handleReplace}
-            disabled={!canModify}
+            onClick={handleDownload}
+            disabled={downloading}
             variant="outline"
-            className="border-ministry-border-default rounded-ministry"
-            data-testid="replace-video-button"
+            className="border-ministry-brand-primary text-ministry-brand-primary hover:bg-ministry-brand-primary/5 rounded-ministry"
+            data-testid="download-video-button"
           >
-            <Upload size={16} className="mr-2" />
-            Replace Video
-          </Button>
-          <Button 
-            onClick={handleDelete}
-            disabled={!canModify}
-            variant="outline"
-            className="border-ministry-status-rejected text-ministry-status-rejected hover:bg-red-50 rounded-ministry"
-            data-testid="delete-video-button"
-          >
-            {deleting ? (
+            {downloading ? (
               <RefreshCw size={16} className="mr-2 animate-spin" />
             ) : (
-              <Trash2 size={16} className="mr-2" />
+              <Download size={16} className="mr-2" />
             )}
-            {deleting ? 'Deleting...' : 'Remove Video'}
+            {downloading ? 'Downloading...' : 'Download'}
           </Button>
-        </div>
-      )}
+        )}
+
+        {/* Replace and Delete - only for non-finalized tasks */}
+        {!isReadOnly && (
+          <>
+            <Button 
+              onClick={handleReplace}
+              disabled={!canModify}
+              variant="outline"
+              className="border-ministry-border-default rounded-ministry"
+              data-testid="replace-video-button"
+            >
+              <Upload size={16} className="mr-2" />
+              Replace Video
+            </Button>
+            <Button 
+              onClick={handleDelete}
+              disabled={!canModify}
+              variant="outline"
+              className="border-ministry-status-rejected text-ministry-status-rejected hover:bg-red-50 rounded-ministry"
+              data-testid="delete-video-button"
+            >
+              {deleting ? (
+                <RefreshCw size={16} className="mr-2 animate-spin" />
+              ) : (
+                <Trash2 size={16} className="mr-2" />
+              )}
+              {deleting ? 'Deleting...' : 'Remove Video'}
+            </Button>
+          </>
+        )}
+      </div>
 
       {isReadOnly && (
         <div className="text-sm text-ministry-text-muted">
