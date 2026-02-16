@@ -31,6 +31,7 @@ export default function Tasks() {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
