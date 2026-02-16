@@ -10,13 +10,13 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameM
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 const statusColors = {
-  Draft: 'bg-[#8a8886] text-white',
-  Submitted: 'bg-[#0078d4] text-white',
-  Producing: 'bg-[#8764b8] text-white',
-  Review: 'bg-[#ffaa44] text-white',
-  Scheduled: 'bg-[#107c10] text-white',
-  Published: 'bg-[#498205] text-white',
-  Rejected: 'bg-[#d13438] text-white',
+  Draft: 'bg-ministry-status-draft text-white',
+  Submitted: 'bg-ministry-status-submitted text-white',
+  Producing: 'bg-ministry-status-producing text-white',
+  Review: 'bg-ministry-status-review text-white',
+  Scheduled: 'bg-ministry-status-scheduled text-white',
+  Published: 'bg-ministry-status-published text-white',
+  Rejected: 'bg-ministry-status-rejected text-white',
 };
 
 export default function Calendar() {
@@ -86,15 +86,15 @@ export default function Calendar() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-[#323130]">Calendar</h1>
-          <p className="text-sm text-[#605e5c] mt-1">View tasks by publish date</p>
+          <h1 className="text-2xl font-semibold text-ministry-text-primary">Calendar</h1>
+          <p className="text-sm text-ministry-text-secondary mt-1">View tasks by publish date</p>
         </div>
         <div className="flex gap-2">
           <Button
             variant={view === 'month' ? 'default' : 'outline'}
             onClick={() => setView('month')}
             data-testid="calendar-month-view-button"
-            className={view === 'month' ? 'bg-[#0078d4] text-white rounded-lg' : 'border-[#e5e5e5] rounded-lg'}
+            className={view === 'month' ? 'bg-ministry-brand-primary text-white rounded-ministry' : 'border-ministry-border-default rounded-ministry'}
             size="sm"
           >
             Month
@@ -103,7 +103,7 @@ export default function Calendar() {
             variant={view === 'week' ? 'default' : 'outline'}
             onClick={() => setView('week')}
             data-testid="calendar-week-view-button"
-            className={view === 'week' ? 'bg-[#0078d4] text-white rounded-lg' : 'border-[#e5e5e5] rounded-lg'}
+            className={view === 'week' ? 'bg-ministry-brand-primary text-white rounded-ministry' : 'border-ministry-border-default rounded-ministry'}
             size="sm"
           >
             Week
@@ -111,9 +111,9 @@ export default function Calendar() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-[#e5e5e5] shadow-sm">
-        <div className="p-4 border-b border-[#e5e5e5] flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-[#323130]">
+      <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
+        <div className="p-4 border-b border-ministry-border-default flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-ministry-text-primary">
             {format(currentDate, 'MMMM yyyy')}
           </h2>
           <div className="flex gap-2">
@@ -121,7 +121,7 @@ export default function Calendar() {
               variant="outline"
               onClick={handleToday}
               data-testid="calendar-today-button"
-              className="border-[#e5e5e5] rounded-lg"
+              className="border-ministry-border-default rounded-ministry"
               size="sm"
             >
               Today
@@ -130,7 +130,7 @@ export default function Calendar() {
               variant="outline"
               onClick={handlePrevious}
               data-testid="calendar-previous-button"
-              className="border-[#e5e5e5] rounded-lg"
+              className="border-ministry-border-default rounded-ministry"
               size="sm"
             >
               <ChevronLeft size={16} />
@@ -139,7 +139,7 @@ export default function Calendar() {
               variant="outline"
               onClick={handleNext}
               data-testid="calendar-next-button"
-              className="border-[#e5e5e5] rounded-lg"
+              className="border-ministry-border-default rounded-ministry"
               size="sm"
             >
               <ChevronRight size={16} />
@@ -148,12 +148,12 @@ export default function Calendar() {
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-[#605e5c]">Loading...</div>
+          <div className="p-8 text-center text-ministry-text-secondary">Loading...</div>
         ) : (
           <div className="p-4">
             <div className="grid grid-cols-7 gap-2 mb-2">
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                <div key={day} className="text-center text-sm font-semibold text-[#605e5c] py-2">
+                <div key={day} className="text-center text-sm font-semibold text-ministry-text-secondary py-2">
                   {day}
                 </div>
               ))}
@@ -169,12 +169,12 @@ export default function Calendar() {
                   <div
                     key={index}
                     data-testid={`calendar-day-${format(day, 'yyyy-MM-dd')}`}
-                    className={`min-h-[120px] p-2 border border-[#e5e5e5] rounded-lg ${
-                      !isCurrentMonth ? 'bg-[#fafafa]' : 'bg-white'
-                    } ${isToday ? 'ring-2 ring-[#0078d4]' : ''}`}
+                    className={`min-h-[120px] p-2 border border-ministry-border-default rounded-ministry ${
+                      !isCurrentMonth ? 'bg-ministry-bg-primary' : 'bg-ministry-bg-secondary'
+                    } ${isToday ? 'ring-2 ring-ministry-brand-primary' : ''}`}
                   >
                     <div className={`text-sm font-medium mb-2 ${
-                      isCurrentMonth ? 'text-[#323130]' : 'text-[#8a8886]'
+                      isCurrentMonth ? 'text-ministry-text-primary' : 'text-ministry-text-muted'
                     }`}>
                       {format(day, 'd')}
                     </div>
@@ -191,7 +191,7 @@ export default function Calendar() {
                         </div>
                       ))}
                       {dayTasks.length > 3 && (
-                        <div className="text-xs text-[#605e5c]">+{dayTasks.length - 3} more</div>
+                        <div className="text-xs text-ministry-text-secondary">+{dayTasks.length - 3} more</div>
                       )}
                     </div>
                   </div>
