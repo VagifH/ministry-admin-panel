@@ -1,7 +1,7 @@
 /**
  * VideoTab Component
  * Full video upload UI with drag-drop, progress, and status management
- * Phase 4: Complete upload implementation
+ * Phase 4.2: Added download functionality
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -19,12 +19,14 @@ import {
   Upload,
   X,
   Trash2,
-  CheckCircle2
+  CheckCircle2,
+  Download
 } from 'lucide-react';
 import { 
   getTaskVideo, 
   uploadVideo,
   deleteVideo,
+  downloadVideo,
   validateVideoFile,
   VIDEO_STATUS, 
   VIDEO_STATUS_CONFIG,
@@ -38,6 +40,7 @@ export default function VideoTab({ taskId, taskStatus }) {
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [downloading, setDownloading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
