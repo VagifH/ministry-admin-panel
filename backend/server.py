@@ -927,6 +927,128 @@ async def upload_video(task_id: str, file: UploadFile = File(...), current_user:
         
         raise HTTPException(status_code=500, detail=f"Failed to save video: {str(e)}")
 
+@api_router.get("/tasks/{task_id}/video/download")
+async def download_video(task_id: str, current_user: User = Depends(get_current_user)):
+    """Download video file for a task"""
+    # All authenticated roles can download (Admin, Editor, Approver)
+    
+    # Find video record
+    video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
+    if not video:
+        raise HTTPException(status_code=404, detail="No video found for this task")
+    
+    # Check video status
+    if video.get("status") != "ready":
+        raise HTTPException(
+            status_code=409, 
+            detail=f"Video is not ready for download. Current status: {video.get('status')}"
+        )
+    
+    # Check storage provider and get file path
+    if video.get("storage_provider") != "local":
+        raise HTTPException(status_code=501, detail="Only local storage downloads are supported")
+    
+    storage_key = video.get("storage_key")
+    if not storage_key:
+        raise HTTPException(status_code=404, detail="Video file path not found")
+    
+    file_path = VIDEO_UPLOAD_DIR / storage_key
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Video file not found on server")
+    
+    # Get original filename for download
+    original_filename = video.get("original_filename", "video.mp4")
+    
+    return FileResponse(
+        path=str(file_path),
+        filename=original_filename,
+        media_type="video/mp4",
+        headers={
+            "Content-Disposition": f'attachment; filename="{original_filename}"'
+        }
+    )
+
+@api_router.get("/tasks/{task_id}/video/stream")
+async def stream_video(
+    task_id: str, 
+    current_user: User = Depends(get_current_user),
+    range: Optional[str] = Header(None)
+):
+    """Stream video file with Range support for in-browser preview"""
+    # All authenticated roles can stream (Admin, Editor, Approver)
+    
+    # Find video record
+    video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
+    if not video:
+        raise HTTPException(status_code=404, detail="No video found for this task")
+    
+    # Check video status
+    if video.get("status") != "ready":
+        raise HTTPException(
+            status_code=409, 
+            detail=f"Video is not ready for streaming. Current status: {video.get('status')}"
+        )
+    
+    # Check storage provider and get file path
+    if video.get("storage_provider") != "local":
+        raise HTTPException(status_code=501, detail="Only local storage streaming is supported")
+    
+    storage_key = video.get("storage_key")
+    if not storage_key:
+        raise HTTPException(status_code=404, detail="Video file path not found")
+    
+    file_path = VIDEO_UPLOAD_DIR / storage_key
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Video file not found on server")
+    
+    file_size = file_path.stat().st_size
+    
+    # Parse Range header if present
+    start = 0
+    end = file_size - 1
+    
+    if range:
+        range_str = range.replace("bytes=", "")
+        range_parts = range_str.split("-")
+        start = int(range_parts[0]) if range_parts[0] else 0
+        end = int(range_parts[1]) if range_parts[1] else file_size - 1
+    
+    # Ensure valid range
+    if start >= file_size:
+        raise HTTPException(status_code=416, detail="Range not satisfiable")
+    
+    end = min(end, file_size - 1)
+    content_length = end - start + 1
+    
+    async def iterfile():
+        async with aiofiles.open(file_path, mode='rb') as f:
+            await f.seek(start)
+            remaining = content_length
+            chunk_size = 1024 * 1024  # 1MB chunks
+            while remaining > 0:
+                read_size = min(chunk_size, remaining)
+                data = await f.read(read_size)
+                if not data:
+                    break
+                remaining -= len(data)
+                yield data
+    
+    headers = {
+        "Content-Range": f"bytes {start}-{end}/{file_size}",
+        "Accept-Ranges": "bytes",
+        "Content-Length": str(content_length),
+        "Content-Type": "video/mp4"
+    }
+    
+    status_code = 206 if range else 200
+    
+    return StreamingResponse(
+        iterfile(),
+        status_code=status_code,
+        headers=headers,
+        media_type="video/mp4"
+    )
+
 # Include router
 app.include_router(api_router)
 
