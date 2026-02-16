@@ -133,7 +133,7 @@ class AuditLog(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    email: str
     password: str
 
 class LoginResponse(BaseModel):
