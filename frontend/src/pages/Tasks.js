@@ -17,13 +17,13 @@ import { format } from 'date-fns';
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 const statusColors = {
-  Draft: 'bg-[#8a8886] text-white',
-  Submitted: 'bg-[#0078d4] text-white',
-  Producing: 'bg-[#8764b8] text-white',
-  Review: 'bg-[#ffaa44] text-white',
-  Scheduled: 'bg-[#107c10] text-white',
-  Published: 'bg-[#498205] text-white',
-  Rejected: 'bg-[#d13438] text-white',
+  Draft: 'bg-ministry-status-draft text-white',
+  Submitted: 'bg-ministry-status-submitted text-white',
+  Producing: 'bg-ministry-status-producing text-white',
+  Review: 'bg-ministry-status-review text-white',
+  Scheduled: 'bg-ministry-status-scheduled text-white',
+  Published: 'bg-ministry-status-published text-white',
+  Rejected: 'bg-ministry-status-rejected text-white',
 };
 
 export default function Tasks() {
@@ -127,14 +127,14 @@ export default function Tasks() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-[#323130]">Tasks</h1>
-          <p className="text-sm text-[#605e5c] mt-1">Manage content tasks</p>
+          <h1 className="text-2xl font-semibold text-ministry-text-primary">Tasks</h1>
+          <p className="text-sm text-ministry-text-secondary mt-1">Manage content tasks</p>
         </div>
         {canCreateTask && (
           <Button
             onClick={() => setShowCreateDialog(true)}
             data-testid="create-task-button"
-            className="bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg flex items-center gap-1.5"
+            className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry flex items-center gap-1.5"
           >
             <Plus size={16} />
             Create Task
@@ -142,23 +142,23 @@ export default function Tasks() {
         )}
       </div>
 
-      <div className="bg-white rounded-lg border border-[#e5e5e5] shadow-sm">
-        <div className="p-4 border-b border-[#e5e5e5]">
+      <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
+        <div className="p-4 border-b border-ministry-border-default">
           <div className="flex gap-4 flex-wrap items-center">
             <div className="flex-1 min-w-[200px]">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#605e5c]" size={16} />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-ministry-text-secondary" size={16} />
                 <Input
                   placeholder="Search tasks..."
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                   data-testid="search-tasks-input"
-                  className="pl-10 border-[#e5e5e5] rounded-lg"
+                  className="pl-10 border-ministry-border-default rounded-ministry"
                 />
               </div>
             </div>
             <Select value={filters.status || "all"} onValueChange={(value) => setFilters({ ...filters, status: value === "all" ? "" : value })}>
-              <SelectTrigger className="w-[150px] border-[#e5e5e5] rounded-lg" data-testid="filter-status">
+              <SelectTrigger className="w-[150px] border-ministry-border-default rounded-ministry" data-testid="filter-status">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -173,7 +173,7 @@ export default function Tasks() {
               </SelectContent>
             </Select>
             <Select value={filters.content_type || "all"} onValueChange={(value) => setFilters({ ...filters, content_type: value === "all" ? "" : value })}>
-              <SelectTrigger className="w-[180px] border-[#e5e5e5] rounded-lg" data-testid="filter-content-type">
+              <SelectTrigger className="w-[180px] border-ministry-border-default rounded-ministry" data-testid="filter-content-type">
                 <SelectValue placeholder="Content Type" />
               </SelectTrigger>
               <SelectContent>
@@ -184,7 +184,7 @@ export default function Tasks() {
               </SelectContent>
             </Select>
             <Select value={filters.avatar || "all"} onValueChange={(value) => setFilters({ ...filters, avatar: value === "all" ? "" : value })}>
-              <SelectTrigger className="w-[150px] border-[#e5e5e5] rounded-lg" data-testid="filter-avatar">
+              <SelectTrigger className="w-[150px] border-ministry-border-default rounded-ministry" data-testid="filter-avatar">
                 <SelectValue placeholder="Avatar" />
               </SelectTrigger>
               <SelectContent>
@@ -199,7 +199,7 @@ export default function Tasks() {
                 variant="outline"
                 onClick={clearFilters}
                 data-testid="clear-filters-button"
-                className="border-[#e5e5e5] rounded-lg text-[#605e5c] hover:bg-[#f3f2f1]"
+                className="border-ministry-border-default rounded-ministry text-ministry-text-secondary hover:bg-ministry-bg-tertiary"
                 size="sm"
               >
                 <X size={16} className="mr-2" />
@@ -210,20 +210,20 @@ export default function Tasks() {
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-[#605e5c]">Loading...</div>
+          <div className="p-8 text-center text-ministry-text-secondary">Loading...</div>
         ) : fetching ? (
-          <div className="p-8 text-center text-[#605e5c]">Updating...</div>
+          <div className="p-8 text-center text-ministry-text-secondary">Updating...</div>
         ) : tasks.length === 0 ? (
-          <div className="p-8 text-center text-[#605e5c]">No tasks found</div>
+          <div className="p-8 text-center text-ministry-text-secondary">No tasks found</div>
         ) : (
           <Table>
             <TableHeader>
-              <TableRow className="border-[#e5e5e5]">
-                <TableHead className="text-[#323130] font-semibold">Title</TableHead>
-                <TableHead className="text-[#323130] font-semibold">Content Type</TableHead>
-                <TableHead className="text-[#323130] font-semibold">Avatar</TableHead>
-                <TableHead className="text-[#323130] font-semibold">Status</TableHead>
-                <TableHead className="text-[#323130] font-semibold">Publish Date</TableHead>
+              <TableRow className="border-ministry-border-default">
+                <TableHead className="text-ministry-text-primary font-semibold">Title</TableHead>
+                <TableHead className="text-ministry-text-primary font-semibold">Content Type</TableHead>
+                <TableHead className="text-ministry-text-primary font-semibold">Avatar</TableHead>
+                <TableHead className="text-ministry-text-primary font-semibold">Status</TableHead>
+                <TableHead className="text-ministry-text-primary font-semibold">Publish Date</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -232,17 +232,17 @@ export default function Tasks() {
                   key={task.id}
                   data-testid={`task-row-${task.id}`}
                   onClick={() => navigate(`/tasks/${task.id}`)}
-                  className="cursor-pointer hover:bg-[#f3f2f1] border-[#e5e5e5]"
+                  className="cursor-pointer hover:bg-ministry-bg-tertiary border-ministry-border-default"
                 >
-                  <TableCell className="font-medium text-[#323130]">{task.title}</TableCell>
-                  <TableCell className="text-[#605e5c]">{task.content_type}</TableCell>
-                  <TableCell className="text-[#605e5c]">{task.avatar}</TableCell>
+                  <TableCell className="font-medium text-ministry-text-primary">{task.title}</TableCell>
+                  <TableCell className="text-ministry-text-secondary">{task.content_type}</TableCell>
+                  <TableCell className="text-ministry-text-secondary">{task.avatar}</TableCell>
                   <TableCell>
                     <Badge className={`${statusColors[task.status]} rounded-md`}>
                       {task.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-[#605e5c]">
+                  <TableCell className="text-ministry-text-secondary">
                     {format(new Date(task.publish_datetime), 'MMM dd, yyyy HH:mm')}
                   </TableCell>
                 </TableRow>
