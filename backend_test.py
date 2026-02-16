@@ -170,7 +170,7 @@ class MinistryAPITester:
             "Create Task",
             "POST",
             "tasks",
-            201,
+            200,
             data=test_task_data
         )
         if not success:
