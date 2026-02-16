@@ -71,26 +71,26 @@ export default function ActivityLog() {
 
       <div className="bg-white rounded-lg border border-[#e5e5e5] shadow-sm">
         <div className="p-4 border-b border-[#e5e5e5]">
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center flex-wrap">
             {users.length > 0 && (
-              <Select value={filters.actor_id} onValueChange={(value) => setFilters({ ...filters, actor_id: value })}>
-                <SelectTrigger className="w-[200px] border-[#e5e5e5] rounded-lg">
+              <Select value={filters.actor_id || "all"} onValueChange={(value) => setFilters({ ...filters, actor_id: value === "all" ? "" : value })}>
+                <SelectTrigger className="w-[200px] border-[#e5e5e5] rounded-lg" data-testid="filter-user">
                   <SelectValue placeholder="Filter by user" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value=" ">All Users</SelectItem>
+                  <SelectItem value="all">All Users</SelectItem>
                   {users.map((user) => (
                     <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             )}
-            <Select value={filters.action} onValueChange={(value) => setFilters({ ...filters, action: value })}>
-              <SelectTrigger className="w-[200px] border-[#e5e5e5] rounded-lg">
+            <Select value={filters.action || "all"} onValueChange={(value) => setFilters({ ...filters, action: value === "all" ? "" : value })}>
+              <SelectTrigger className="w-[200px] border-[#e5e5e5] rounded-lg" data-testid="filter-action">
                 <SelectValue placeholder="Filter by action" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value=" ">All Actions</SelectItem>
+                <SelectItem value="all">All Actions</SelectItem>
                 <SelectItem value="CREATE">CREATE</SelectItem>
                 <SelectItem value="UPDATE">UPDATE</SelectItem>
                 <SelectItem value="DELETE">DELETE</SelectItem>
@@ -98,11 +98,25 @@ export default function ActivityLog() {
                 <SelectItem value="COMMENT">COMMENT</SelectItem>
               </SelectContent>
             </Select>
+            {hasActiveFilters && (
+              <Button
+                variant="outline"
+                onClick={clearFilters}
+                data-testid="clear-filters-button"
+                className="border-[#e5e5e5] rounded-lg text-[#605e5c] hover:bg-[#f3f2f1]"
+                size="sm"
+              >
+                <X size={16} className="mr-1" />
+                Clear Filters
+              </Button>
+            )}
           </div>
         </div>
 
         {loading ? (
           <div className="p-8 text-center text-[#605e5c]">Loading...</div>
+        ) : fetching ? (
+          <div className="p-8 text-center text-[#605e5c]">Updating...</div>
         ) : logs.length === 0 ? (
           <div className="p-8 text-center text-[#605e5c]">No activity logs found</div>
         ) : (
