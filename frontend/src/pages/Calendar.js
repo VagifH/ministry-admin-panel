@@ -153,7 +153,13 @@ export default function Calendar() {
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-ministry-text-secondary">Loading...</div>
+          <div className="p-4 grid grid-cols-7 gap-2">
+            {Array.from({ length: 35 }).map((_, i) => (
+              <CardSkeleton key={i} />
+            ))}
+          </div>
+        ) : error ? (
+          <ErrorState description={error} onRetry={fetchTasks} />
         ) : (
           <div className="p-4">
             <div className="grid grid-cols-7 gap-2 mb-2">
