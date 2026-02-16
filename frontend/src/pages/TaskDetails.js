@@ -92,10 +92,11 @@ export default function TaskDetails() {
 
   const handleSaveTask = async () => {
     if (!validateTask()) {
-      toast.error('Please fix the errors before saving');
+      showToast.error('Please fix the errors before saving');
       return;
     }
 
+    setSaving(true);
     try {
       const updateData = {
         title: editedTask.title,
@@ -106,22 +107,27 @@ export default function TaskDetails() {
         publish_datetime: editedTask.publish_datetime,
       };
       await axios.patch(`${API_URL}/tasks/${taskId}`, updateData);
-      toast.success('Task updated successfully');
+      showToast.success('Task updated successfully');
       fetchTask();
       fetchAuditLogs();
-    } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to update task');
+    } catch (err) {
+      showApiError(err, 'Failed to update task');
+    } finally {
+      setSaving(false);
     }
   };
 
   const handleStatusChange = async (newStatus) => {
+    setSaving(true);
     try {
       await axios.patch(`${API_URL}/tasks/${taskId}/status`, { status: newStatus });
-      toast.success(`Status changed to ${newStatus}`);
+      showToast.success(`Status changed to ${newStatus}`);
       fetchTask();
       fetchAuditLogs();
-    } catch (error) {
-      toast.error(error.response?.data?.detail || 'Failed to change status');
+    } catch (err) {
+      showApiError(err, 'Failed to change status');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -133,9 +139,9 @@ export default function TaskDetails() {
       setNewComment('');
       fetchComments();
       fetchAuditLogs();
-      toast.success('Comment added');
-    } catch (error) {
-      toast.error('Failed to add comment');
+      showToast.success('Comment added');
+    } catch (err) {
+      showApiError(err, 'Failed to add comment');
     }
   };
 
