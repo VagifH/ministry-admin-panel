@@ -132,6 +132,55 @@ class AuditLog(BaseModel):
     new_value: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+# ==================== VIDEO MODELS ====================
+
+class Video(BaseModel):
+    """Video metadata model - stores information about uploaded videos for tasks"""
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    task_id: str
+    filename: Optional[str] = None
+    original_filename: Optional[str] = None
+    file_size: Optional[int] = None  # bytes
+    mime_type: Optional[str] = None
+    duration: Optional[float] = None  # seconds
+    status: Literal["pending", "uploading", "processing", "ready", "failed"] = "pending"
+    error_message: Optional[str] = None
+    uploaded_by: str  # user id
+    uploaded_by_name: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class VideoCreate(BaseModel):
+    """Request model for initiating a video upload"""
+    task_id: str
+    original_filename: str
+    file_size: int
+    mime_type: str
+
+class VideoUpdate(BaseModel):
+    """Request model for updating video metadata"""
+    status: Optional[Literal["pending", "uploading", "processing", "ready", "failed"]] = None
+    filename: Optional[str] = None
+    duration: Optional[float] = None
+    error_message: Optional[str] = None
+
+class VideoResponse(BaseModel):
+    """Response model for video operations"""
+    id: str
+    task_id: str
+    filename: Optional[str] = None
+    original_filename: Optional[str] = None
+    file_size: Optional[int] = None
+    mime_type: Optional[str] = None
+    duration: Optional[float] = None
+    status: str
+    error_message: Optional[str] = None
+    uploaded_by: str
+    uploaded_by_name: str
+    created_at: datetime
+    updated_at: datetime
+
 class LoginRequest(BaseModel):
     email: str
     password: str
