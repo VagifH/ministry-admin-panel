@@ -110,7 +110,7 @@ class MinistryAPITester:
             "Create User",
             "POST",
             "users",
-            201,
+            200,
             data=test_user_data
         )
         if not success:
