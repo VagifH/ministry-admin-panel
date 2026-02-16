@@ -769,7 +769,7 @@ async def update_video_status(task_id: str, video_update: VideoUpdate, current_u
 
 @api_router.delete("/tasks/{task_id}/video", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_video(task_id: str, current_user: User = Depends(get_current_user)):
-    """Delete video record for a task"""
+    """Delete video record and file for a task"""
     # Find existing video
     video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
     if not video:
@@ -783,6 +783,16 @@ async def delete_video(task_id: str, current_user: User = Depends(get_current_us
     task = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if task and task.get("status") == "Published":
         raise HTTPException(status_code=400, detail="Cannot delete video from a published task")
+    
+    # Delete the actual file if it exists
+    if video.get("storage_provider") == "local" and video.get("storage_key"):
+        file_path = VIDEO_UPLOAD_DIR / video["storage_key"]
+        if file_path.exists():
+            file_path.unlink()
+        # Also try to remove the task directory if empty
+        task_dir = VIDEO_UPLOAD_DIR / task_id
+        if task_dir.exists() and not any(task_dir.iterdir()):
+            task_dir.rmdir()
     
     await db.videos.delete_one({"task_id": task_id})
     await log_audit(current_user.id, current_user.name, "DELETE", "Video", video["id"], video.get("original_filename"), None)
@@ -801,6 +811,121 @@ async def get_video_status(task_id: str, current_user: User = Depends(get_curren
         "status": video.get("status"),
         "error_message": video.get("error_message")
     }
+
+@api_router.post("/tasks/{task_id}/video/upload", response_model=VideoResponse)
+async def upload_video(task_id: str, file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
+    """Upload a video file for a task"""
+    import uuid
+    
+    # Check permissions - Admins and Editors can upload videos
+    if current_user.role not in ["Admin", "Editor"]:
+        raise HTTPException(status_code=403, detail="Only Admin and Editor roles can upload videos")
+    
+    # Verify task exists
+    task = await db.tasks.find_one({"id": task_id}, {"_id": 0})
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    
+    # Check task status - cannot upload to Published tasks
+    if task.get("status") == "Published":
+        raise HTTPException(status_code=400, detail="Cannot upload video to a published task")
+    
+    # Validate file type
+    if file.content_type not in ALLOWED_VIDEO_TYPES:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid file type. Only {', '.join(ALLOWED_VIDEO_TYPES)} allowed. Got: {file.content_type}"
+        )
+    
+    # Read file to check size (and for writing)
+    contents = await file.read()
+    file_size = len(contents)
+    
+    # Validate file size
+    if file_size > VIDEO_MAX_SIZE_BYTES:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"File too large. Maximum size is {VIDEO_MAX_SIZE_MB}MB. Got: {file_size / (1024*1024):.1f}MB"
+        )
+    
+    # Check if video already exists - if so, delete old file first
+    existing_video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
+    if existing_video:
+        # Delete old file if exists
+        if existing_video.get("storage_provider") == "local" and existing_video.get("storage_key"):
+            old_file_path = VIDEO_UPLOAD_DIR / existing_video["storage_key"]
+            if old_file_path.exists():
+                old_file_path.unlink()
+        # Delete old record
+        await db.videos.delete_one({"task_id": task_id})
+    
+    # Create directory structure
+    task_dir = VIDEO_UPLOAD_DIR / task_id
+    task_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Generate unique filename
+    video_id = str(uuid.uuid4())
+    file_extension = Path(file.filename).suffix.lower() or ".mp4"
+    stored_filename = f"{video_id}{file_extension}"
+    storage_key = f"{task_id}/{stored_filename}"
+    file_path = VIDEO_UPLOAD_DIR / storage_key
+    
+    try:
+        # Write file
+        async with aiofiles.open(file_path, 'wb') as f:
+            await f.write(contents)
+        
+        # Create video record
+        now = datetime.now(timezone.utc)
+        video_dict = {
+            "id": video_id,
+            "task_id": task_id,
+            "filename": stored_filename,
+            "original_filename": file.filename,
+            "file_size": file_size,
+            "mime_type": file.content_type,
+            "status": "ready",
+            "storage_provider": "local",
+            "storage_key": storage_key,
+            "uploaded_by": current_user.id,
+            "uploaded_by_name": current_user.name,
+            "created_at": now.isoformat(),
+            "updated_at": now.isoformat()
+        }
+        
+        await db.videos.insert_one(video_dict)
+        await log_audit(current_user.id, current_user.name, "UPLOAD", "Video", video_id, None, file.filename)
+        
+        video_dict['created_at'] = now
+        video_dict['updated_at'] = now
+        
+        return VideoResponse(**video_dict)
+        
+    except Exception as e:
+        # Clean up file if it was written
+        if file_path.exists():
+            file_path.unlink()
+        
+        # Create failed video record for tracking
+        now = datetime.now(timezone.utc)
+        video_dict = {
+            "id": video_id,
+            "task_id": task_id,
+            "original_filename": file.filename,
+            "file_size": file_size,
+            "mime_type": file.content_type,
+            "status": "failed",
+            "error_message": str(e),
+            "uploaded_by": current_user.id,
+            "uploaded_by_name": current_user.name,
+            "created_at": now.isoformat(),
+            "updated_at": now.isoformat()
+        }
+        
+        await db.videos.insert_one(video_dict)
+        await log_audit(current_user.id, current_user.name, "UPLOAD_FAILED", "Video", video_id, None, str(e))
+        
+        raise HTTPException(status_code=500, detail=f"Failed to save video: {str(e)}")
 
 # Include router
 app.include_router(api_router)
