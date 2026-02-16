@@ -177,27 +177,11 @@ export default function ActivityLog() {
           </div>
         </div>
 
-        {loading ? (
-          <div className="p-8 text-center text-ministry-text-secondary">Loading...</div>
-        ) : fetching ? (
-          <div className="p-8 text-center text-ministry-text-secondary">Updating...</div>
-        ) : logs.length === 0 ? (
-          <div className="p-8 text-center text-ministry-text-secondary">No activity logs found</div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow className="border-ministry-border-default">
-                <TableHead className="text-ministry-text-primary font-semibold">User</TableHead>
-                <TableHead className="text-ministry-text-primary font-semibold">Action</TableHead>
-                <TableHead className="text-ministry-text-primary font-semibold">Object Type</TableHead>
-                <TableHead className="text-ministry-text-primary font-semibold">Details</TableHead>
-                <TableHead className="text-ministry-text-primary font-semibold">Timestamp</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {logs.map((log) => (
-                <TableRow key={log.id} data-testid={`activity-log-${log.id}`} className="border-ministry-border-default">
-                  <TableCell className="font-medium text-ministry-text-primary">{log.actor_name}</TableCell>
+        {renderContent()}
+      </div>
+    </div>
+  );
+}
                   <TableCell className="text-ministry-text-secondary">{log.action}</TableCell>
                   <TableCell className="text-ministry-text-secondary">{log.object_type}</TableCell>
                   <TableCell className="text-ministry-text-secondary max-w-xs truncate">
