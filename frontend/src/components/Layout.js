@@ -39,7 +39,7 @@ export default function Layout() {
                 key={item.path}
                 onClick={() => navigate(item.path)}
                 data-testid={`nav-${item.label.toLowerCase().replace(' ', '-')}`}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded text-sm mb-1 transition-colors ${
+                className={`w-full flex items-center gap-2 px-3 py-2 rounded text-sm mb-1 transition-colors ${
                   isActive
                     ? 'bg-[#f3f2f1] text-[#0078d4] font-medium'
                     : 'text-[#605e5c] hover:bg-[#f3f2f1]'
