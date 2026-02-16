@@ -1,23 +1,29 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { toast } from 'sonner';
+import { CardSkeleton } from '../components/ui/loading';
+import { ErrorState } from '../components/ui/empty-state';
+import { showApiError } from '../lib/toast';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchStats();
   }, []);
 
   const fetchStats = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await axios.get(`${API_URL}/dashboard/stats`);
       setStats(response.data);
-    } catch (error) {
-      toast.error('Failed to load dashboard stats');
+    } catch (err) {
+      setError('Failed to load dashboard stats');
+      showApiError(err, 'Failed to load dashboard stats');
     } finally {
       setLoading(false);
     }
@@ -41,7 +47,13 @@ export default function Dashboard() {
       </div>
 
       {loading ? (
-        <div className="text-ministry-text-secondary">Loading...</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </div>
+      ) : error ? (
+        <ErrorState description={error} onRetry={fetchStats} />
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
