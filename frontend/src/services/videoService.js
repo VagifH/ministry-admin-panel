@@ -270,9 +270,12 @@ export default {
   createVideoRecord,
   updateVideoStatus,
   deleteVideo,
+  uploadVideo,
+  validateVideoFile,
   canTaskBePublished,
   formatFileSize,
   formatDuration,
   VIDEO_STATUS,
-  VIDEO_STATUS_CONFIG
+  VIDEO_STATUS_CONFIG,
+  VIDEO_CONFIG
 };
