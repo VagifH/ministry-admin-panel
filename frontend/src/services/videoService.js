@@ -302,6 +302,8 @@ export default {
   createVideoRecord,
   updateVideoStatus,
   deleteVideo,
+  downloadVideo,
+  getVideoStreamUrl,
   uploadVideo,
   validateVideoFile,
   canTaskBePublished,
