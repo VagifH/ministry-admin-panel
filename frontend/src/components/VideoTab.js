@@ -1,26 +1,51 @@
 /**
  * VideoTab Component
- * Displays video status and metadata for a task
- * Phase 3: Connected to real state, no upload UI yet
+ * Full video upload UI with drag-drop, progress, and status management
+ * Phase 4: Complete upload implementation
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Video, Clock, HardDrive, FileType, User, AlertCircle, RefreshCw } from 'lucide-react';
+import { Progress } from '../components/ui/progress';
+import { 
+  Video, 
+  Clock, 
+  HardDrive, 
+  FileType, 
+  User, 
+  AlertCircle, 
+  RefreshCw,
+  Upload,
+  X,
+  Trash2,
+  CheckCircle2
+} from 'lucide-react';
 import { 
   getTaskVideo, 
+  uploadVideo,
+  deleteVideo,
+  validateVideoFile,
   VIDEO_STATUS, 
   VIDEO_STATUS_CONFIG,
+  VIDEO_CONFIG,
   formatFileSize,
   formatDuration 
 } from '../services/videoService';
-import { showApiError } from '../lib/toast';
+import { showToast, showApiError } from '../lib/toast';
 
 export default function VideoTab({ taskId, taskStatus }) {
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [dragActive, setDragActive] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const isReadOnly = ['Scheduled', 'Published'].includes(taskStatus);
+  const canModify = !isReadOnly && !uploading && !deleting;
 
   useEffect(() => {
     fetchVideo();
@@ -40,6 +65,91 @@ export default function VideoTab({ taskId, taskStatus }) {
     }
   };
 
+  const handleFileSelect = useCallback(async (file) => {
+    if (!file || !canModify) return;
+
+    // Validate file
+    const validation = validateVideoFile(file);
+    if (!validation.valid) {
+      showToast(validation.error, 'error');
+      return;
+    }
+
+    setUploading(true);
+    setUploadProgress(0);
+    setError(null);
+
+    try {
+      const result = await uploadVideo(taskId, file, (progress) => {
+        setUploadProgress(progress);
+      });
+      setVideo(result);
+      showToast('Video uploaded successfully', 'success');
+    } catch (err) {
+      const errorMessage = err.response?.data?.detail || err.message || 'Upload failed';
+      setError(errorMessage);
+      showApiError(err, 'Failed to upload video');
+    } finally {
+      setUploading(false);
+      setUploadProgress(0);
+    }
+  }, [taskId, canModify]);
+
+  const handleDrag = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!canModify) return;
+    
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  }, [canModify]);
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (!canModify) return;
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileSelect(e.dataTransfer.files[0]);
+    }
+  }, [canModify, handleFileSelect]);
+
+  const handleInputChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFileSelect(e.target.files[0]);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!canModify || !video) return;
+
+    if (!window.confirm('Are you sure you want to delete this video? This action cannot be undone.')) {
+      return;
+    }
+
+    setDeleting(true);
+    try {
+      await deleteVideo(taskId);
+      setVideo(null);
+      showToast('Video deleted successfully', 'success');
+    } catch (err) {
+      showApiError(err, 'Failed to delete video');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleReplace = () => {
+    if (canModify) {
+      fileInputRef.current?.click();
+    }
+  };
+
   // Loading state
   if (loading) {
     return (
@@ -50,79 +160,182 @@ export default function VideoTab({ taskId, taskStatus }) {
     );
   }
 
-  // Error state
-  if (error) {
+  // Upload in progress state
+  if (uploading) {
     return (
-      <div className="text-center py-12 bg-ministry-bg-tertiary rounded-ministry">
-        <AlertCircle className="mx-auto text-ministry-status-error mb-2" size={32} />
-        <p className="text-ministry-status-error mb-4">{error}</p>
-        <Button 
-          onClick={fetchVideo}
-          variant="outline"
-          className="border-ministry-border-default rounded-ministry"
-        >
-          <RefreshCw size={16} className="mr-2" />
-          Retry
-        </Button>
+      <div className="space-y-6" data-testid="video-uploading">
+        <div className="bg-ministry-bg-tertiary border border-ministry-border-default rounded-ministry p-8">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-ministry-brand-primary/10 mb-4">
+              <Upload className="text-ministry-brand-primary animate-pulse" size={32} />
+            </div>
+            <h3 className="text-lg font-medium text-ministry-text-primary mb-2">
+              Uploading Video
+            </h3>
+            <p className="text-sm text-ministry-text-secondary mb-6">
+              Please wait while your video is being uploaded...
+            </p>
+            <div className="max-w-md mx-auto">
+              <Progress value={uploadProgress} className="h-2 mb-2" />
+              <p className="text-sm text-ministry-text-muted">
+                {uploadProgress}% complete
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
-  // No video state
+  // No video state - show upload UI
   if (!video) {
-    const isReadOnly = ['Scheduled', 'Published'].includes(taskStatus);
-    
     return (
-      <div className="text-center py-12 bg-ministry-bg-tertiary rounded-ministry" data-testid="video-empty-state">
-        <Video className="mx-auto text-ministry-text-secondary mb-4" size={48} />
-        <p className="text-ministry-text-secondary mb-2">No video uploaded yet</p>
-        <p className="text-sm text-ministry-text-muted mb-4">
-          A video is required before this task can be published
-        </p>
-        <Button 
-          disabled={isReadOnly}
-          data-testid="upload-video-button"
-          className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry disabled:opacity-50"
+      <div className="space-y-6" data-testid="video-empty-state">
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="video/mp4"
+          onChange={handleInputChange}
+          className="hidden"
+          data-testid="video-file-input"
+        />
+
+        {/* Drop zone */}
+        <div
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+          className={`
+            relative border-2 border-dashed rounded-ministry p-12 text-center transition-all
+            ${dragActive 
+              ? 'border-ministry-brand-primary bg-ministry-brand-primary/5' 
+              : 'border-ministry-border-default bg-ministry-bg-tertiary hover:border-ministry-border-hover'
+            }
+            ${!canModify ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+          `}
+          onClick={() => canModify && fileInputRef.current?.click()}
+          data-testid="video-drop-zone"
         >
-          <Video size={16} className="mr-2" />
-          {isReadOnly ? 'Upload Disabled (Task Finalized)' : 'Upload Video (Coming Soon)'}
-        </Button>
-        {isReadOnly && (
-          <p className="text-xs text-ministry-text-muted mt-2">
-            Videos cannot be modified after a task is scheduled or published
-          </p>
+          <div className="flex flex-col items-center">
+            <div className={`
+              inline-flex items-center justify-center w-16 h-16 rounded-full mb-4
+              ${dragActive ? 'bg-ministry-brand-primary/20' : 'bg-ministry-bg-secondary'}
+            `}>
+              <Video className={dragActive ? 'text-ministry-brand-primary' : 'text-ministry-text-secondary'} size={32} />
+            </div>
+            
+            <h3 className="text-lg font-medium text-ministry-text-primary mb-2">
+              {dragActive ? 'Drop video here' : 'Upload Video'}
+            </h3>
+            
+            <p className="text-sm text-ministry-text-secondary mb-4">
+              {isReadOnly 
+                ? 'Video upload is disabled for finalized tasks'
+                : 'Drag and drop your video here, or click to browse'
+              }
+            </p>
+
+            {!isReadOnly && (
+              <>
+                <Button
+                  disabled={!canModify}
+                  className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry mb-4"
+                  data-testid="upload-video-button"
+                >
+                  <Upload size={16} className="mr-2" />
+                  Select Video
+                </Button>
+
+                <div className="text-xs text-ministry-text-muted space-y-1">
+                  <p>Accepted format: MP4</p>
+                  <p>Maximum size: {VIDEO_CONFIG.MAX_SIZE_MB}MB</p>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Drag overlay */}
+          {dragActive && canModify && (
+            <div className="absolute inset-0 bg-ministry-brand-primary/10 rounded-ministry flex items-center justify-center">
+              <div className="bg-white rounded-ministry p-4 shadow-lg">
+                <Upload className="text-ministry-brand-primary mx-auto mb-2" size={24} />
+                <p className="text-sm font-medium text-ministry-brand-primary">Release to upload</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-ministry p-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="text-ministry-status-rejected mt-0.5" size={20} />
+              <div className="flex-1">
+                <p className="text-sm text-ministry-status-rejected">{error}</p>
+                <Button
+                  onClick={() => setError(null)}
+                  variant="link"
+                  className="text-ministry-status-rejected p-0 h-auto text-sm"
+                >
+                  Dismiss
+                </Button>
+              </div>
+            </div>
+          </div>
         )}
+
+        {/* Info message */}
+        <div className="bg-ministry-bg-secondary border border-ministry-border-default rounded-ministry p-4">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="text-ministry-brand-primary mt-0.5" size={20} />
+            <p className="text-sm text-ministry-text-secondary">
+              A video is required before this task can be published. Upload a video to continue.
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
 
-  // Video exists - show metadata
+  // Video exists - show metadata and actions
   const statusConfig = VIDEO_STATUS_CONFIG[video.status] || VIDEO_STATUS_CONFIG[VIDEO_STATUS.PENDING];
-  const isReadOnly = ['Scheduled', 'Published'].includes(taskStatus);
+  const isReady = video.status === VIDEO_STATUS.READY;
+  const isFailed = video.status === VIDEO_STATUS.FAILED;
 
   return (
     <div className="space-y-6" data-testid="video-details">
+      {/* Hidden file input for replace */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="video/mp4"
+        onChange={handleInputChange}
+        className="hidden"
+      />
+
       {/* Status Banner */}
       <div className={`p-4 rounded-ministry ${
-        video.status === VIDEO_STATUS.READY 
+        isReady 
           ? 'bg-green-50 border border-green-200' 
-          : video.status === VIDEO_STATUS.FAILED 
+          : isFailed 
             ? 'bg-red-50 border border-red-200'
             : 'bg-ministry-bg-tertiary border border-ministry-border-default'
       }`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Video size={24} className={
-              video.status === VIDEO_STATUS.READY 
-                ? 'text-ministry-status-published' 
-                : video.status === VIDEO_STATUS.FAILED 
-                  ? 'text-ministry-status-rejected'
-                  : 'text-ministry-text-secondary'
-            } />
+            {isReady ? (
+              <CheckCircle2 className="text-ministry-status-published" size={24} />
+            ) : isFailed ? (
+              <AlertCircle className="text-ministry-status-rejected" size={24} />
+            ) : (
+              <Video className="text-ministry-text-secondary" size={24} />
+            )}
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-medium text-ministry-text-primary">Video Status</span>
-                <Badge className={`${statusConfig.color} text-white rounded-md`}>
+                <Badge className={`${statusConfig.color} text-white rounded-md`} data-testid="video-status-badge">
                   {statusConfig.label}
                 </Badge>
               </div>
@@ -143,11 +356,23 @@ export default function VideoTab({ taskId, taskStatus }) {
         </div>
         
         {/* Error message for failed videos */}
-        {video.status === VIDEO_STATUS.FAILED && video.error_message && (
+        {isFailed && video.error_message && (
           <div className="mt-3 p-3 bg-red-100 rounded-ministry">
             <div className="flex items-start gap-2">
               <AlertCircle size={16} className="text-ministry-status-rejected mt-0.5" />
-              <p className="text-sm text-ministry-status-rejected">{video.error_message}</p>
+              <div className="flex-1">
+                <p className="text-sm text-ministry-status-rejected">{video.error_message}</p>
+                {canModify && (
+                  <Button
+                    onClick={handleReplace}
+                    variant="link"
+                    className="text-ministry-status-rejected p-0 h-auto text-sm mt-1"
+                    data-testid="retry-upload-button"
+                  >
+                    Try again
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -217,21 +442,35 @@ export default function VideoTab({ taskId, taskStatus }) {
       {!isReadOnly && (
         <div className="flex gap-3">
           <Button 
+            onClick={handleReplace}
+            disabled={!canModify}
             variant="outline"
-            disabled
             className="border-ministry-border-default rounded-ministry"
             data-testid="replace-video-button"
           >
-            Replace Video (Coming Soon)
+            <Upload size={16} className="mr-2" />
+            Replace Video
           </Button>
           <Button 
+            onClick={handleDelete}
+            disabled={!canModify}
             variant="outline"
-            disabled
-            className="border-ministry-status-rejected text-ministry-status-rejected rounded-ministry"
+            className="border-ministry-status-rejected text-ministry-status-rejected hover:bg-red-50 rounded-ministry"
             data-testid="delete-video-button"
           >
-            Delete Video (Coming Soon)
+            {deleting ? (
+              <RefreshCw size={16} className="mr-2 animate-spin" />
+            ) : (
+              <Trash2 size={16} className="mr-2" />
+            )}
+            {deleting ? 'Deleting...' : 'Remove Video'}
           </Button>
+        </div>
+      )}
+
+      {isReadOnly && (
+        <div className="text-sm text-ministry-text-muted">
+          Video cannot be modified after a task is scheduled or published.
         </div>
       )}
     </div>
