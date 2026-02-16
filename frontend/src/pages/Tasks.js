@@ -202,7 +202,7 @@ export default function Tasks() {
                 className="border-[#e5e5e5] rounded-lg text-[#605e5c] hover:bg-[#f3f2f1]"
                 size="sm"
               >
-                <X size={16} className="mr-1" />
+                <X size={16} className="mr-2" />
                 Clear Filters
               </Button>
             )}
