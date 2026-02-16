@@ -36,14 +36,14 @@ class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str
     name: str
-    email: EmailStr
+    email: str
     role: Literal["Admin", "Editor", "Approver"]
     is_active: bool = True
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class UserCreate(BaseModel):
     name: str
-    email: EmailStr
+    email: str
     password: str
     role: Literal["Admin", "Editor", "Approver"]
     is_active: bool = True
