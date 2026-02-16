@@ -282,47 +282,13 @@ export default function Tasks() {
           </div>
         </div>
 
-        {loading ? (
-          <div className="p-8 text-center text-ministry-text-secondary">Loading...</div>
-        ) : fetching ? (
-          <div className="p-8 text-center text-ministry-text-secondary">Updating...</div>
-        ) : tasks.length === 0 ? (
-          <div className="p-8 text-center text-ministry-text-secondary">No tasks found</div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow className="border-ministry-border-default">
-                <TableHead className="text-ministry-text-primary font-semibold">Title</TableHead>
-                <TableHead className="text-ministry-text-primary font-semibold">Content Type</TableHead>
-                <TableHead className="text-ministry-text-primary font-semibold">Avatar</TableHead>
-                <TableHead className="text-ministry-text-primary font-semibold">Status</TableHead>
-                <TableHead className="text-ministry-text-primary font-semibold">Publish Date</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {tasks.map((task) => (
-                <TableRow
-                  key={task.id}
-                  data-testid={`task-row-${task.id}`}
-                  onClick={() => navigate(`/tasks/${task.id}`)}
-                  className="cursor-pointer hover:bg-ministry-bg-tertiary border-ministry-border-default"
-                >
-                  <TableCell className="font-medium text-ministry-text-primary">{task.title}</TableCell>
-                  <TableCell className="text-ministry-text-secondary">{task.content_type}</TableCell>
-                  <TableCell className="text-ministry-text-secondary">{task.avatar}</TableCell>
-                  <TableCell>
-                    <Badge className={`${statusColors[task.status]} rounded-md`}>
-                      {task.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-ministry-text-secondary">
-                    {format(new Date(task.publish_datetime), 'MMM dd, yyyy HH:mm')}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        {fetching && !loading && (
+          <div className="absolute inset-0 bg-ministry-bg-secondary/50 flex items-center justify-center">
+            <div className="text-ministry-text-secondary">Updating...</div>
+          </div>
         )}
+
+        {renderContent()}
       </div>
 
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
