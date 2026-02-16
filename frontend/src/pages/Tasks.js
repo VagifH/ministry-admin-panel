@@ -334,7 +334,8 @@ export default function Tasks() {
                   value={newTask.publish_datetime}
                   onChange={(e) => setNewTask({ ...newTask, publish_datetime: e.target.value })}
                   data-testid="task-publish-datetime-input"
-                  className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg max-w-[360px]"
+                  className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg w-[320px] max-w-[340px] pr-3"
+                  style={{ colorScheme: 'light' }}
                 />
                 {errors.publish_datetime && <p className="text-xs text-[#d13438] mt-1">{errors.publish_datetime}</p>}
               </div>
