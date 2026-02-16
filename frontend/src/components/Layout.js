@@ -24,10 +24,10 @@ export default function Layout() {
   };
 
   return (
-    <div className="flex h-screen bg-[#fafafa]">
-      <aside className="w-56 bg-white border-r border-[#e5e5e5] flex flex-col">
-        <div className="p-4 border-b border-[#e5e5e5]">
-          <h1 className="text-lg font-semibold text-[#323130]">Ministry Panel</h1>
+    <div className="flex h-screen bg-ministry-bg-primary">
+      <aside className="w-56 bg-ministry-bg-secondary border-r border-ministry-border-default flex flex-col">
+        <div className="p-4 border-b border-ministry-border-default">
+          <h1 className="text-lg font-semibold text-ministry-text-primary">Ministry Panel</h1>
         </div>
         
         <nav className="flex-1 p-2">
@@ -39,10 +39,10 @@ export default function Layout() {
                 key={item.path}
                 onClick={() => navigate(item.path)}
                 data-testid={`nav-${item.label.toLowerCase().replace(' ', '-')}`}
-                className={`w-full flex items-center gap-2 px-3 py-2 rounded text-sm mb-1 transition-colors ${
+                className={`w-full flex items-center gap-2 px-3 py-2 rounded-ministry text-sm mb-1 transition-colors ${
                   isActive
-                    ? 'bg-[#f3f2f1] text-[#0078d4] font-medium'
-                    : 'text-[#605e5c] hover:bg-[#f3f2f1]'
+                    ? 'bg-ministry-bg-tertiary text-ministry-brand-primary font-medium'
+                    : 'text-ministry-text-secondary hover:bg-ministry-bg-tertiary'
                 }`}
               >
                 <Icon size={18} />
@@ -52,15 +52,15 @@ export default function Layout() {
           })}
         </nav>
 
-        <div className="p-4 border-t border-[#e5e5e5]">
-          <div className="text-sm text-[#605e5c] mb-2">
-            <div className="font-medium text-[#323130]">{user?.name}</div>
+        <div className="p-4 border-t border-ministry-border-default">
+          <div className="text-sm text-ministry-text-secondary mb-2">
+            <div className="font-medium text-ministry-text-primary">{user?.name}</div>
             <div className="text-xs">{user?.role}</div>
           </div>
           <button
             onClick={handleLogout}
             data-testid="logout-button"
-            className="w-full flex items-center gap-2 px-3 py-2 rounded text-sm text-[#605e5c] hover:bg-[#f3f2f1] transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-ministry text-sm text-ministry-text-secondary hover:bg-ministry-bg-tertiary transition-colors"
           >
             <LogOut size={16} />
             <span>Sign out</span>
