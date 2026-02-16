@@ -289,27 +289,27 @@ export default function Settings() {
       </Dialog>
 
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="bg-white rounded-lg">
-          <DialogHeader>
+        <DialogContent className="max-w-[560px] bg-white rounded-lg p-0">
+          <DialogHeader className="px-6 pt-6 pb-4">
             <DialogTitle className="text-xl font-semibold text-[#323130]">Edit User</DialogTitle>
           </DialogHeader>
           
-          <div className="space-y-4 py-4">
+          <div className="px-6 pb-4 space-y-4">
             <div>
-              <Label htmlFor="edit-name" className="text-[#323130]">Name *</Label>
+              <Label htmlFor="edit-name" className="text-[#323130] text-sm font-medium">Name *</Label>
               <Input
                 id="edit-name"
                 value={editUser.name}
                 onChange={(e) => setEditUser({ ...editUser, name: e.target.value })}
                 data-testid="edit-user-name-input"
-                className="mt-1 border-[#e5e5e5] rounded-lg"
+                className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg"
               />
             </div>
 
             <div>
-              <Label className="text-[#323130]">Role *</Label>
+              <Label className="text-[#323130] text-sm font-medium">Role *</Label>
               <Select value={editUser.role} onValueChange={(value) => setEditUser({ ...editUser, role: value })}>
-                <SelectTrigger className="mt-1 border-[#e5e5e5] rounded-lg">
+                <SelectTrigger className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -321,9 +321,9 @@ export default function Settings() {
             </div>
 
             <div>
-              <Label className="text-[#323130]">Status *</Label>
+              <Label className="text-[#323130] text-sm font-medium">Status *</Label>
               <Select value={editUser.is_active.toString()} onValueChange={(value) => setEditUser({ ...editUser, is_active: value === 'true' })}>
-                <SelectTrigger className="mt-1 border-[#e5e5e5] rounded-lg">
+                <SelectTrigger className="mt-1.5 h-9 border-[#e5e5e5] rounded-lg">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -334,18 +334,18 @@ export default function Settings() {
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="px-6 py-4 border-t border-[#e5e5e5] flex justify-end gap-2">
             <Button
               variant="outline"
               onClick={() => setShowEditDialog(false)}
-              className="border-[#e5e5e5] rounded-lg"
+              className="h-9 border-[#e5e5e5] rounded-lg"
             >
               Cancel
             </Button>
             <Button
               onClick={handleEditUser}
               data-testid="submit-edit-user-button"
-              className="bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg"
+              className="h-9 bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg"
             >
               Save Changes
             </Button>
