@@ -305,16 +305,18 @@ export default function Settings() {
                 setShowCreateDialog(false);
                 setErrors({});
               }}
+              disabled={submitting}
               className="h-9 border-ministry-border-default rounded-ministry"
             >
               Cancel
             </Button>
             <Button
               onClick={handleCreateUser}
+              disabled={submitting}
               data-testid="submit-create-user-button"
-              className="h-9 bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry"
+              className="h-9 bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry disabled:opacity-50"
             >
-              Create User
+              {submitting ? 'Creating...' : 'Create User'}
             </Button>
           </DialogFooter>
         </DialogContent>
