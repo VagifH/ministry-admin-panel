@@ -16,13 +16,13 @@ import { format } from 'date-fns';
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 const statusColors = {
-  Draft: 'bg-[#8a8886] text-white',
-  Submitted: 'bg-[#0078d4] text-white',
-  Producing: 'bg-[#8764b8] text-white',
-  Review: 'bg-[#ffaa44] text-white',
-  Scheduled: 'bg-[#107c10] text-white',
-  Published: 'bg-[#498205] text-white',
-  Rejected: 'bg-[#d13438] text-white',
+  Draft: 'bg-ministry-status-draft text-white',
+  Submitted: 'bg-ministry-status-submitted text-white',
+  Producing: 'bg-ministry-status-producing text-white',
+  Review: 'bg-ministry-status-review text-white',
+  Scheduled: 'bg-ministry-status-scheduled text-white',
+  Published: 'bg-ministry-status-published text-white',
+  Rejected: 'bg-ministry-status-rejected text-white',
 };
 
 export default function TaskDetails() {
@@ -169,11 +169,11 @@ export default function TaskDetails() {
   };
 
   if (loading) {
-    return <div className="p-8 text-[#605e5c]">Loading...</div>;
+    return <div className="p-8 text-ministry-text-secondary">Loading...</div>;
   }
 
   if (!task) {
-    return <div className="p-8 text-[#605e5c]">Task not found</div>;
+    return <div className="p-8 text-ministry-text-secondary">Task not found</div>;
   }
 
   const isReadOnly = !canEdit();
@@ -185,16 +185,16 @@ export default function TaskDetails() {
         variant="ghost"
         onClick={() => navigate('/tasks')}
         data-testid="back-to-tasks-button"
-        className="mb-4 text-[#605e5c] hover:bg-[#f3f2f1] rounded-lg"
+        className="mb-4 text-ministry-text-secondary hover:bg-ministry-bg-tertiary rounded-ministry"
       >
         <ArrowLeft size={16} className="mr-2" />
         Back to Tasks
       </Button>
 
-      <div className="bg-white rounded-lg border border-[#e5e5e5] shadow-sm">
-        <div className="p-6 border-b border-[#e5e5e5] flex items-center justify-between">
+      <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
+        <div className="p-6 border-b border-ministry-border-default flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-semibold text-[#323130]">{task.title}</h1>
+            <h1 className="text-2xl font-semibold text-ministry-text-primary">{task.title}</h1>
             <Badge className={`${statusColors[task.status]} rounded-md`} data-testid="task-status-badge">
               {task.status}
             </Badge>
@@ -205,7 +205,7 @@ export default function TaskDetails() {
                 key={action.status}
                 onClick={() => handleStatusChange(action.status)}
                 data-testid={`status-action-${action.status.toLowerCase()}`}
-                className="bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg"
+                className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry"
                 size="sm"
               >
                 {action.label}
@@ -215,41 +215,41 @@ export default function TaskDetails() {
         </div>
 
         <Tabs defaultValue="details" className="p-6">
-          <TabsList className="bg-[#f3f2f1] rounded-lg">
-            <TabsTrigger value="details" data-testid="tab-details" className="rounded-lg">Details</TabsTrigger>
-            <TabsTrigger value="comments" data-testid="tab-comments" className="rounded-lg">Comments</TabsTrigger>
-            <TabsTrigger value="activity" data-testid="tab-activity" className="rounded-lg">Activity</TabsTrigger>
-            <TabsTrigger value="video" data-testid="tab-video" className="rounded-lg">Video</TabsTrigger>
+          <TabsList className="bg-ministry-bg-tertiary rounded-ministry">
+            <TabsTrigger value="details" data-testid="tab-details" className="rounded-ministry">Details</TabsTrigger>
+            <TabsTrigger value="comments" data-testid="tab-comments" className="rounded-ministry">Comments</TabsTrigger>
+            <TabsTrigger value="activity" data-testid="tab-activity" className="rounded-ministry">Activity</TabsTrigger>
+            <TabsTrigger value="video" data-testid="tab-video" className="rounded-ministry">Video</TabsTrigger>
           </TabsList>
 
           <TabsContent value="details" className="space-y-4 mt-6">
             {isReadOnly && (
-              <div className="bg-[#fff4ce] border border-[#ffaa44] text-[#323130] p-3 rounded-lg text-sm">
+              <div className="bg-ministry-brand-light border border-ministry-status-review text-ministry-text-primary p-3 rounded-ministry text-sm">
                 This task is read-only. {user?.role === 'Approver' ? 'Approvers cannot edit task fields.' : 'Tasks cannot be edited once Scheduled or Published.'}
               </div>
             )}
 
             <div>
-              <Label className="text-[#323130]">Title *</Label>
+              <Label className="text-ministry-text-primary">Title *</Label>
               <Input
                 value={editedTask.title}
                 onChange={(e) => setEditedTask({ ...editedTask, title: e.target.value })}
                 disabled={isReadOnly}
                 data-testid="edit-task-title-input"
-                className="mt-1 border-[#e5e5e5] rounded-lg"
+                className="mt-1 border-ministry-border-default rounded-ministry"
               />
-              {errors.title && <p className="text-xs text-[#d13438] mt-1">{errors.title}</p>}
+              {errors.title && <p className="text-xs text-ministry-status-error mt-1">{errors.title}</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-[#323130]">Content Type *</Label>
+                <Label className="text-ministry-text-primary">Content Type *</Label>
                 <Select
                   value={editedTask.content_type}
                   onValueChange={(value) => setEditedTask({ ...editedTask, content_type: value })}
                   disabled={isReadOnly}
                 >
-                  <SelectTrigger className="mt-1 border-[#e5e5e5] rounded-lg">
+                  <SelectTrigger className="mt-1 border-ministry-border-default rounded-ministry">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -261,13 +261,13 @@ export default function TaskDetails() {
               </div>
 
               <div>
-                <Label className="text-[#323130]">Avatar *</Label>
+                <Label className="text-ministry-text-primary">Avatar *</Label>
                 <Select
                   value={editedTask.avatar}
                   onValueChange={(value) => setEditedTask({ ...editedTask, avatar: value })}
                   disabled={isReadOnly}
                 >
-                  <SelectTrigger className="mt-1 border-[#e5e5e5] rounded-lg">
+                  <SelectTrigger className="mt-1 border-ministry-border-default rounded-ministry">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -280,38 +280,38 @@ export default function TaskDetails() {
             </div>
 
             <div>
-              <Label className="text-[#323130]">Script * (min 20 characters)</Label>
+              <Label className="text-ministry-text-primary">Script * (min 20 characters)</Label>
               <Textarea
                 value={editedTask.script}
                 onChange={(e) => setEditedTask({ ...editedTask, script: e.target.value })}
                 disabled={isReadOnly}
                 data-testid="edit-task-script-input"
                 rows={8}
-                className="mt-1 border-[#e5e5e5] rounded-lg"
+                className="mt-1 border-ministry-border-default rounded-ministry"
               />
-              {errors.script && <p className="text-xs text-[#d13438] mt-1">{errors.script}</p>}
+              {errors.script && <p className="text-xs text-ministry-status-error mt-1">{errors.script}</p>}
             </div>
 
             <div>
-              <Label className="text-[#323130]">Notes</Label>
+              <Label className="text-ministry-text-primary">Notes</Label>
               <Textarea
                 value={editedTask.notes || ''}
                 onChange={(e) => setEditedTask({ ...editedTask, notes: e.target.value })}
                 disabled={isReadOnly}
                 rows={4}
-                className="mt-1 border-[#e5e5e5] rounded-lg"
+                className="mt-1 border-ministry-border-default rounded-ministry"
               />
             </div>
 
             <div>
-              <Label className="text-[#323130]">Publish Date & Time *</Label>
+              <Label className="text-ministry-text-primary">Publish Date & Time *</Label>
               <Input
                 type="datetime-local"
                 value={editedTask.publish_datetime ? new Date(editedTask.publish_datetime).toISOString().slice(0, 16) : ''}
                 onChange={(e) => setEditedTask({ ...editedTask, publish_datetime: e.target.value })}
                 disabled={isReadOnly}
                 data-testid="edit-task-publish-datetime-input"
-                className="mt-1 border-[#e5e5e5] rounded-lg w-[320px] max-w-[340px] h-9 pr-3"
+                className="mt-1 border-ministry-border-default rounded-ministry w-[320px] max-w-[340px] h-9 pr-3"
                 style={{ colorScheme: 'light' }}
               />
             </div>
@@ -320,7 +320,7 @@ export default function TaskDetails() {
               <Button
                 onClick={handleSaveTask}
                 data-testid="save-task-button"
-                className="bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg"
+                className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry"
               >
                 <Save size={16} className="mr-2" />
                 Save Changes
@@ -336,30 +336,30 @@ export default function TaskDetails() {
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   data-testid="add-comment-input"
-                  className="border-[#e5e5e5] rounded-lg"
+                  className="border-ministry-border-default rounded-ministry"
                 />
                 <Button
                   onClick={handleAddComment}
                   data-testid="submit-comment-button"
-                  className="bg-[#0078d4] hover:bg-[#106ebe] text-white rounded-lg"
+                  className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry"
                 >
                   <Send size={16} />
                 </Button>
               </div>
 
               {comments.length === 0 ? (
-                <div className="text-center text-[#605e5c] py-8">No comments yet</div>
+                <div className="text-center text-ministry-text-secondary py-8">No comments yet</div>
               ) : (
                 <div className="space-y-3">
                   {comments.map((comment) => (
-                    <div key={comment.id} className="bg-[#f3f2f1] p-4 rounded-lg overflow-x-hidden" data-testid={`comment-${comment.id}`}>
+                    <div key={comment.id} className="bg-ministry-bg-tertiary p-4 rounded-ministry overflow-x-hidden" data-testid={`comment-${comment.id}`}>
                       <div className="flex justify-between items-start mb-2 min-w-0">
-                        <span className="font-medium text-[#323130] min-w-0 flex-shrink-0">{comment.author_name}</span>
-                        <span className="text-xs text-[#605e5c] flex-shrink-0 ml-2">
+                        <span className="font-medium text-ministry-text-primary min-w-0 flex-shrink-0">{comment.author_name}</span>
+                        <span className="text-xs text-ministry-text-secondary flex-shrink-0 ml-2">
                           {format(new Date(comment.created_at), 'MMM dd, yyyy HH:mm')}
                         </span>
                       </div>
-                      <p className="text-[#605e5c] min-w-0 w-full" style={{ overflowWrap: 'anywhere', wordBreak: 'break-word', whiteSpace: 'pre-wrap', maxWidth: '100%' }}>{comment.message}</p>
+                      <p className="text-ministry-text-secondary min-w-0 w-full" style={{ overflowWrap: 'anywhere', wordBreak: 'break-word', whiteSpace: 'pre-wrap', maxWidth: '100%' }}>{comment.message}</p>
                     </div>
                   ))}
                 </div>
@@ -369,22 +369,22 @@ export default function TaskDetails() {
 
           <TabsContent value="activity" className="mt-6">
             {auditLogs.length === 0 ? (
-              <div className="text-center text-[#605e5c] py-8">No activity yet</div>
+              <div className="text-center text-ministry-text-secondary py-8">No activity yet</div>
             ) : (
               <div className="space-y-2">
                 {auditLogs.map((log) => (
-                  <div key={log.id} className="flex justify-between items-start py-3 border-b border-[#e5e5e5]" data-testid={`audit-log-${log.id}`}>
+                  <div key={log.id} className="flex justify-between items-start py-3 border-b border-ministry-border-default" data-testid={`audit-log-${log.id}`}>
                     <div>
-                      <p className="text-[#323130]">
+                      <p className="text-ministry-text-primary">
                         <span className="font-medium">{log.actor_name}</span> {log.action.toLowerCase()} the task
                       </p>
                       {log.old_value && log.new_value && (
-                        <p className="text-xs text-[#605e5c] mt-1">
+                        <p className="text-xs text-ministry-text-secondary mt-1">
                           {log.old_value} → {log.new_value}
                         </p>
                       )}
                     </div>
-                    <span className="text-xs text-[#605e5c]">
+                    <span className="text-xs text-ministry-text-secondary">
                       {format(new Date(log.created_at), 'MMM dd, HH:mm')}
                     </span>
                   </div>
@@ -394,9 +394,9 @@ export default function TaskDetails() {
           </TabsContent>
 
           <TabsContent value="video" className="mt-6">
-            <div className="text-center py-12 bg-[#f3f2f1] rounded-lg">
-              <p className="text-[#605e5c] mb-4">No video uploaded yet</p>
-              <Button disabled className="bg-[#8a8886] text-white rounded-lg" data-testid="upload-video-button">
+            <div className="text-center py-12 bg-ministry-bg-tertiary rounded-ministry">
+              <p className="text-ministry-text-secondary mb-4">No video uploaded yet</p>
+              <Button disabled className="bg-ministry-status-draft text-white rounded-ministry" data-testid="upload-video-button">
                 Upload Video (Coming in Phase 2)
               </Button>
             </div>
