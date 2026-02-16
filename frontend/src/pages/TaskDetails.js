@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -12,6 +11,9 @@ import { Badge } from '../components/ui/badge';
 import { ArrowLeft, Save, Send } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
+import { DetailSkeleton } from '../components/ui/loading';
+import { ErrorState } from '../components/ui/empty-state';
+import { showToast, showApiError } from '../lib/toast';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
@@ -35,6 +37,8 @@ export default function TaskDetails() {
   const [auditLogs, setAuditLogs] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -44,12 +48,14 @@ export default function TaskDetails() {
   }, [taskId]);
 
   const fetchTask = async () => {
+    setError(null);
     try {
       const response = await axios.get(`${API_URL}/tasks/${taskId}`);
       setTask(response.data);
       setEditedTask(response.data);
-    } catch (error) {
-      toast.error('Failed to load task');
+    } catch (err) {
+      setError('Failed to load task');
+      showApiError(err, 'Failed to load task');
     } finally {
       setLoading(false);
     }
