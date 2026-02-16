@@ -181,11 +181,43 @@ export default function TaskDetails() {
   };
 
   if (loading) {
-    return <div className="p-8 text-ministry-text-secondary">Loading...</div>;
+    return (
+      <div className="p-8">
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/tasks')}
+          className="mb-4 text-ministry-text-secondary hover:bg-ministry-bg-tertiary rounded-ministry"
+        >
+          <ArrowLeft size={16} className="mr-2" />
+          Back to Tasks
+        </Button>
+        <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card p-6">
+          <DetailSkeleton />
+        </div>
+      </div>
+    );
   }
 
-  if (!task) {
-    return <div className="p-8 text-ministry-text-secondary">Task not found</div>;
+  if (error || !task) {
+    return (
+      <div className="p-8">
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/tasks')}
+          className="mb-4 text-ministry-text-secondary hover:bg-ministry-bg-tertiary rounded-ministry"
+        >
+          <ArrowLeft size={16} className="mr-2" />
+          Back to Tasks
+        </Button>
+        <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
+          <ErrorState 
+            title="Task not found" 
+            description={error || "The task you're looking for doesn't exist or was deleted"} 
+            onRetry={fetchTask}
+          />
+        </div>
+      </div>
+    );
   }
 
   const isReadOnly = !canEdit();
@@ -216,8 +248,9 @@ export default function TaskDetails() {
               <Button
                 key={action.status}
                 onClick={() => handleStatusChange(action.status)}
+                disabled={saving}
                 data-testid={`status-action-${action.status.toLowerCase()}`}
-                className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry"
+                className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry disabled:opacity-50"
                 size="sm"
               >
                 {action.label}
