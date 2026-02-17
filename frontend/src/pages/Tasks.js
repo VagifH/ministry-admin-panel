@@ -257,7 +257,7 @@ export default function Tasks() {
                 <SelectValue placeholder="AI Agent" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Avatars</SelectItem>
+                <SelectItem value="all">All AI Agents</SelectItem>
                 {AVATAR_LIST.map((avatar) => (
                   <SelectItem key={avatar} value={avatar}>
                     <div className="flex items-center gap-2">
