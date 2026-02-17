@@ -213,11 +213,17 @@ class TestAvatarPhoto:
         """POST /api/avatars/{id}/photo should upload image"""
         headers = {"Authorization": f"Bearer {admin_token}"}
         
-        # Create a simple test PNG image (1x1 pixel)
+        # Create a valid PNG image using PIL
         import io
-        png_data = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x02\x00\x00\x00\x90wS\xde\x00\x00\x00\x0cIDATx\x9cc\xf8\x0f\x00\x00\x01\x01\x00\x05\x18\xd8N\x00\x00\x00\x00IEND\xaeB`\x82'
+        from PIL import Image
         
-        files = {'file': ('test.png', io.BytesIO(png_data), 'image/png')}
+        # Create a 10x10 red image
+        img = Image.new('RGB', (10, 10), color='red')
+        img_bytes = io.BytesIO()
+        img.save(img_bytes, format='PNG')
+        img_bytes.seek(0)
+        
+        files = {'file': ('test.png', img_bytes, 'image/png')}
         response = requests.post(
             f"{BASE_URL}/api/avatars/avatar-1/photo",
             headers=headers,
