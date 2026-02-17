@@ -16,13 +16,14 @@ import { ErrorState } from '../components/ui/empty-state';
 import { showToast, showApiError } from '../lib/toast';
 import VideoTab from '../components/VideoTab';
 import { 
-  TASK_STATUS, 
-  TASK_STATUS_CONFIG, 
+  STATUS,
   getStatusBadgeClass, 
   getStatusLabel,
   isReadOnlyStatus,
-  getAvailableTransitions
-} from '../config/statusConfig';
+  getAvailableTransitions,
+  validateTransition,
+  canEditInStatus
+} from '../utils/statusUtils';
 import { CONTENT_TYPE_LIST } from '../config/contentTypeConfig';
 import { AVATAR_LIST } from '../config/avatarConfig';
 import { AvatarDisplay } from '../components/AvatarDisplay';
