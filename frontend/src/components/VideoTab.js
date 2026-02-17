@@ -283,7 +283,7 @@ export default function VideoTab({ taskId, taskStatus }) {
           </div>
 
           {/* Drag overlay */}
-          {dragActive && canModify && (
+          {dragActive && canUpload && (
             <div className="absolute inset-0 bg-ministry-brand-primary/10 rounded-ministry flex items-center justify-center">
               <div className="bg-white rounded-ministry p-4 shadow-lg">
                 <Upload className="text-ministry-brand-primary mx-auto mb-2" size={24} />
