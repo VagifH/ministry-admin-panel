@@ -853,10 +853,7 @@ async def change_task_status(task_id: str, status_change: StatusChange, current_
     return Task(**updated)
 
 @api_router.delete("/tasks/{task_id}")
-async def delete_task(task_id: str, current_user: User = Depends(get_current_user)):
-    if current_user.role != "Admin":
-        raise HTTPException(status_code=403, detail="Only Admin can delete tasks")
-    
+async def delete_task(task_id: str, current_user: User = Depends(require_action("delete_task"))):
     result = await db.tasks.delete_one({"id": task_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Task not found")
