@@ -1660,16 +1660,14 @@ async def upload_avatar_photo(
             message=f"File too large. Maximum size is {AVATAR_MAX_SIZE_MB}MB. Got: {file_size / (1024*1024):.1f}MB",
             code=ErrorCode.FILE_TOO_LARGE
         )
-            detail=f"File too large. Maximum size is {AVATAR_MAX_SIZE_MB}MB. Got: {file_size / (1024*1024):.1f}MB"
-        )
     
     # Optimize image: center-crop, resize to 256x256, convert to WebP
     try:
         optimized_bytes, optimized_mime = optimize_avatar_image(contents, file.content_type)
     except ValueError as e:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Image processing failed. The file may be corrupted or invalid. {str(e)}"
+        raise ValidationError(
+            message=f"Image processing failed. The file may be corrupted or invalid. {str(e)}",
+            code=ErrorCode.VALIDATION_ERROR
         )
     
     # Encode optimized image to base64
