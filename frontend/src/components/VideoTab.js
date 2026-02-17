@@ -388,7 +388,7 @@ export default function VideoTab({ taskId, taskStatus }) {
               <AlertCircle size={16} className="text-ministry-status-rejected mt-0.5" />
               <div className="flex-1">
                 <p className="text-sm text-ministry-status-rejected">{video.error_message}</p>
-                {canModify && (
+                {canUpload && (
                   <Button
                     onClick={handleReplace}
                     variant="link"
