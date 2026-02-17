@@ -615,6 +615,30 @@ async def login(request: LoginRequest):
 async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
+@api_router.get("/auth/permissions")
+async def get_permissions(current_user: User = Depends(get_current_user)):
+    """
+    Get current user's permissions (pages and actions they can access).
+    Frontend uses this to show/hide UI elements.
+    """
+    role = current_user.role
+    
+    # Get accessible pages
+    accessible_pages = [page for page, roles in PAGE_PERMISSIONS.items() if role in roles]
+    
+    # Get allowed actions
+    allowed_actions = [action for action, roles in ACTION_PERMISSIONS.items() if role in roles]
+    
+    # Get workflow transitions
+    workflow_transitions = ROLE_TRANSITIONS.get(role, {})
+    
+    return {
+        "role": role,
+        "pages": accessible_pages,
+        "actions": allowed_actions,
+        "workflow_transitions": workflow_transitions
+    }
+
 # ==================== USER ENDPOINTS ====================
 
 @api_router.get("/users", response_model=List[User])
