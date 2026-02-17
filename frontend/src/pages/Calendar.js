@@ -90,10 +90,10 @@ const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectD
         ${!isCurrentMonth ? 'bg-ministry-bg-primary border-ministry-border-default' : 'bg-ministry-bg-secondary border-ministry-border-default'}
         ${isToday ? 'ring-2 ring-ministry-brand-primary ring-inset' : ''}
         ${isSelected && !isToday ? 'bg-ministry-bg-tertiary' : ''}
-        ${isPressed ? 'bg-ministry-bg-tertiary scale-[0.98]' : ''}
+        ${isPressed ? 'bg-ministry-bg-tertiary scale-[0.98]' : 'scale-100'}
         hover:bg-ministry-bg-tertiary
+        transition-[transform,background-color] duration-[140ms] ease-out
       `}
-      style={{ transition: 'transform 50ms ease-out, background-color 100ms ease-out' }}
     >
       {/* Day number - lighter weight than events, secondary color */}
       <div className={`text-[13px] font-light leading-none mb-[6px] ${
