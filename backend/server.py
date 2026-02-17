@@ -452,6 +452,8 @@ async def list_tasks(
             t['updated_at'] = datetime.fromisoformat(t['updated_at'])
         if isinstance(t.get('publish_datetime'), str):
             t['publish_datetime'] = datetime.fromisoformat(t['publish_datetime'])
+        # Migrate old status to new status
+        t['status'] = migrate_status(t.get('status', 'Draft'))
     return tasks
 
 @api_router.get("/tasks/{task_id}", response_model=Task)
@@ -466,6 +468,9 @@ async def get_task(task_id: str, current_user: User = Depends(get_current_user))
         task['updated_at'] = datetime.fromisoformat(task['updated_at'])
     if isinstance(task.get('publish_datetime'), str):
         task['publish_datetime'] = datetime.fromisoformat(task['publish_datetime'])
+    
+    # Migrate old status to new status
+    task['status'] = migrate_status(task.get('status', 'Draft'))
     
     return Task(**task)
 
