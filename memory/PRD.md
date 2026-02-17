@@ -55,7 +55,25 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
 ## What's Been Implemented
 
 ### Feb 17, 2026
-- **P0 Completed: FEATURE — SETTINGS → AVATARS**
+- **P0 Completed: AVATAR SYSTEM FINALIZATION**
+  - Extended Avatar model with: `display_name`, `is_active`, `created_at`, `updated_at`
+  - New backend endpoint: `PATCH /api/avatars/{id}` - Update display_name and is_active (Admin only)
+  - Microsoft admin-style table UI in Settings → Avatars:
+    - Columns: Avatar | Preview | Display Name | Active | Updated | Actions
+    - Inline editing: Click display_name → input appears with Save/Cancel buttons
+    - Toggle switches for is_active status
+    - Replace photo (primary button), Remove photo (ghost button, only when photo exists)
+  - AvatarDisplay component with initials fallback (A1, A2, A3 when no photo)
+  - Global integration of display_name:
+    - Tasks list: Shows photo/initials + display_name
+    - Create Task dropdown: Shows photo/initials + display_name, inactive avatars disabled
+    - TaskDetails header: Shows large avatar circle + display_name below title
+    - TaskDetails avatar dropdown: Shows photo/initials + display_name
+    - Calendar day panel: Shows photo/initials + display_name
+  - Inactive avatar handling: Cannot select inactive avatars when creating new tasks
+  - Testing: 100% pass rate (17/17 backend tests, all frontend features verified)
+
+- **PREVIOUS: FEATURE — SETTINGS → AVATARS**
   - Backend API endpoints:
     - `GET /api/avatars` - Returns all 3 fixed avatars
     - `POST /api/avatars/{id}/photo` - Upload avatar photo (Admin only, max 5MB, JPG/PNG/WebP)
