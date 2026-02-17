@@ -154,12 +154,15 @@ All 22 test cases passed:
 - [x] Design System Lock - refactor UI to use design tokens
 - [x] UX Logic Hardening - loading, empty, error states
 - [x] PHASE 2 Stability Validation - 22/22 tests PASS
+- [x] Video Upload Implementation
+- [x] Calendar interactions and micro-polish
+- [x] Centralized configuration files
+- [x] Status system migration
+- [x] FEATURE — SETTINGS → AVATARS (17/17 tests PASS)
 
 ### P1 (Important) - Backlog
-- [ ] Video Upload Implementation (Phase 2)
-  - File upload UI
-  - Backend storage logic
-  - Business rule: tasks cannot publish without video
+- [ ] Cloud Storage for Videos (AWS S3/GCS integration)
+- [ ] Calendar hover effects on individual tasks within cells
 
 ### P2 (Nice-to-have) - Backlog
 - [ ] Accessibility improvements (aria-describedby for dialogs)
