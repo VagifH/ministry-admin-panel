@@ -1187,26 +1187,21 @@ async def upload_video(task_id: str, file: UploadFile = File(...), current_user:
             folder="videos",
             subfolder=task_id
         )
-    storage_key = f"{task_id}/{stored_filename}"
-    file_path = VIDEO_UPLOAD_DIR / storage_key
-    
-    try:
-        # Write file
-        async with aiofiles.open(file_path, 'wb') as f:
-            await f.write(contents)
         
-        # Create video record
+        # Create video record with storage abstraction fields
         now = datetime.now(timezone.utc)
         video_dict = {
             "id": video_id,
             "task_id": task_id,
-            "filename": stored_filename,
+            "filename": storage_result["stored_filename"],
             "original_filename": file.filename,
             "file_size": file_size,
             "mime_type": file.content_type,
             "status": "ready",
-            "storage_provider": "local",
-            "storage_key": storage_key,
+            "storage_provider": storage_result["provider"],
+            "storage_path": storage_result["storage_path"],
+            # Legacy field for backward compatibility
+            "storage_key": storage_result["storage_path"],
             "uploaded_by": current_user.id,
             "uploaded_by_name": current_user.name,
             "created_at": now.isoformat(),
@@ -1222,9 +1217,9 @@ async def upload_video(task_id: str, file: UploadFile = File(...), current_user:
         return VideoResponse(**video_dict)
         
     except Exception as e:
-        # Clean up file if it was written
-        if file_path.exists():
-            file_path.unlink()
+        # Clean up file if it was saved
+        if 'storage_result' in locals() and storage_result.get("storage_path"):
+            await storage_service.delete_file(storage_result["storage_path"])
         
         # Create failed video record for tracking
         now = datetime.now(timezone.utc)
