@@ -139,8 +139,6 @@ const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectD
                     key={task.id}
                     task={task}
                     onClick={() => handlePopoverTaskClick(task.id)}
-                    statusColors={statusColors}
-                    contentTypeAccent={contentTypeAccent}
                   />
                 ))}
               </div>
