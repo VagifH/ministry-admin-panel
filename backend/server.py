@@ -1119,6 +1119,125 @@ async def stream_video(
         media_type="video/mp4"
     )
 
+# ==================== AVATAR ENDPOINTS ====================
+
+@api_router.get("/avatars", response_model=List[AvatarResponse])
+async def list_avatars(current_user: User = Depends(get_current_user)):
+    """Get all 3 fixed avatars with their photo data"""
+    avatars = await db.avatars.find({}, {"_id": 0}).to_list(10)
+    
+    # Ensure all 3 avatars exist
+    if len(avatars) < 3:
+        # Re-seed missing avatars
+        for default_avatar in DEFAULT_AVATARS:
+            existing = await db.avatars.find_one({"id": default_avatar["id"]})
+            if not existing:
+                avatar_doc = {
+                    "id": default_avatar["id"],
+                    "name": default_avatar["name"],
+                    "has_photo": False,
+                    "photo_data": None,
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                }
+                await db.avatars.insert_one(avatar_doc)
+        avatars = await db.avatars.find({}, {"_id": 0}).to_list(10)
+    
+    result = []
+    for avatar in avatars:
+        if isinstance(avatar.get('updated_at'), str):
+            avatar['updated_at'] = datetime.fromisoformat(avatar['updated_at'])
+        result.append(AvatarResponse(**avatar))
+    
+    return result
+
+@api_router.post("/avatars/{avatar_id}/photo", response_model=AvatarResponse)
+async def upload_avatar_photo(
+    avatar_id: str,
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user)
+):
+    """Upload a photo for an avatar (Admin only)"""
+    import base64
+    
+    # Admin only
+    if current_user.role != "Admin":
+        raise HTTPException(status_code=403, detail="Only Admin can upload avatar photos")
+    
+    # Find avatar
+    avatar = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
+    if not avatar:
+        raise HTTPException(status_code=404, detail="Avatar not found")
+    
+    # Validate file type
+    if file.content_type not in ALLOWED_AVATAR_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid file type. Only JPG, PNG, WebP allowed. Got: {file.content_type}"
+        )
+    
+    # Read and validate file size
+    contents = await file.read()
+    file_size = len(contents)
+    
+    if file_size > AVATAR_MAX_SIZE_BYTES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"File too large. Maximum size is {AVATAR_MAX_SIZE_MB}MB. Got: {file_size / (1024*1024):.1f}MB"
+        )
+    
+    # Encode to base64
+    photo_base64 = base64.b64encode(contents).decode('utf-8')
+    
+    # Create data URL with mime type prefix
+    photo_data = f"data:{file.content_type};base64,{photo_base64}"
+    
+    # Update avatar
+    update_data = {
+        "has_photo": True,
+        "photo_data": photo_data,
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.avatars.update_one({"id": avatar_id}, {"$set": update_data})
+    await log_audit(current_user.id, current_user.name, "UPLOAD", "Avatar", avatar_id, None, file.filename)
+    
+    # Return updated avatar
+    updated = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
+    if isinstance(updated.get('updated_at'), str):
+        updated['updated_at'] = datetime.fromisoformat(updated['updated_at'])
+    
+    return AvatarResponse(**updated)
+
+@api_router.delete("/avatars/{avatar_id}/photo", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_avatar_photo(
+    avatar_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Remove photo from an avatar (Admin only)"""
+    # Admin only
+    if current_user.role != "Admin":
+        raise HTTPException(status_code=403, detail="Only Admin can delete avatar photos")
+    
+    # Find avatar
+    avatar = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
+    if not avatar:
+        raise HTTPException(status_code=404, detail="Avatar not found")
+    
+    if not avatar.get("has_photo"):
+        raise HTTPException(status_code=400, detail="Avatar has no photo to delete")
+    
+    # Update avatar
+    update_data = {
+        "has_photo": False,
+        "photo_data": None,
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.avatars.update_one({"id": avatar_id}, {"$set": update_data})
+    await log_audit(current_user.id, current_user.name, "DELETE", "Avatar Photo", avatar_id, None, None)
+    
+    return None
+
 # Include router
 app.include_router(api_router)
 
