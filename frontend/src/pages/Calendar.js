@@ -9,7 +9,7 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameM
 import { CardSkeleton } from '../components/ui/loading';
 import { ErrorState } from '../components/ui/empty-state';
 import { showApiError } from '../lib/toast';
-import { TASK_STATUS_CONFIG, getStatusBadgeClass, getStatusLabel } from '../config/statusConfig';
+import { getStatusBadgeClass, getStatusLabel } from '../utils/statusUtils';
 import { getContentTypeAccent } from '../config/contentTypeConfig';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
