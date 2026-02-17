@@ -683,7 +683,7 @@ async def list_users(current_user: User = Depends(require_action("view_users")))
     return users
 
 @api_router.post("/users", response_model=User)
-async def create_user(user_data: UserCreate, current_user: User = Depends(require_action("create_user"))):
+async def create_user(user_data: UserCreate, request: Request, current_user: User = Depends(require_action("create_user"))):
     
     existing = await db.users.find_one({"email": user_data.email})
     if existing:
@@ -697,14 +697,14 @@ async def create_user(user_data: UserCreate, current_user: User = Depends(requir
     user_dict["created_at"] = datetime.now(timezone.utc).isoformat()
     
     await db.users.insert_one(user_dict)
-    await log_audit(current_user.id, current_user.name, "CREATE", "User", user_dict["id"], None, user_data.email)
+    await audit_logger.log_user_create(current_user, user_dict["id"], user_data.email, request)
     
     user_dict.pop("hashed_password")
     user_dict['created_at'] = datetime.fromisoformat(user_dict['created_at'])
     return User(**user_dict)
 
 @api_router.patch("/users/{user_id}", response_model=User)
-async def update_user(user_id: str, user_data: UserUpdate, current_user: User = Depends(require_action("edit_user"))):
+async def update_user(user_id: str, user_data: UserUpdate, request: Request, current_user: User = Depends(require_action("edit_user"))):
     existing = await db.users.find_one({"id": user_id}, {"_id": 0})
     if not existing:
         raise HTTPException(status_code=404, detail="User not found")
@@ -712,7 +712,7 @@ async def update_user(user_id: str, user_data: UserUpdate, current_user: User = 
     update_dict = {k: v for k, v in user_data.model_dump().items() if v is not None}
     if update_dict:
         await db.users.update_one({"id": user_id}, {"$set": update_dict})
-        await log_audit(current_user.id, current_user.name, "UPDATE", "User", user_id, None, str(update_dict))
+        await audit_logger.log_user_update(current_user, user_id, update_dict, request)
     
     updated = await db.users.find_one({"id": user_id}, {"_id": 0, "hashed_password": 0})
     if isinstance(updated.get('created_at'), str):
