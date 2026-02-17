@@ -6,10 +6,10 @@ import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { Badge } from '../components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
-import { Plus, Search, X } from 'lucide-react';
+import { Plus, Search, X, Archive, ArchiveRestore, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
 import { TableSkeleton } from '../components/ui/loading';
@@ -39,7 +39,14 @@ export default function Tasks() {
     status: '',
     content_type: '',
     avatar: '',
+    archived: 'false', // 'false' | 'true' | 'all'
   });
+
+  // Archive/Restore/Delete dialogs
+  const [archiveDialog, setArchiveDialog] = useState({ open: false, task: null });
+  const [restoreDialog, setRestoreDialog] = useState({ open: false, task: null });
+  const [deleteDialog, setDeleteDialog] = useState({ open: false, task: null });
+  const [actionSubmitting, setActionSubmitting] = useState(false);
 
   const [newTask, setNewTask] = useState({
     title: '',
@@ -54,7 +61,7 @@ export default function Tasks() {
 
   useEffect(() => {
     fetchTasks();
-  }, [filters.search, filters.status, filters.content_type, filters.avatar]);
+  }, [filters.search, filters.status, filters.content_type, filters.avatar, filters.archived]);
 
   const fetchTasks = async () => {
     setFetching(true);
@@ -65,6 +72,7 @@ export default function Tasks() {
       if (filters.status) params.append('status', filters.status);
       if (filters.content_type) params.append('content_type', filters.content_type);
       if (filters.avatar) params.append('avatar', filters.avatar);
+      params.append('archived', filters.archived);
 
       const response = await axios.get(`${API_URL}/tasks?${params.toString()}`);
       setTasks(response.data);
@@ -83,6 +91,7 @@ export default function Tasks() {
       status: '',
       content_type: '',
       avatar: '',
+      archived: 'false',
     });
   };
 
