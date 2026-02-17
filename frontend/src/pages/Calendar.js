@@ -95,9 +95,9 @@ const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectD
             title={task.title}
           >
             {/* Content type accent bar - fixed height matching event */}
-            <div className={`w-0.5 h-[14px] rounded-full flex-shrink-0 ${contentTypeAccent[task.content_type] || 'bg-gray-400'}`} />
+            <div className={`w-0.5 h-[14px] rounded-full flex-shrink-0 ${getContentTypeAccent(task.content_type)}`} />
             {/* Event text - 11px (smaller than body), medium weight, single line truncate */}
-            <span className={`text-[11px] leading-[18px] font-medium truncate flex-1 px-1 rounded whitespace-nowrap overflow-hidden ${statusColors[task.status]}`}>
+            <span className={`text-[11px] leading-[18px] font-medium truncate flex-1 px-1 rounded whitespace-nowrap overflow-hidden ${getStatusBadgeClass(task.status)}`}>
               {task.title}
             </span>
           </div>
