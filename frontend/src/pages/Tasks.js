@@ -16,7 +16,7 @@ import { TableSkeleton } from '../components/ui/loading';
 import { EmptyState, NoResultsState, ErrorState } from '../components/ui/empty-state';
 import { showToast, showApiError } from '../lib/toast';
 import { TASK_STATUS, TASK_STATUS_CONFIG, TASK_STATUS_LIST, getStatusBadgeClass } from '../config/statusConfig';
-import { CONTENT_TYPE_LIST } from '../config/contentTypeConfig';
+import { CONTENT_TYPE, CONTENT_TYPE_LIST } from '../config/contentTypeConfig';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
