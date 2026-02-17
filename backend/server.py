@@ -694,25 +694,13 @@ async def change_task_status(task_id: str, status_change: StatusChange, current_
     if not existing:
         raise HTTPException(status_code=404, detail="Task not found")
     
-    old_status = existing["status"]
+    old_status = migrate_status(existing["status"])
     new_status = status_change.status
     
-    # Permission checks
-    if current_user.role == "Editor":
-        if new_status not in ["Submitted"] and old_status == "Draft":
-            raise HTTPException(status_code=403, detail="Editors can only submit (Draft -> Submitted)")
-        if old_status != "Draft":
-            raise HTTPException(status_code=403, detail="Editors can only change status from Draft")
-    
-    if current_user.role == "Approver":
-        if old_status != "Review":
-            raise HTTPException(status_code=403, detail="Approvers can only change status from Review")
-        if new_status not in ["Scheduled", "Rejected"]:
-            raise HTTPException(status_code=403, detail="Approvers can only approve (Scheduled) or reject")
-    
-    # Validate transition
-    if not can_transition(old_status, new_status, current_user.role == "Admin"):
-        raise HTTPException(status_code=400, detail=f"Invalid status transition: {old_status} -> {new_status}")
+    # Validate transition using workflow engine
+    is_valid, error_msg = validate_transition(old_status, new_status, current_user.role)
+    if not is_valid:
+        raise HTTPException(status_code=403, detail=error_msg)
     
     # Check video requirement for Published
     if new_status == "Published":
