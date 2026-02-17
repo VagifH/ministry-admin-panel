@@ -259,6 +259,11 @@ export default function TaskDetails() {
                 <Badge className={`${getStatusBadgeClass(task.status)} rounded-md px-2.5 py-0.5 text-xs font-medium`} data-testid="task-status-badge">
                   {getStatusLabel(task.status)}
                 </Badge>
+                {isArchived && (
+                  <Badge variant="outline" className="border-amber-500 text-amber-600 bg-amber-50 rounded-md px-2.5 py-0.5 text-xs font-medium">
+                    Archived
+                  </Badge>
+                )}
               </div>
               <span className="text-sm text-ministry-text-secondary mt-0.5 block">{getAvatarDisplayName(task.avatar)}</span>
               
