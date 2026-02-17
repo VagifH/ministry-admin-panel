@@ -338,7 +338,7 @@ export default function TaskDetails() {
               </div>
 
               <div>
-                <Label className="text-ministry-text-primary">Avatar *</Label>
+                <Label className="text-ministry-text-primary">AI Agent *</Label>
                 <Select
                   value={editedTask.avatar}
                   onValueChange={(value) => setEditedTask({ ...editedTask, avatar: value })}
