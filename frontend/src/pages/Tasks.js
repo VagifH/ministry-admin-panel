@@ -126,7 +126,7 @@ export default function Tasks() {
   };
 
   // Editor and Admin can create tasks, Producer and Approver cannot
-  const canCreateTask = user?.role === 'Admin' || user?.role === 'Editor';
+  const canCreateTask = canPerformAction(user, ACTIONS.CREATE_TASK);
   const hasActiveFilters = filters.search || filters.status || filters.content_type || filters.avatar;
 
   // Determine content state
