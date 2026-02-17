@@ -1021,6 +1021,23 @@ async def list_audit_logs(
     for log in logs:
         if isinstance(log.get('created_at'), str):
             log['created_at'] = datetime.fromisoformat(log['created_at'])
+        # Ensure all fields are present (handle legacy logs missing new fields)
+        # Map new fields to legacy if not present
+        if 'actor_id' not in log and 'user_id' in log:
+            log['actor_id'] = log.get('user_id', 'system')
+        if 'actor_name' not in log and 'user_name' in log:
+            log['actor_name'] = log.get('user_name', 'System')
+        if 'object_type' not in log and 'entity_type' in log:
+            log['object_type'] = log.get('entity_type', '')
+        if 'object_id' not in log and 'entity_id' in log:
+            log['object_id'] = log.get('entity_id')
+        # Ensure actor_id has a default (avoid None)
+        if not log.get('actor_id'):
+            log['actor_id'] = log.get('user_id', 'system')
+        if not log.get('actor_name'):
+            log['actor_name'] = log.get('user_name', 'System')
+        if not log.get('object_type'):
+            log['object_type'] = log.get('entity_type', '')
     return logs
 
 # ==================== DASHBOARD ENDPOINTS ====================
