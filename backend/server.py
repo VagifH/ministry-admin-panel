@@ -1097,7 +1097,13 @@ async def delete_video(task_id: str, current_user: User = Depends(get_current_us
         raise HTTPException(status_code=400, detail="Cannot delete video from a published task")
     
     # Delete the actual file via storage service
-    storage_path = video.get("storage_path") or video.get("storage_key")
+    storage_path = video.get("storage_path")
+    if not storage_path:
+        # Legacy format: storage_key doesn't include "videos/" prefix
+        storage_key = video.get("storage_key")
+        if storage_key:
+            storage_path = f"videos/{storage_key}"
+    
     if storage_path:
         await storage_service.delete_file(storage_path)
     
