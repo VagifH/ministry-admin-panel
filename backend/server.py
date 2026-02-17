@@ -901,7 +901,7 @@ async def list_audit_logs(
     action: Optional[str] = None,
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_action("view_audit_logs"))
 ):
     query = {}
     
