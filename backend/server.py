@@ -20,6 +20,9 @@ from PIL import Image
 # Import storage service
 from services.storage_service import storage_service
 
+# Import audit logger
+from services.audit_service import audit_logger, AuditAction, EntityType
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
