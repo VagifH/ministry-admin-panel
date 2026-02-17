@@ -557,6 +557,13 @@ def get_available_transitions_for_role(current_status: str, role: str) -> list:
 # ==================== STARTUP ====================
 
 @app.on_event("startup")
+async def initialize_services():
+    """Initialize all services that need database access"""
+    # Initialize audit logger with database
+    audit_logger.set_database(db)
+    logger.info("Audit logger initialized")
+
+@app.on_event("startup")
 async def create_default_admin():
     admin_exists = await db.users.find_one({"email": "admin@ministry.local"})
     if not admin_exists:
