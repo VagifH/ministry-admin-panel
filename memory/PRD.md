@@ -102,6 +102,17 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
   - All transitions logged in Activity Log
   - Action buttons styled by context (Approve=green, Reject=red, Changes=amber)
 
+- **PHASE — VIDEO MVP (Preview + Download + Limits)**
+  - Upload validation: max 100MB, allowed types: MP4, WebM, MOV
+  - Frontend inline error + toast for invalid files
+  - Upload progress UI with percentage
+  - Video preview player (embedded HTML5 video)
+  - Download button with proper headers (Content-Disposition: attachment)
+  - Status-based UI: Ready (player), Processing (spinner), Failed (error + retry)
+  - Backend streaming endpoint for preview playback
+  - Backend download endpoint: GET /api/tasks/{task_id}/video/download
+  - Permissions: Only logged-in users can access
+
 ### Previous Sessions
 - Full backend implementation with FastAPI
 - All MongoDB models and API endpoints
