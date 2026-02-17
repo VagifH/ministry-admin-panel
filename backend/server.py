@@ -821,15 +821,28 @@ async def list_tasks(
     avatar: Optional[str] = None,
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
+    archived: Optional[str] = "false",  # "false" | "true" | "all"
     current_user: User = Depends(get_current_user)
 ):
     query = {}
     
+    # Archive filter (default: show only non-archived)
+    if archived == "false":
+        query["$or"] = [{"is_archived": False}, {"is_archived": {"$exists": False}}]
+    elif archived == "true":
+        query["is_archived"] = True
+    # "all" - no filter on is_archived
+    
     if search:
-        query["$or"] = [
+        search_condition = [
             {"title": {"$regex": search, "$options": "i"}},
             {"script": {"$regex": search, "$options": "i"}}
         ]
+        if "$or" in query:
+            # Combine with existing $or for archived filter
+            query["$and"] = [{"$or": query.pop("$or")}, {"$or": search_condition}]
+        else:
+            query["$or"] = search_condition
     
     if status:
         query["status"] = status
@@ -855,8 +868,13 @@ async def list_tasks(
             t['updated_at'] = datetime.fromisoformat(t['updated_at'])
         if isinstance(t.get('publish_datetime'), str):
             t['publish_datetime'] = datetime.fromisoformat(t['publish_datetime'])
+        if isinstance(t.get('archived_at'), str):
+            t['archived_at'] = datetime.fromisoformat(t['archived_at'])
         # Migrate old status to new status
         t['status'] = migrate_status(t.get('status', 'Draft'))
+        # Ensure archive fields exist
+        if 'is_archived' not in t:
+            t['is_archived'] = False
     return tasks
 
 @api_router.get("/tasks/{task_id}", response_model=Task)
