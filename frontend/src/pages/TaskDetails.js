@@ -280,8 +280,6 @@ export default function TaskDetails() {
                     {CONTENT_TYPE_LIST.map((type) => (
                       <SelectItem key={type} value={type}>{type}</SelectItem>
                     ))}
-                    <SelectItem value="Short Lesson">Short Lesson</SelectItem>
-                    <SelectItem value="Full Lesson">Full Lesson</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
