@@ -13,6 +13,17 @@ export const avatarService = {
   },
 
   /**
+   * Update avatar settings (display_name, is_active)
+   * @param {string} avatarId - The avatar ID
+   * @param {Object} updates - { display_name?, is_active? }
+   * @returns {Promise<Object>} Updated avatar object
+   */
+  async updateAvatar(avatarId, updates) {
+    const response = await axios.patch(`${API_URL}/avatars/${avatarId}`, updates);
+    return response.data;
+  },
+
+  /**
    * Upload a photo for an avatar
    * @param {string} avatarId - The avatar ID (avatar-1, avatar-2, avatar-3)
    * @param {File} file - The image file to upload
