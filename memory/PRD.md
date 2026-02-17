@@ -83,6 +83,24 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
   - Validation: Rejects corrupted images with friendly error messages
   - Storage: Only optimized image stored (not original)
 
+- **PHASE P1: WORKFLOW ENGINE (Action-Driven Status System)**
+  - Removed manual status dropdown/select from UI
+  - Implemented strict workflow transitions:
+    ```
+    Draft -> Submitted -> InProgress -> ReadyForReview 
+    ReadyForReview -> Approved | ChangesRequested | Rejected
+    ChangesRequested -> InProgress
+    Approved -> Scheduled -> Published
+    ```
+  - Role-based permissions:
+    - **Editor (Ministry):** Draft→Submitted, Approved→Scheduled, Scheduled→Published
+    - **Producer (V Studio):** Submitted→InProgress, InProgress→ReadyForReview, ChangesRequested→InProgress
+    - **Approver:** ReadyForReview → Approved/ChangesRequested/Rejected
+    - **Admin:** All valid transitions
+  - Backend validates all transitions server-side
+  - All transitions logged in Activity Log
+  - Action buttons styled by context (Approve=green, Reject=red, Changes=amber)
+
 ### Previous Sessions
 - Full backend implementation with FastAPI
 - All MongoDB models and API endpoints
