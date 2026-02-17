@@ -1590,7 +1590,7 @@ async def update_avatar(
     # Find avatar
     avatar = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
     if not avatar:
-        raise HTTPException(status_code=404, detail="Avatar not found")
+        raise NotFoundError(message="Avatar not found", code=ErrorCode.AVATAR_NOT_FOUND)
     
     # Capture old values for audit (used in changes dict)
     old_display_name = avatar.get("display_name")
@@ -1642,13 +1642,13 @@ async def upload_avatar_photo(
     # Find avatar
     avatar = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
     if not avatar:
-        raise HTTPException(status_code=404, detail="Avatar not found")
+        raise NotFoundError(message="Avatar not found", code=ErrorCode.AVATAR_NOT_FOUND)
     
     # Validate file type
     if file.content_type not in ALLOWED_AVATAR_TYPES:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Invalid file type. Only JPG, PNG, WebP allowed. Got: {file.content_type}"
+        raise ValidationError(
+            message=f"Invalid file type. Only JPG, PNG, WebP allowed. Got: {file.content_type}",
+            code=ErrorCode.INVALID_FILE_TYPE
         )
     
     # Read and validate file size
@@ -1656,8 +1656,10 @@ async def upload_avatar_photo(
     file_size = len(contents)
     
     if file_size > AVATAR_MAX_SIZE_BYTES:
-        raise HTTPException(
-            status_code=400,
+        raise ValidationError(
+            message=f"File too large. Maximum size is {AVATAR_MAX_SIZE_MB}MB. Got: {file_size / (1024*1024):.1f}MB",
+            code=ErrorCode.FILE_TOO_LARGE
+        )
             detail=f"File too large. Maximum size is {AVATAR_MAX_SIZE_MB}MB. Got: {file_size / (1024*1024):.1f}MB"
         )
     
