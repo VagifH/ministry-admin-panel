@@ -1,6 +1,7 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File, Request, Header
+from fastapi import FastAPI, APIRouter, Depends, status, UploadFile, File, Request, Header
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.exceptions import RequestValidationError
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -22,6 +23,14 @@ from services.storage_service import storage_service
 
 # Import audit logger
 from services.audit_service import audit_logger, AuditAction, EntityType
+
+# Import error handling
+from services.error_service import (
+    AppError, ValidationError, AuthError, ForbiddenError, 
+    NotFoundError, ConflictError, ServerError, ErrorCode,
+    app_error_handler, generic_exception_handler, validation_exception_handler,
+    raise_not_found, raise_forbidden, raise_validation
+)
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
