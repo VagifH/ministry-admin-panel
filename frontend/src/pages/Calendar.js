@@ -337,8 +337,6 @@ export default function Calendar() {
                     isSelected={isSelected}
                     onSelectDate={setSelectedDate}
                     onTaskClick={handleTaskClick}
-                    statusColors={statusColors}
-                    contentTypeAccent={contentTypeAccent}
                   />
                 );
               })}
