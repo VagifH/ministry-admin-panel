@@ -177,6 +177,7 @@ export default function Calendar() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const handleTaskClick = useCallback((taskId) => {
     navigate(`/tasks/${taskId}`);
