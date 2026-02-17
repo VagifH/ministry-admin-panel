@@ -3,17 +3,45 @@
  * Single source of truth for all status labels, colors, and workflow logic
  */
 
+// ============================================
+// STATUS MIGRATION MAPPING
+// ============================================
+
+/**
+ * Map old status values to new ones (for backward compatibility)
+ * Used when loading existing data from database
+ */
+export const STATUS_MIGRATION_MAP = {
+  'Producing': 'InProgress',
+  'Review': 'ReadyForReview'
+};
+
+/**
+ * Migrate a status value from old to new (if needed)
+ * @param {string} status - Status value (possibly old)
+ * @returns {string} Current status value
+ */
+export const migrateStatus = (status) => {
+  return STATUS_MIGRATION_MAP[status] || status;
+};
+
+// ============================================
+// TASK STATUS CONFIGURATION
+// ============================================
+
 /**
  * Task status constants - use these instead of string literals
  */
 export const TASK_STATUS = {
   DRAFT: 'Draft',
   SUBMITTED: 'Submitted',
-  PRODUCING: 'Producing',
-  REVIEW: 'Review',
+  IN_PROGRESS: 'InProgress',
+  READY_FOR_REVIEW: 'ReadyForReview',
+  CHANGES_REQUESTED: 'ChangesRequested',
+  APPROVED: 'Approved',
+  REJECTED: 'Rejected',
   SCHEDULED: 'Scheduled',
-  PUBLISHED: 'Published',
-  REJECTED: 'Rejected'
+  PUBLISHED: 'Published'
 };
 
 /**
@@ -37,35 +65,35 @@ export const TASK_STATUS_CONFIG = {
     order: 2,
     visible: true
   },
-  [TASK_STATUS.PRODUCING]: {
-    label: 'Producing',
-    color: 'bg-ministry-status-producing',
-    textColor: 'text-ministry-status-producing',
-    badgeClass: 'bg-ministry-status-producing text-white',
+  [TASK_STATUS.IN_PROGRESS]: {
+    label: 'In Progress',
+    color: 'bg-ministry-status-inprogress',
+    textColor: 'text-ministry-status-inprogress',
+    badgeClass: 'bg-ministry-status-inprogress text-white',
     order: 3,
     visible: true
   },
-  [TASK_STATUS.REVIEW]: {
-    label: 'Review',
-    color: 'bg-ministry-status-review',
-    textColor: 'text-ministry-status-review',
-    badgeClass: 'bg-ministry-status-review text-white',
+  [TASK_STATUS.READY_FOR_REVIEW]: {
+    label: 'Ready for Review',
+    color: 'bg-ministry-status-readyforreview',
+    textColor: 'text-ministry-status-readyforreview',
+    badgeClass: 'bg-ministry-status-readyforreview text-white',
     order: 4,
     visible: true
   },
-  [TASK_STATUS.SCHEDULED]: {
-    label: 'Scheduled',
-    color: 'bg-ministry-status-scheduled',
-    textColor: 'text-ministry-status-scheduled',
-    badgeClass: 'bg-ministry-status-scheduled text-white',
+  [TASK_STATUS.CHANGES_REQUESTED]: {
+    label: 'Changes Requested',
+    color: 'bg-ministry-status-changesrequested',
+    textColor: 'text-ministry-status-changesrequested',
+    badgeClass: 'bg-ministry-status-changesrequested text-white',
     order: 5,
     visible: true
   },
-  [TASK_STATUS.PUBLISHED]: {
-    label: 'Published',
-    color: 'bg-ministry-status-published',
-    textColor: 'text-ministry-status-published',
-    badgeClass: 'bg-ministry-status-published text-white',
+  [TASK_STATUS.APPROVED]: {
+    label: 'Approved',
+    color: 'bg-ministry-status-approved',
+    textColor: 'text-ministry-status-approved',
+    badgeClass: 'bg-ministry-status-approved text-white',
     order: 6,
     visible: true
   },
@@ -75,6 +103,22 @@ export const TASK_STATUS_CONFIG = {
     textColor: 'text-ministry-status-rejected',
     badgeClass: 'bg-ministry-status-rejected text-white',
     order: 7,
+    visible: true
+  },
+  [TASK_STATUS.SCHEDULED]: {
+    label: 'Scheduled',
+    color: 'bg-ministry-status-scheduled',
+    textColor: 'text-ministry-status-scheduled',
+    badgeClass: 'bg-ministry-status-scheduled text-white',
+    order: 8,
+    visible: true
+  },
+  [TASK_STATUS.PUBLISHED]: {
+    label: 'Published',
+    color: 'bg-ministry-status-published',
+    textColor: 'text-ministry-status-published',
+    badgeClass: 'bg-ministry-status-published text-white',
+    order: 9,
     visible: true
   }
 };
