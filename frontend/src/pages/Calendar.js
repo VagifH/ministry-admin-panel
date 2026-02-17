@@ -77,6 +77,7 @@ const EventChip = ({ task, onClick }) => {
 
 // Task list item for day panel
 const DayPanelTaskItem = ({ task, onClick }) => {
+  const { getAvatarDisplayName } = useAvatars();
   const statusColors = getStatusColors(task.status);
   
   return (
@@ -99,7 +100,7 @@ const DayPanelTaskItem = ({ task, onClick }) => {
         </div>
         <div className="flex items-center gap-2 mt-0.5">
           <span className="text-xs text-ministry-text-secondary">
-            {task.avatar}
+            {getAvatarDisplayName(task.avatar)}
           </span>
           <span className="text-ministry-text-muted">•</span>
           <span className="text-xs text-ministry-text-secondary">
