@@ -32,9 +32,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 480
 
 # Video Upload Configuration
 VIDEO_UPLOAD_DIR = ROOT_DIR / "uploads" / "videos"
-VIDEO_MAX_SIZE_MB = 200
-VIDEO_MAX_SIZE_BYTES = VIDEO_MAX_SIZE_MB * 1024 * 1024  # 200MB
-ALLOWED_VIDEO_TYPES = ["video/mp4"]
+VIDEO_MAX_SIZE_MB = 100  # Maximum upload size: 100MB
+VIDEO_MAX_SIZE_BYTES = VIDEO_MAX_SIZE_MB * 1024 * 1024  # 100MB
+ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm", "video/quicktime"]
+ALLOWED_VIDEO_EXTENSIONS = [".mp4", ".webm", ".mov"]
 
 # Avatar Upload Configuration
 AVATAR_UPLOAD_DIR = ROOT_DIR / "uploads" / "avatars"
