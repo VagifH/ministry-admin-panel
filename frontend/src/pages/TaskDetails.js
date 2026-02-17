@@ -151,7 +151,7 @@ export default function TaskDetails() {
     if (!task || !user) return false;
     if (user.role === 'Admin') return true;
     if (user.role === 'Approver') return false;
-    if (user.role === 'Editor' && isReadOnlyStatus(task.status)) return false;
+    if ((user.role === 'Editor' || user.role === 'Producer') && isReadOnlyStatus(task.status)) return false;
     return true;
   };
 
