@@ -347,14 +347,33 @@ export default function TaskDetails() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {AVATAR_LIST.map((avatar) => (
-                      <SelectItem key={avatar} value={avatar}>
+                    {/* Show active avatars first */}
+                    {getActiveAvatars().map((avatar) => (
+                      <SelectItem key={avatar.id} value={avatar.name}>
                         <div className="flex items-center gap-2">
-                          <AvatarDisplay avatarName={avatar} size={20} />
-                          <span>{avatar}</span>
+                          <AvatarDisplay avatarName={avatar.name} size={20} />
+                          <span>{avatar.display_name || avatar.name}</span>
                         </div>
                       </SelectItem>
                     ))}
+                    {/* Show inactive avatars as disabled (unless it's the current selection) */}
+                    {AVATAR_LIST.filter(name => !isAvatarActive(name) && name !== editedTask.avatar).map((avatarName) => (
+                      <SelectItem key={avatarName} value={avatarName} disabled title="Inactive">
+                        <div className="flex items-center gap-2 opacity-50">
+                          <AvatarDisplay avatarName={avatarName} size={20} />
+                          <span>{getAvatarDisplayName(avatarName)} (Inactive)</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                    {/* If current selection is inactive, still show it (but not disabled) */}
+                    {!isAvatarActive(editedTask.avatar) && (
+                      <SelectItem key={editedTask.avatar} value={editedTask.avatar}>
+                        <div className="flex items-center gap-2 opacity-70">
+                          <AvatarDisplay avatarName={editedTask.avatar} size={20} />
+                          <span>{getAvatarDisplayName(editedTask.avatar)} (Inactive)</span>
+                        </div>
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
