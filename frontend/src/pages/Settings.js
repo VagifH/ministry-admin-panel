@@ -314,7 +314,8 @@ export default function Settings() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Admin">Admin</SelectItem>
-                  <SelectItem value="Editor">Editor</SelectItem>
+                  <SelectItem value="Editor">Editor (Ministry)</SelectItem>
+                  <SelectItem value="Producer">Producer (V Studio)</SelectItem>
                   <SelectItem value="Approver">Approver</SelectItem>
                 </SelectContent>
               </Select>
