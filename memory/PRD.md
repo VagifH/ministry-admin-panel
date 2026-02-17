@@ -53,19 +53,26 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
 
 ## What's Been Implemented
 
-### Feb 16, 2026
-- **P0 Completed: Design System Lock**
-  - Verified webpack error overlay is not reproducible (no errors found)
-  - Refactored ALL frontend components to use design tokens from `tailwind.config.js`
-  - Files refactored: Login.js, Tasks.js, TaskDetails.js, Calendar.js, ActivityLog.js, Dashboard.js, Settings.js, Layout.js
-  - Replaced hardcoded hex colors with `ministry.*` token classes
-  - Status colors: `bg-ministry-status-{status}` for Draft, Submitted, Producing, Review, Scheduled, Published, Rejected
-  - Text colors: `text-ministry-text-primary`, `text-ministry-text-secondary`, `text-ministry-text-muted`
-  - Background: `bg-ministry-bg-primary`, `bg-ministry-bg-secondary`, `bg-ministry-bg-tertiary`
-  - Borders: `border-ministry-border-default`
-  - Brand colors: `bg-ministry-brand-primary`, `bg-ministry-brand-hover`
-  - Border radius: `rounded-ministry` (8px)
-  - Shadows: `shadow-ministry-card`, `shadow-ministry-dialog`
+### Feb 17, 2026
+- **P0 Completed: FEATURE — SETTINGS → AVATARS**
+  - Backend API endpoints:
+    - `GET /api/avatars` - Returns all 3 fixed avatars
+    - `POST /api/avatars/{id}/photo` - Upload avatar photo (Admin only, max 2MB, JPG/PNG/WebP)
+    - `DELETE /api/avatars/{id}/photo` - Remove avatar photo (Admin only)
+  - Photos stored as base64 in MongoDB (fast MVP)
+  - Frontend implementation:
+    - Settings page with Users and Avatars tabs
+    - Avatar cards with circular preview, name, status, upload/remove buttons
+    - AvatarContext for global state management
+    - AvatarDisplay component for thumbnails
+  - UI Integration:
+    - Tasks list shows avatar thumbnails in Avatar column
+    - Task Details header shows avatar thumbnail
+    - Create Task modal shows thumbnails in avatar dropdown
+    - Task Details avatar dropdown shows thumbnails
+  - File validation: max 2MB, formats JPG/PNG/WebP
+  - Role-based access: Only Admin can upload/remove photos
+  - Testing: 17/17 backend tests passed, frontend verified
 
 ### Previous Sessions
 - Full backend implementation with FastAPI
@@ -77,6 +84,10 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
 - Comment system
 - Audit logging
 - User management
+- Video module (local storage)
+- Calendar with interactions and micro-polish
+- Centralized configuration files (statusConfig, contentTypeConfig, permissionsMatrix, videoRules)
+- Status system migration
 
 ## Design Tokens (tailwind.config.js)
 ```javascript
