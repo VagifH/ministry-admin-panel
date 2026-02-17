@@ -602,11 +602,6 @@ export default function VideoTab({ taskId, taskStatus }) {
               preload="metadata"
               className="w-full h-full object-contain"
               data-testid="video-preview-player"
-              onError={(e) => {
-                // Hide video element and show fallback
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'flex';
-              }}
             >
               <source 
                 src={`${process.env.REACT_APP_BACKEND_URL}/api/tasks/${taskId}/video/stream`}
@@ -614,34 +609,23 @@ export default function VideoTab({ taskId, taskStatus }) {
               />
               Your browser does not support the video tag.
             </video>
-            {/* Fallback when video can't play */}
-            <div 
-              className="absolute inset-0 bg-ministry-bg-tertiary flex-col items-center justify-center gap-4 text-center p-6"
-              style={{ display: 'none' }}
-            >
-              <Video size={48} className="text-ministry-text-muted" />
-              <div>
-                <p className="text-ministry-text-secondary font-medium mb-2">Preview not available</p>
-                <p className="text-sm text-ministry-text-muted mb-4">
-                  Your browser cannot play this video format.
-                </p>
-                {canDownload && (
-                  <Button
-                    onClick={handleDownload}
-                    disabled={downloading}
-                    className={`bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry ${BUTTON_HEIGHT}`}
-                  >
-                    <Download size={16} className="mr-2" />
-                    Download to view
-                  </Button>
-                )}
-              </div>
-            </div>
           </div>
-          <div className="px-4 py-2 border-t border-ministry-border-default bg-ministry-bg-primary">
+          <div className="px-4 py-2 border-t border-ministry-border-default bg-ministry-bg-primary flex items-center justify-between">
             <p className="text-xs text-ministry-text-muted">
               Video preview • {video.original_filename}
             </p>
+            {canDownload && (
+              <Button
+                onClick={handleDownload}
+                disabled={downloading}
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-xs"
+              >
+                <Download size={14} className="mr-1" />
+                Download
+              </Button>
+            )}
           </div>
         </div>
       )}
