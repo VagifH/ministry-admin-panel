@@ -642,10 +642,7 @@ async def get_permissions(current_user: User = Depends(get_current_user)):
 # ==================== USER ENDPOINTS ====================
 
 @api_router.get("/users", response_model=List[User])
-async def list_users(current_user: User = Depends(get_current_user)):
-    if current_user.role != "Admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
-    
+async def list_users(current_user: User = Depends(require_action("view_users"))):
     users = await db.users.find({}, {"_id": 0, "hashed_password": 0}).to_list(100)
     for u in users:
         if isinstance(u.get('created_at'), str):
@@ -653,9 +650,7 @@ async def list_users(current_user: User = Depends(get_current_user)):
     return users
 
 @api_router.post("/users", response_model=User)
-async def create_user(user_data: UserCreate, current_user: User = Depends(get_current_user)):
-    if current_user.role != "Admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
+async def create_user(user_data: UserCreate, current_user: User = Depends(require_action("create_user"))):
     
     existing = await db.users.find_one({"email": user_data.email})
     if existing:
