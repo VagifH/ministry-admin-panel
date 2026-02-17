@@ -284,7 +284,7 @@ export default function Calendar() {
 
       <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
         <div className="p-4 border-b border-ministry-border-default flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-ministry-text-primary">
+          <h2 className="text-lg font-semibold text-ministry-text-primary cursor-default select-none">
             {format(currentDate, 'MMMM yyyy')}
           </h2>
           <div className="flex gap-2">
