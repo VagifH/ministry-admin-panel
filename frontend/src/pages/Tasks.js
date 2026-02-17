@@ -261,7 +261,7 @@ export default function Tasks() {
                   <SelectItem key={avatar} value={avatar}>
                     <div className="flex items-center gap-2">
                       <AvatarDisplay avatarName={avatar} size={20} />
-                      <span>{avatar}</span>
+                      <span>{getAvatarDisplayName(avatar)}</span>
                     </div>
                   </SelectItem>
                 ))}
