@@ -173,7 +173,7 @@ export default function Tasks() {
               <TableCell className="text-ministry-text-secondary">{task.avatar}</TableCell>
               <TableCell>
                 <Badge className={`${getStatusBadgeClass(task.status)} rounded-md`}>
-                  {TASK_STATUS_CONFIG[task.status]?.label || task.status}
+                  {getStatusLabel(task.status)}
                 </Badge>
               </TableCell>
               <TableCell className="text-ministry-text-secondary">
