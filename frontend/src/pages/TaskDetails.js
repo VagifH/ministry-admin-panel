@@ -34,6 +34,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 export default function TaskDetails() {
   const { taskId } = useParams();
   const { user } = useAuth();
+  const { getActiveAvatars, getAvatarDisplayName, isAvatarActive } = useAvatars();
   const navigate = useNavigate();
   const [task, setTask] = useState(null);
   const [editedTask, setEditedTask] = useState(null);
