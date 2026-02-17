@@ -148,35 +148,15 @@ export default function TaskDetails() {
     if (!task || !user) return false;
     if (user.role === 'Admin') return true;
     if (user.role === 'Approver') return false;
-    if (user.role === 'Editor' && ['Scheduled', 'Published'].includes(task.status)) return false;
+    if (user.role === 'Editor' && isReadOnlyStatus(task.status)) return false;
     return true;
   };
 
   const getAvailableStatusActions = () => {
     if (!task || !user) return [];
     
-    const actions = [];
-    
-    if (user.role === 'Admin') {
-      if (task.status === 'Draft') actions.push({ label: 'Submit', status: 'Submitted' });
-      if (task.status === 'Submitted') actions.push({ label: 'Move to Producing', status: 'Producing' });
-      if (task.status === 'Producing') actions.push({ label: 'Move to Review', status: 'Review' });
-      if (task.status === 'Review') {
-        actions.push({ label: 'Schedule', status: 'Scheduled' });
-        actions.push({ label: 'Reject', status: 'Rejected' });
-      }
-      if (task.status === 'Rejected') actions.push({ label: 'Move to Draft', status: 'Draft' });
-      if (task.status === 'Scheduled') actions.push({ label: 'Publish', status: 'Published' });
-    } else if (user.role === 'Editor') {
-      if (task.status === 'Draft') actions.push({ label: 'Submit', status: 'Submitted' });
-    } else if (user.role === 'Approver') {
-      if (task.status === 'Review') {
-        actions.push({ label: 'Schedule', status: 'Scheduled' });
-        actions.push({ label: 'Reject', status: 'Rejected' });
-      }
-    }
-    
-    return actions;
+    const transitions = getAvailableTransitions(task.status, user.role);
+    return transitions.map(t => ({ label: t.label, status: t.targetStatus }));
   };
 
   if (loading) {
