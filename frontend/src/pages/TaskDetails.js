@@ -20,9 +20,9 @@ import {
   TASK_STATUS_CONFIG, 
   getStatusBadgeClass, 
   isReadOnlyStatus,
-  getAvailableTransitions,
-  CONTENT_TYPE_LIST
+  getAvailableTransitions
 } from '../config/statusConfig';
+import { CONTENT_TYPE_LIST } from '../config/contentTypeConfig';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
