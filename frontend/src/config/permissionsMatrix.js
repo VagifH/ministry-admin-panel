@@ -1,6 +1,6 @@
 /**
  * Permissions Matrix Configuration
- * Centralized role-based access control for all actions
+ * Centralized role-based access control for all actions and pages
  */
 
 /**
@@ -8,8 +8,21 @@
  */
 export const ROLES = {
   ADMIN: 'Admin',
-  EDITOR: 'Editor',
+  EDITOR: 'Editor',           // Ministry Editor
+  PRODUCER: 'Producer',       // V Studio Producer
   APPROVER: 'Approver'
+};
+
+/**
+ * Page access permissions
+ */
+export const PAGE_PERMISSIONS = {
+  dashboard: [ROLES.ADMIN, ROLES.EDITOR, ROLES.PRODUCER, ROLES.APPROVER],
+  tasks: [ROLES.ADMIN, ROLES.EDITOR, ROLES.PRODUCER, ROLES.APPROVER],
+  task_details: [ROLES.ADMIN, ROLES.EDITOR, ROLES.PRODUCER, ROLES.APPROVER],
+  calendar: [ROLES.ADMIN, ROLES.EDITOR, ROLES.PRODUCER, ROLES.APPROVER],
+  activity_log: [ROLES.ADMIN, ROLES.EDITOR],  // Only Admin and Editor
+  settings: [ROLES.ADMIN],  // Admin only
 };
 
 /**
@@ -41,6 +54,9 @@ export const ACTIONS = {
   CREATE_USER: 'create_user',
   EDIT_USER: 'edit_user',
   DELETE_USER: 'delete_user',
+  
+  // Avatar management
+  MANAGE_AVATARS: 'manage_avatars',
   
   // Audit actions
   VIEW_AUDIT_LOGS: 'view_audit_logs',
@@ -79,6 +95,8 @@ export const PERMISSIONS_MATRIX = {
     [ACTIONS.EDIT_USER]: true,
     [ACTIONS.DELETE_USER]: true,
     
+    [ACTIONS.MANAGE_AVATARS]: true,
+    
     [ACTIONS.VIEW_AUDIT_LOGS]: true,
     
     [ACTIONS.VIEW_COMMENTS]: true,
@@ -86,7 +104,7 @@ export const PERMISSIONS_MATRIX = {
   },
   
   [ROLES.EDITOR]: {
-    // Can create/edit non-finalized tasks, upload videos
+    // Ministry Editor: Create/edit tasks, submit, schedule approved, publish
     [ACTIONS.VIEW_TASKS]: true,
     [ACTIONS.CREATE_TASK]: true,
     [ACTIONS.EDIT_TASK]: true,  // Conditional: only for non-finalized
@@ -95,13 +113,13 @@ export const PERMISSIONS_MATRIX = {
     [ACTIONS.SUBMIT_TASK]: true,
     [ACTIONS.PRODUCE_TASK]: false,
     [ACTIONS.REVIEW_TASK]: false,
-    [ACTIONS.SCHEDULE_TASK]: false,
-    [ACTIONS.PUBLISH_TASK]: false,
+    [ACTIONS.SCHEDULE_TASK]: true,  // Can schedule approved tasks
+    [ACTIONS.PUBLISH_TASK]: true,   // Can publish scheduled tasks
     [ACTIONS.REJECT_TASK]: false,
     
-    [ACTIONS.UPLOAD_VIDEO]: true,  // Conditional: only for non-finalized
+    [ACTIONS.UPLOAD_VIDEO]: true,
     [ACTIONS.DOWNLOAD_VIDEO]: true,
-    [ACTIONS.DELETE_VIDEO]: true,  // Conditional: only for non-finalized
+    [ACTIONS.DELETE_VIDEO]: true,
     [ACTIONS.STREAM_VIDEO]: true,
     
     [ACTIONS.VIEW_USERS]: false,
@@ -109,25 +127,27 @@ export const PERMISSIONS_MATRIX = {
     [ACTIONS.EDIT_USER]: false,
     [ACTIONS.DELETE_USER]: false,
     
+    [ACTIONS.MANAGE_AVATARS]: false,
+    
     [ACTIONS.VIEW_AUDIT_LOGS]: true,
     
     [ACTIONS.VIEW_COMMENTS]: true,
     [ACTIONS.ADD_COMMENT]: true
   },
   
-  [ROLES.APPROVER]: {
-    // Can approve/reject tasks in review, download videos
+  [ROLES.PRODUCER]: {
+    // V Studio Producer: Start production, submit for review
     [ACTIONS.VIEW_TASKS]: true,
     [ACTIONS.CREATE_TASK]: false,
-    [ACTIONS.EDIT_TASK]: false,
+    [ACTIONS.EDIT_TASK]: true,  // Can edit during production
     [ACTIONS.DELETE_TASK]: false,
     
     [ACTIONS.SUBMIT_TASK]: false,
-    [ACTIONS.PRODUCE_TASK]: false,
+    [ACTIONS.PRODUCE_TASK]: true,  // Start production, submit for review
     [ACTIONS.REVIEW_TASK]: false,
-    [ACTIONS.SCHEDULE_TASK]: true,  // Can schedule from Review
+    [ACTIONS.SCHEDULE_TASK]: false,
     [ACTIONS.PUBLISH_TASK]: false,
-    [ACTIONS.REJECT_TASK]: true,    // Can reject from Review
+    [ACTIONS.REJECT_TASK]: false,
     
     [ACTIONS.UPLOAD_VIDEO]: false,
     [ACTIONS.DOWNLOAD_VIDEO]: true,
@@ -139,7 +159,41 @@ export const PERMISSIONS_MATRIX = {
     [ACTIONS.EDIT_USER]: false,
     [ACTIONS.DELETE_USER]: false,
     
-    [ACTIONS.VIEW_AUDIT_LOGS]: true,
+    [ACTIONS.MANAGE_AVATARS]: false,
+    
+    [ACTIONS.VIEW_AUDIT_LOGS]: false,
+    
+    [ACTIONS.VIEW_COMMENTS]: true,
+    [ACTIONS.ADD_COMMENT]: true
+  },
+  
+  [ROLES.APPROVER]: {
+    // Approver: Approve/reject tasks in review
+    [ACTIONS.VIEW_TASKS]: true,
+    [ACTIONS.CREATE_TASK]: false,
+    [ACTIONS.EDIT_TASK]: false,
+    [ACTIONS.DELETE_TASK]: false,
+    
+    [ACTIONS.SUBMIT_TASK]: false,
+    [ACTIONS.PRODUCE_TASK]: false,
+    [ACTIONS.REVIEW_TASK]: true,   // Can approve/reject
+    [ACTIONS.SCHEDULE_TASK]: false,
+    [ACTIONS.PUBLISH_TASK]: false,
+    [ACTIONS.REJECT_TASK]: true,
+    
+    [ACTIONS.UPLOAD_VIDEO]: false,
+    [ACTIONS.DOWNLOAD_VIDEO]: true,
+    [ACTIONS.DELETE_VIDEO]: false,
+    [ACTIONS.STREAM_VIDEO]: true,
+    
+    [ACTIONS.VIEW_USERS]: false,
+    [ACTIONS.CREATE_USER]: false,
+    [ACTIONS.EDIT_USER]: false,
+    [ACTIONS.DELETE_USER]: false,
+    
+    [ACTIONS.MANAGE_AVATARS]: false,
+    
+    [ACTIONS.VIEW_AUDIT_LOGS]: false,
     
     [ACTIONS.VIEW_COMMENTS]: true,
     [ACTIONS.ADD_COMMENT]: true
@@ -168,6 +222,28 @@ export const canPerformAction = (user, action) => {
 };
 
 /**
+ * Check if a role can access a page
+ * @param {string} role - User role
+ * @param {string} page - Page name
+ * @returns {boolean}
+ */
+export const canAccessPage = (role, page) => {
+  const allowedRoles = PAGE_PERMISSIONS[page] || [];
+  return allowedRoles.includes(role);
+};
+
+/**
+ * Check if user can access a page
+ * @param {Object} user - User object with role property
+ * @param {string} page - Page name
+ * @returns {boolean}
+ */
+export const userCanAccessPage = (user, page) => {
+  if (!user?.role) return false;
+  return canAccessPage(user.role, page);
+};
+
+/**
  * Get all allowed actions for a role
  * @param {string} role - User role
  * @returns {string[]} Array of allowed action names
@@ -181,6 +257,17 @@ export const getAllowedActions = (role) => {
 };
 
 /**
+ * Get all accessible pages for a role
+ * @param {string} role - User role
+ * @returns {string[]} Array of accessible page names
+ */
+export const getAccessiblePages = (role) => {
+  return Object.entries(PAGE_PERMISSIONS)
+    .filter(([_, roles]) => roles.includes(role))
+    .map(([page]) => page);
+};
+
+/**
  * Role display configuration
  */
 export const ROLE_CONFIG = {
@@ -190,14 +277,19 @@ export const ROLE_CONFIG = {
     order: 1
   },
   [ROLES.EDITOR]: {
-    label: 'Editor',
-    description: 'Create and edit content',
+    label: 'Editor (Ministry)',
+    description: 'Create and manage content',
     order: 2
+  },
+  [ROLES.PRODUCER]: {
+    label: 'Producer (V Studio)',
+    description: 'Production workflow',
+    order: 3
   },
   [ROLES.APPROVER]: {
     label: 'Approver',
     description: 'Review and approve content',
-    order: 3
+    order: 4
   }
 };
 
