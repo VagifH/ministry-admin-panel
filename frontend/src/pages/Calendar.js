@@ -17,8 +17,9 @@ const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 // Small avatar circle component for event chips
 const MiniAvatar = ({ avatarName, size = 18 }) => {
-  const { getAvatarPhoto } = useAvatars();
+  const { getAvatarPhoto, getAvatarInitials } = useAvatars();
   const photoUrl = getAvatarPhoto(avatarName);
+  const initials = getAvatarInitials(avatarName);
   
   return (
     <div
@@ -28,7 +29,12 @@ const MiniAvatar = ({ avatarName, size = 18 }) => {
       {photoUrl ? (
         <img src={photoUrl} alt="" className="w-full h-full object-cover" />
       ) : (
-        <User size={size * 0.6} className="text-ministry-text-muted" />
+        <span 
+          className="text-ministry-text-secondary font-medium"
+          style={{ fontSize: Math.max(size * 0.45, 8) }}
+        >
+          {initials}
+        </span>
       )}
     </div>
   );
