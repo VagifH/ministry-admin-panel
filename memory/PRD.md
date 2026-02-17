@@ -25,8 +25,9 @@ Build a web admin panel for a Ministry with a Microsoft/Fluent-inspired UI. The 
 Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested/Rejected) -> Scheduled -> Published
 
 ### Role Permissions
-- **Editor:** Create/edit non-finalized tasks, submit for review, upload videos
-- **Approver:** Approve/reject tasks in 'ReadyForReview' state, download videos
+- **Editor (Ministry Editor):** Create/edit non-finalized tasks, submit for review, schedule/publish approved tasks
+- **Producer (V Studio):** Start production, submit for review, resume after changes requested
+- **Approver:** Approve/reject tasks in 'ReadyForReview' state
 - **Admin:** Full access to all data and status transitions, manage avatars
 
 ### Business Rules
