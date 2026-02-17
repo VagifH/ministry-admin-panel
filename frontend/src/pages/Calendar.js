@@ -193,10 +193,21 @@ export default function Calendar() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  // Day panel state
+  const [dayPanelOpen, setDayPanelOpen] = useState(false);
+  const [dayPanelDate, setDayPanelDate] = useState(null);
+  const [dayPanelTasks, setDayPanelTasks] = useState([]);
 
   const handleTaskClick = useCallback((taskId) => {
     navigate(`/tasks/${taskId}`);
   }, [navigate]);
+
+  const handleDayClick = useCallback((day, tasks) => {
+    setDayPanelDate(day);
+    setDayPanelTasks(tasks);
+    setDayPanelOpen(true);
+  }, []);
 
   useEffect(() => {
     fetchTasks();
