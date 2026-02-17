@@ -129,7 +129,8 @@ export const TASK_STATUS_CONFIG = {
  * @returns {string} Tailwind class string for badge styling
  */
 export const getStatusBadgeClass = (status) => {
-  return TASK_STATUS_CONFIG[status]?.badgeClass || TASK_STATUS_CONFIG[TASK_STATUS.DRAFT].badgeClass;
+  const migratedStatus = migrateStatus(status);
+  return TASK_STATUS_CONFIG[migratedStatus]?.badgeClass || TASK_STATUS_CONFIG[TASK_STATUS.DRAFT].badgeClass;
 };
 
 /**
@@ -138,7 +139,18 @@ export const getStatusBadgeClass = (status) => {
  * @returns {string} Tailwind class string for text color
  */
 export const getStatusTextColor = (status) => {
-  return TASK_STATUS_CONFIG[status]?.textColor || TASK_STATUS_CONFIG[TASK_STATUS.DRAFT].textColor;
+  const migratedStatus = migrateStatus(status);
+  return TASK_STATUS_CONFIG[migratedStatus]?.textColor || TASK_STATUS_CONFIG[TASK_STATUS.DRAFT].textColor;
+};
+
+/**
+ * Get status label for display
+ * @param {string} status - Task status value
+ * @returns {string} Display label
+ */
+export const getStatusLabel = (status) => {
+  const migratedStatus = migrateStatus(status);
+  return TASK_STATUS_CONFIG[migratedStatus]?.label || status;
 };
 
 /**
