@@ -618,18 +618,27 @@ async def login(request: LoginRequest, http_request: Request):
     user_doc = await db.users.find_one({"email": request.email}, {"_id": 0})
     
     if not user_doc:
-        # Log failed login attempt
-        await audit_logger.log_login_failed(request.email, "User not found", http_request)
+        # Log failed login attempt (safe)
+        try:
+            await audit_logger.log_login_failed(request.email, "User not found", http_request)
+        except Exception as e:
+            logger.error(f"Audit logging failed for login failure: {e}")
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
     if not verify_password(request.password, user_doc["hashed_password"]):
-        # Log failed login attempt
-        await audit_logger.log_login_failed(request.email, "Invalid password", http_request)
+        # Log failed login attempt (safe)
+        try:
+            await audit_logger.log_login_failed(request.email, "Invalid password", http_request)
+        except Exception as e:
+            logger.error(f"Audit logging failed for login failure: {e}")
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
     if not user_doc["is_active"]:
-        # Log failed login attempt
-        await audit_logger.log_login_failed(request.email, "Account disabled", http_request)
+        # Log failed login attempt (safe)
+        try:
+            await audit_logger.log_login_failed(request.email, "Account disabled", http_request)
+        except Exception as e:
+            logger.error(f"Audit logging failed for login failure: {e}")
         raise HTTPException(status_code=403, detail="Account is disabled")
     
     token = create_access_token({"sub": user_doc["id"]})
@@ -639,8 +648,11 @@ async def login(request: LoginRequest, http_request: Request):
     
     user = User(**user_doc)
     
-    # Log successful login
-    await audit_logger.log_login_success(user, http_request)
+    # Log successful login (safe)
+    try:
+        await audit_logger.log_login_success(user, http_request)
+    except Exception as e:
+        logger.error(f"Audit logging failed for login success: {e}")
     
     return LoginResponse(token=token, user=user)
 
@@ -697,7 +709,12 @@ async def create_user(user_data: UserCreate, request: Request, current_user: Use
     user_dict["created_at"] = datetime.now(timezone.utc).isoformat()
     
     await db.users.insert_one(user_dict)
-    await audit_logger.log_user_create(current_user, user_dict["id"], user_data.email, request)
+    
+    # Audit log with try/catch safety
+    try:
+        await audit_logger.log_user_create(current_user, user_dict["id"], user_data.email, request)
+    except Exception as e:
+        logger.error(f"Audit logging failed for user creation: {e}")
     
     user_dict.pop("hashed_password")
     user_dict['created_at'] = datetime.fromisoformat(user_dict['created_at'])
@@ -712,7 +729,11 @@ async def update_user(user_id: str, user_data: UserUpdate, request: Request, cur
     update_dict = {k: v for k, v in user_data.model_dump().items() if v is not None}
     if update_dict:
         await db.users.update_one({"id": user_id}, {"$set": update_dict})
-        await audit_logger.log_user_update(current_user, user_id, update_dict, request)
+        # Audit log with try/catch safety
+        try:
+            await audit_logger.log_user_update(current_user, user_id, update_dict, request)
+        except Exception as e:
+            logger.error(f"Audit logging failed for user update: {e}")
     
     updated = await db.users.find_one({"id": user_id}, {"_id": 0, "hashed_password": 0})
     if isinstance(updated.get('created_at'), str):
@@ -731,7 +752,12 @@ async def delete_user(user_id: str, request: Request, current_user: User = Depen
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
     
-    await audit_logger.log_user_delete(current_user, user_id, user_doc.get("email") if user_doc else None, request)
+    # Audit log with try/catch safety
+    try:
+        await audit_logger.log_user_delete(current_user, user_id, user_doc.get("email") if user_doc else None, request)
+    except Exception as e:
+        logger.error(f"Audit logging failed for user deletion: {e}")
+    
     return {"message": "User deleted"}
 
 # ==================== TASK ENDPOINTS ====================
@@ -812,7 +838,12 @@ async def create_task(task_data: TaskCreate, request: Request, current_user: Use
     task_dict["publish_datetime"] = task_dict["publish_datetime"].isoformat()
     
     await db.tasks.insert_one(task_dict)
-    await audit_logger.log_task_create(current_user, task_dict["id"], task_data.title, request)
+    
+    # Audit log with try/catch safety
+    try:
+        await audit_logger.log_task_create(current_user, task_dict["id"], task_data.title, request)
+    except Exception as e:
+        logger.error(f"Audit logging failed for task creation: {e}")
     
     task_dict['created_at'] = datetime.fromisoformat(task_dict['created_at'])
     task_dict['updated_at'] = datetime.fromisoformat(task_dict['updated_at'])
@@ -839,7 +870,12 @@ async def update_task(task_id: str, task_data: TaskUpdate, request: Request, cur
         update_dict["updated_at"] = datetime.now(timezone.utc).isoformat()
         
         await db.tasks.update_one({"id": task_id}, {"$set": update_dict})
-        await audit_logger.log_task_update(current_user, task_id, update_dict, request)
+        
+        # Audit log with try/catch safety
+        try:
+            await audit_logger.log_task_update(current_user, task_id, update_dict, request)
+        except Exception as e:
+            logger.error(f"Audit logging failed for task update: {e}")
     
     updated = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if isinstance(updated.get('created_at'), str):
@@ -876,7 +912,12 @@ async def change_task_status(task_id: str, status_change: StatusChange, request:
     }
     
     await db.tasks.update_one({"id": task_id}, {"$set": update_dict})
-    await audit_logger.log_status_change(current_user, task_id, old_status, new_status, request)
+    
+    # Audit log with try/catch safety
+    try:
+        await audit_logger.log_status_change(current_user, task_id, old_status, new_status, request)
+    except Exception as e:
+        logger.error(f"Audit logging failed for status change: {e}")
     
     updated = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if isinstance(updated.get('created_at'), str):
@@ -897,7 +938,12 @@ async def delete_task(task_id: str, request: Request, current_user: User = Depen
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Task not found")
     
-    await audit_logger.log_task_delete(current_user, task_id, task_doc.get("title") if task_doc else None, request)
+    # Audit log with try/catch safety
+    try:
+        await audit_logger.log_task_delete(current_user, task_id, task_doc.get("title") if task_doc else None, request)
+    except Exception as e:
+        logger.error(f"Audit logging failed for task deletion: {e}")
+    
     return {"message": "Task deleted"}
 
 # ==================== COMMENT ENDPOINTS ====================
@@ -1260,7 +1306,12 @@ async def upload_video(task_id: str, request: Request, file: UploadFile = File(.
         }
         
         await db.videos.insert_one(video_dict)
-        await audit_logger.log_video_upload(current_user, task_id, file.filename, request)
+        
+        # Audit log with try/catch safety
+        try:
+            await audit_logger.log_video_upload(current_user, task_id, file.filename, request)
+        except Exception as e:
+            logger.error(f"Audit logging failed for video upload: {e}")
         
         video_dict['created_at'] = now
         video_dict['updated_at'] = now
@@ -1289,14 +1340,19 @@ async def upload_video(task_id: str, request: Request, file: UploadFile = File(.
         }
         
         await db.videos.insert_one(video_dict)
-        await audit_logger.log(
-            user=current_user,
-            action=AuditAction.UPLOAD_FAILED,
-            entity_type=EntityType.VIDEO,
-            entity_id=task_id,
-            new_value=str(e),
-            request=request
-        )
+        
+        # Audit log with try/catch safety
+        try:
+            await audit_logger.log(
+                user=current_user,
+                action=AuditAction.UPLOAD_FAILED,
+                entity_type=EntityType.VIDEO,
+                entity_id=task_id,
+                new_value=str(e),
+                request=request
+            )
+        except Exception as audit_e:
+            logger.error(f"Audit logging failed for video upload failure: {audit_e}")
         
         raise HTTPException(status_code=500, detail=f"Failed to save video: {str(e)}")
 
