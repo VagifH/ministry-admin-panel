@@ -16,7 +16,7 @@ import { TableSkeleton } from '../components/ui/loading';
 import { EmptyState, NoResultsState, ErrorState } from '../components/ui/empty-state';
 import { showToast, showApiError } from '../lib/toast';
 import { STATUS_LIST, getStatusBadgeClass, getStatusLabel, getStatusList } from '../utils/statusUtils';
-import { CONTENT_TYPE_LIST } from '../config/contentTypeConfig';
+import { CONTENT_TYPE, CONTENT_TYPE_LIST } from '../config/contentTypeConfig';
 import { AVATAR_LIST } from '../config/avatarConfig';
 import { AvatarDisplay } from '../components/AvatarDisplay';
 
