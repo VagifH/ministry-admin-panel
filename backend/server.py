@@ -205,7 +205,31 @@ app = FastAPI()
 # Register exception handlers for unified error responses
 app.add_exception_handler(AppError, app_error_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
-app.add_exception_handler(Exception, generic_exception_handler)
+
+# Custom middleware for catching all unhandled exceptions
+@app.middleware("http")
+async def catch_exceptions_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except AppError:
+        # Let AppError be handled by its registered handler
+        raise
+    except Exception as exc:
+        # Log and return generic error for unexpected exceptions
+        try:
+            logging.getLogger(__name__).exception(f"Unexpected error on {request.method} {request.url.path}: {exc}")
+        except Exception:
+            pass  # Never block response if logging fails
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=500,
+            content={
+                "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "Something went wrong. Please try again."
+                }
+            }
+        )
 
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
