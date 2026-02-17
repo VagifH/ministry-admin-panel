@@ -7,11 +7,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../components/ui/dialog';
 import { Badge } from '../components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { TableSkeleton } from '../components/ui/loading';
 import { EmptyState, ErrorState } from '../components/ui/empty-state';
 import { showToast, showApiError } from '../lib/toast';
+import AvatarsSettings from '../components/AvatarsSettings';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
