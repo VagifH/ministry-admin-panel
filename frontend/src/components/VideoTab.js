@@ -35,6 +35,7 @@ import {
   formatDuration 
 } from '../services/videoService';
 import { showToast, showApiError } from '../lib/toast';
+import { isReadOnlyStatus } from '../config/statusConfig';
 
 export default function VideoTab({ taskId, taskStatus }) {
   const [video, setVideo] = useState(null);
@@ -47,7 +48,7 @@ export default function VideoTab({ taskId, taskStatus }) {
   const [deleting, setDeleting] = useState(false);
   const fileInputRef = useRef(null);
 
-  const isReadOnly = ['Scheduled', 'Published'].includes(taskStatus);
+  const isReadOnly = isReadOnlyStatus(taskStatus);
   const canModify = !isReadOnly && !uploading && !deleting;
 
   useEffect(() => {
