@@ -172,7 +172,9 @@ export default function Tasks() {
             >
               <TableCell className="font-medium text-ministry-text-primary">{task.title}</TableCell>
               <TableCell className="text-ministry-text-secondary">{task.content_type}</TableCell>
-              <TableCell className="text-ministry-text-secondary">{task.avatar}</TableCell>
+              <TableCell>
+                <AvatarDisplay avatarName={task.avatar} size={28} showLabel />
+              </TableCell>
               <TableCell>
                 <Badge className={`${getStatusBadgeClass(task.status)} rounded-md`}>
                   {getStatusLabel(task.status)}
