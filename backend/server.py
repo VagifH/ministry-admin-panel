@@ -1107,7 +1107,7 @@ async def get_task_video(task_id: str, current_user: User = Depends(get_current_
     # Verify task exists
     task = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
     # Find video for this task
     video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
@@ -1130,20 +1130,20 @@ async def create_video_record(task_id: str, video_data: VideoCreate, request: Re
     # Verify task exists
     task = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
     # Check if video already exists for this task
     existing_video = await db.videos.find_one({"task_id": task_id})
     if existing_video:
-        raise HTTPException(status_code=400, detail="Video already exists for this task. Delete it first to upload a new one.")
+        raise ConflictError(message="Video already exists for this task. Delete it first to upload a new one.", code=ErrorCode.RESOURCE_CONFLICT)
     
     # Check permissions - Admins and Editors can upload videos
     if current_user.role not in ["Admin", "Editor"]:
-        raise HTTPException(status_code=403, detail="Only Admin and Editor roles can upload videos")
+        raise ForbiddenError(message="Only Admin and Editor roles can upload videos", code=ErrorCode.PERMISSION_DENIED)
     
     # Check task status - cannot upload to Published tasks
     if task.get("status") == "Published":
-        raise HTTPException(status_code=400, detail="Cannot upload video to a published task")
+        raise ValidationError(message="Cannot upload video to a published task", code=ErrorCode.VALIDATION_ERROR)
     
     now = datetime.now(timezone.utc)
     video_dict = {
@@ -1178,12 +1178,12 @@ async def update_video_status(task_id: str, video_update: VideoUpdate, request: 
     # Find existing video
     video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
     if not video:
-        raise HTTPException(status_code=404, detail="Video not found for this task")
+        raise NotFoundError(message="Video not found for this task", code=ErrorCode.VIDEO_NOT_FOUND)
     
     # Build update dict
     update_data = video_update.model_dump(exclude_unset=True)
     if not update_data:
-        raise HTTPException(status_code=400, detail="No update data provided")
+        raise ValidationError(message="No update data provided", code=ErrorCode.VALIDATION_ERROR)
     
     update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
     
@@ -1215,7 +1215,7 @@ async def delete_video(task_id: str, request: Request, current_user: User = Depe
     # Find existing video
     video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
     if not video:
-        raise HTTPException(status_code=404, detail="Video not found for this task")
+        raise NotFoundError(message="Video not found for this task", code=ErrorCode.VIDEO_NOT_FOUND)
     
     # Check permissions
     if current_user.role not in ["Admin", "Editor"]:
