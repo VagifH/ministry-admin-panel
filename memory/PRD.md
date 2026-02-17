@@ -262,5 +262,14 @@ All 22 test cases passed:
 - [ ] Accessibility improvements (aria-describedby for dialogs)
 - [ ] React Hook dependencies cleanup (ESLint warnings)
 
+## Test Accounts
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@ministry.local | ChangeMe123! |
+| Ministry Editor | ministry.editor@test.local | TestEditor123! |
+| V Studio Producer | vstudio.producer@test.local | TestProducer123! |
+| Content Approver | approver@test.local | TestApprover123! |
+
 ## Credentials
 - **Admin:** admin@ministry.local / ChangeMe123!
