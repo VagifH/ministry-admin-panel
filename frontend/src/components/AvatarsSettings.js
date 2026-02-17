@@ -136,9 +136,8 @@ export default function AvatarsSettings() {
       <Table>
         <TableHeader>
           <TableRow className="border-ministry-border-default">
-            <TableHead className="text-ministry-text-primary font-semibold w-[80px]">Agent</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold w-[60px]">Preview</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">Display Name</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold w-[60px]">Photo</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">Name</TableHead>
             <TableHead className="text-ministry-text-primary font-semibold w-[80px]">Active</TableHead>
             <TableHead className="text-ministry-text-primary font-semibold w-[140px]">Updated</TableHead>
             <TableHead className="text-ministry-text-primary font-semibold w-[180px]">Actions</TableHead>
@@ -154,12 +153,7 @@ export default function AvatarsSettings() {
 
             return (
               <TableRow key={avatar.id} className="border-ministry-border-default" data-testid={`avatar-row-${avatar.id}`}>
-                {/* Avatar ID */}
-                <TableCell className="text-ministry-text-secondary text-sm font-mono">
-                  {avatar.name}
-                </TableCell>
-
-                {/* Preview - 32px circle with photo or initials */}
+                {/* Photo - 32px circle with photo or initials */}
                 <TableCell>
                   <div
                     className="w-8 h-8 rounded-full bg-ministry-bg-tertiary border border-ministry-border-default flex items-center justify-center overflow-hidden"
@@ -179,7 +173,7 @@ export default function AvatarsSettings() {
                   </div>
                 </TableCell>
 
-                {/* Display Name - Inline Edit */}
+                {/* Name - Inline Edit (display_name only) */}
                 <TableCell>
                   {isEditing ? (
                     <div className="flex items-center gap-2">
