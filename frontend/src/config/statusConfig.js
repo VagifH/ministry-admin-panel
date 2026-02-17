@@ -1,6 +1,6 @@
 /**
- * Centralized Task Status Configuration
- * Single source of truth for all task status labels, colors, and workflow logic
+ * Centralized Task & Video Status Configuration
+ * Single source of truth for all status labels, colors, and workflow logic
  */
 
 /**
@@ -25,43 +25,57 @@ export const TASK_STATUS_CONFIG = {
     label: 'Draft',
     color: 'bg-ministry-status-draft',
     textColor: 'text-ministry-status-draft',
-    badgeClass: 'bg-ministry-status-draft text-white'
+    badgeClass: 'bg-ministry-status-draft text-white',
+    order: 1,
+    visible: true
   },
   [TASK_STATUS.SUBMITTED]: {
     label: 'Submitted',
     color: 'bg-ministry-status-submitted',
     textColor: 'text-ministry-status-submitted',
-    badgeClass: 'bg-ministry-status-submitted text-white'
+    badgeClass: 'bg-ministry-status-submitted text-white',
+    order: 2,
+    visible: true
   },
   [TASK_STATUS.PRODUCING]: {
     label: 'Producing',
     color: 'bg-ministry-status-producing',
     textColor: 'text-ministry-status-producing',
-    badgeClass: 'bg-ministry-status-producing text-white'
+    badgeClass: 'bg-ministry-status-producing text-white',
+    order: 3,
+    visible: true
   },
   [TASK_STATUS.REVIEW]: {
     label: 'Review',
     color: 'bg-ministry-status-review',
     textColor: 'text-ministry-status-review',
-    badgeClass: 'bg-ministry-status-review text-white'
+    badgeClass: 'bg-ministry-status-review text-white',
+    order: 4,
+    visible: true
   },
   [TASK_STATUS.SCHEDULED]: {
     label: 'Scheduled',
     color: 'bg-ministry-status-scheduled',
     textColor: 'text-ministry-status-scheduled',
-    badgeClass: 'bg-ministry-status-scheduled text-white'
+    badgeClass: 'bg-ministry-status-scheduled text-white',
+    order: 5,
+    visible: true
   },
   [TASK_STATUS.PUBLISHED]: {
     label: 'Published',
     color: 'bg-ministry-status-published',
     textColor: 'text-ministry-status-published',
-    badgeClass: 'bg-ministry-status-published text-white'
+    badgeClass: 'bg-ministry-status-published text-white',
+    order: 6,
+    visible: true
   },
   [TASK_STATUS.REJECTED]: {
     label: 'Rejected',
     color: 'bg-ministry-status-rejected',
     textColor: 'text-ministry-status-rejected',
-    badgeClass: 'bg-ministry-status-rejected text-white'
+    badgeClass: 'bg-ministry-status-rejected text-white',
+    order: 7,
+    visible: true
   }
 };
 
@@ -85,8 +99,12 @@ export const getStatusTextColor = (status) => {
 
 /**
  * All task statuses as array (for dropdowns, filters)
+ * Sorted by order, filtered by visibility
  */
-export const TASK_STATUS_LIST = Object.values(TASK_STATUS);
+export const TASK_STATUS_LIST = Object.entries(TASK_STATUS_CONFIG)
+  .filter(([_, config]) => config.visible)
+  .sort((a, b) => a[1].order - b[1].order)
+  .map(([status]) => status);
 
 /**
  * Read-only statuses - tasks in these statuses cannot be edited by Editor/Approver
@@ -150,40 +168,90 @@ export const getAvailableTransitions = (currentStatus, role) => {
   return TASK_WORKFLOW[role]?.[currentStatus] || [];
 };
 
+// ============================================
+// VIDEO STATUS CONFIGURATION
+// ============================================
+
 /**
- * Content type configuration
+ * Video status constants
  */
-export const CONTENT_TYPE = {
-  ANNOUNCEMENT: 'Announcement',
-  SHORT_LESSON: 'Short Lesson',
-  FULL_LESSON: 'Full Lesson'
+export const VIDEO_STATUS = {
+  PENDING: 'pending',
+  UPLOADING: 'uploading',
+  PROCESSING: 'processing',
+  READY: 'ready',
+  FAILED: 'failed'
 };
 
-export const CONTENT_TYPE_CONFIG = {
-  [CONTENT_TYPE.ANNOUNCEMENT]: {
-    label: 'Announcement',
-    accentColor: 'bg-gray-400'
+/**
+ * Video status display configuration
+ */
+export const VIDEO_STATUS_CONFIG = {
+  [VIDEO_STATUS.PENDING]: {
+    label: 'Pending',
+    color: 'bg-ministry-status-draft',
+    textColor: 'text-ministry-status-draft',
+    description: 'Video upload initialized',
+    order: 1,
+    visible: true
   },
-  [CONTENT_TYPE.SHORT_LESSON]: {
-    label: 'Short Lesson',
-    accentColor: 'bg-blue-500'
+  [VIDEO_STATUS.UPLOADING]: {
+    label: 'Uploading',
+    color: 'bg-ministry-status-submitted',
+    textColor: 'text-ministry-status-submitted',
+    description: 'Video is being uploaded',
+    order: 2,
+    visible: true
   },
-  [CONTENT_TYPE.FULL_LESSON]: {
-    label: 'Full Lesson',
-    accentColor: 'bg-purple-500'
+  [VIDEO_STATUS.PROCESSING]: {
+    label: 'Processing',
+    color: 'bg-ministry-status-producing',
+    textColor: 'text-ministry-status-producing',
+    description: 'Video is being processed',
+    order: 3,
+    visible: true
+  },
+  [VIDEO_STATUS.READY]: {
+    label: 'Ready',
+    color: 'bg-ministry-status-success',
+    textColor: 'text-ministry-status-success',
+    description: 'Video is ready for use',
+    order: 4,
+    visible: true
+  },
+  [VIDEO_STATUS.FAILED]: {
+    label: 'Failed',
+    color: 'bg-ministry-status-rejected',
+    textColor: 'text-ministry-status-rejected',
+    description: 'Video processing failed',
+    order: 5,
+    visible: true
   }
 };
 
 /**
- * Get accent color for content type
- * @param {string} contentType - Content type value
- * @returns {string} Tailwind class for accent color
+ * Get video status badge class
+ * @param {string} status - Video status value
+ * @returns {string} Tailwind class string
  */
-export const getContentTypeAccent = (contentType) => {
-  return CONTENT_TYPE_CONFIG[contentType]?.accentColor || 'bg-gray-400';
+export const getVideoStatusBadgeClass = (status) => {
+  return VIDEO_STATUS_CONFIG[status]?.color || VIDEO_STATUS_CONFIG[VIDEO_STATUS.PENDING].color;
 };
 
 /**
- * All content types as array (for dropdowns)
+ * Get video status label
+ * @param {string} status - Video status value
+ * @returns {string} Display label
  */
-export const CONTENT_TYPE_LIST = Object.values(CONTENT_TYPE);
+export const getVideoStatusLabel = (status) => {
+  return VIDEO_STATUS_CONFIG[status]?.label || status;
+};
+
+/**
+ * Get video status description
+ * @param {string} status - Video status value
+ * @returns {string} Description text
+ */
+export const getVideoStatusDescription = (status) => {
+  return VIDEO_STATUS_CONFIG[status]?.description || '';
+};
