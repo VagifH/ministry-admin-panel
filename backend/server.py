@@ -90,7 +90,7 @@ class Task(BaseModel):
     script: str
     notes: Optional[str] = None
     publish_datetime: datetime
-    status: Literal["Draft", "Submitted", "Producing", "Review", "Scheduled", "Published", "Rejected"]
+    status: Literal["Draft", "Submitted", "InProgress", "ReadyForReview", "ChangesRequested", "Approved", "Rejected", "Scheduled", "Published"]
     owner: str  # user id
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
