@@ -157,7 +157,7 @@ export default function TaskDetails() {
     if (!task || !user) return [];
     
     const transitions = getAvailableTransitions(task.status, user.role);
-    return transitions.map(t => ({ label: t.label, status: t.targetStatus }));
+    return transitions.map(t => ({ label: t.label, status: t.target }));
   };
 
   if (loading) {
