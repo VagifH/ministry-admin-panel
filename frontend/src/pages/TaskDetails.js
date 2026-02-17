@@ -220,7 +220,7 @@ export default function TaskDetails() {
           <div className="flex items-center gap-4">
             <h1 className="text-2xl font-semibold text-ministry-text-primary">{task.title}</h1>
             <Badge className={`${getStatusBadgeClass(task.status)} rounded-md`} data-testid="task-status-badge">
-              {TASK_STATUS_CONFIG[task.status]?.label || task.status}
+              {getStatusLabel(task.status)}
             </Badge>
           </div>
           <div className="flex gap-2">
