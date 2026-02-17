@@ -983,7 +983,7 @@ async def list_comments(task_id: str, current_user: User = Depends(get_current_u
 async def create_comment(task_id: str, comment_data: CommentCreate, request: Request, current_user: User = Depends(get_current_user)):
     task = await db.tasks.find_one({"id": task_id})
     if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
     import uuid
     comment_dict = {
