@@ -27,6 +27,7 @@ import {
 import { CONTENT_TYPE_LIST } from '../config/contentTypeConfig';
 import { AVATAR_LIST } from '../config/avatarConfig';
 import { AvatarDisplay } from '../components/AvatarDisplay';
+import { useAvatars } from '../context/AvatarContext';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
