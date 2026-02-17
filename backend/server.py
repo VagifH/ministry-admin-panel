@@ -888,6 +888,10 @@ async def get_task(task_id: str, current_user: User = Depends(get_current_user))
     if not task:
         raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
+    # Producer/Approver cannot view archived tasks
+    if task.get("is_archived") and current_user.role not in ["Admin", "Editor"]:
+        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
+    
     if isinstance(task.get('created_at'), str):
         task['created_at'] = datetime.fromisoformat(task['created_at'])
     if isinstance(task.get('updated_at'), str):
