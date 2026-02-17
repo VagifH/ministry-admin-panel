@@ -1447,14 +1447,10 @@ async def update_avatar(
 async def upload_avatar_photo(
     avatar_id: str,
     file: UploadFile = File(...),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_action("manage_avatars"))
 ):
     """Upload a photo for an avatar (Admin only) with automatic optimization"""
     import base64
-    
-    # Admin only
-    if current_user.role != "Admin":
-        raise HTTPException(status_code=403, detail="Only Admin can upload avatar photos")
     
     # Find avatar
     avatar = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
