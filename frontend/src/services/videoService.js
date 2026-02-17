@@ -211,43 +211,8 @@ export const canTaskBePublished = async (taskId) => {
   return { canPublish: true };
 };
 
-/**
- * Format file size for display
- * @param {number} bytes - File size in bytes
- * @returns {string} Formatted file size
- */
-export const formatFileSize = (bytes) => {
-  if (!bytes) return 'Unknown';
-  
-  const units = ['B', 'KB', 'MB', 'GB'];
-  let size = bytes;
-  let unitIndex = 0;
-  
-  while (size >= 1024 && unitIndex < units.length - 1) {
-    size /= 1024;
-    unitIndex++;
-  }
-  
-  return `${size.toFixed(1)} ${units[unitIndex]}`;
-};
-
-/**
- * Format duration for display
- * @param {number} seconds - Duration in seconds
- * @returns {string} Formatted duration (MM:SS or HH:MM:SS)
- */
-export const formatDuration = (seconds) => {
-  if (!seconds) return 'Unknown';
-  
-  const hrs = Math.floor(seconds / 3600);
-  const mins = Math.floor((seconds % 3600) / 60);
-  const secs = Math.floor(seconds % 60);
-  
-  if (hrs > 0) {
-    return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  }
-  return `${mins}:${secs.toString().padStart(2, '0')}`;
-};
+// Note: formatFileSize and formatDuration are imported from videoRules config
+// and re-exported at the top of this file for backward compatibility
 
 export default {
   getTaskVideo,
