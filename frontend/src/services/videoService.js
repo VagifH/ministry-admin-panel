@@ -5,59 +5,40 @@
  */
 
 import axios from 'axios';
+import { 
+  VIDEO_STATUS, 
+  VIDEO_STATUS_CONFIG,
+  getVideoStatusLabel,
+  getVideoStatusDescription 
+} from '../config/statusConfig';
+import { 
+  VIDEO_RULES,
+  ALLOWED_MIME_TYPES,
+  ALLOWED_EXTENSIONS,
+  SIZE_LIMITS,
+  validateVideoFile as validateFile,
+  formatFileSize,
+  formatDuration
+} from '../config/videoRules';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
+// Re-export from config for backward compatibility
+export { 
+  VIDEO_STATUS, 
+  VIDEO_STATUS_CONFIG,
+  formatFileSize,
+  formatDuration
+};
+
 /**
- * Video upload configuration
+ * Video upload configuration (from videoRules)
  */
 export const VIDEO_CONFIG = {
-  MAX_SIZE_MB: 200,
-  MAX_SIZE_BYTES: 200 * 1024 * 1024,
-  ALLOWED_TYPES: ['video/mp4'],
-  ALLOWED_EXTENSIONS: ['.mp4']
-};
-
-/**
- * Video status constants
- */
-export const VIDEO_STATUS = {
-  PENDING: 'pending',
-  UPLOADING: 'uploading',
-  PROCESSING: 'processing',
-  READY: 'ready',
-  FAILED: 'failed'
-};
-
-/**
- * Video status display configuration
- */
-export const VIDEO_STATUS_CONFIG = {
-  [VIDEO_STATUS.PENDING]: {
-    label: 'Pending',
-    color: 'bg-ministry-status-draft',
-    description: 'Video upload initialized'
-  },
-  [VIDEO_STATUS.UPLOADING]: {
-    label: 'Uploading',
-    color: 'bg-ministry-status-submitted',
-    description: 'Video is being uploaded'
-  },
-  [VIDEO_STATUS.PROCESSING]: {
-    label: 'Processing',
-    color: 'bg-ministry-status-producing',
-    description: 'Video is being processed'
-  },
-  [VIDEO_STATUS.READY]: {
-    label: 'Ready',
-    color: 'bg-ministry-status-published',
-    description: 'Video is ready for use'
-  },
-  [VIDEO_STATUS.FAILED]: {
-    label: 'Failed',
-    color: 'bg-ministry-status-rejected',
-    description: 'Video processing failed'
-  }
+  MAX_SIZE_MB: SIZE_LIMITS.MAX_SIZE_MB,
+  MAX_SIZE_BYTES: SIZE_LIMITS.MAX_SIZE_BYTES,
+  ALLOWED_TYPES: ALLOWED_MIME_TYPES,
+  ALLOWED_EXTENSIONS: ALLOWED_EXTENSIONS
 };
 
 /**
