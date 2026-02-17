@@ -38,7 +38,7 @@ export default function Tasks() {
 
   const [newTask, setNewTask] = useState({
     title: '',
-    content_type: 'Announcement',
+    content_type: CONTENT_TYPE.ANNOUNCEMENT,
     avatar: 'Avatar 1',
     script: '',
     notes: '',
