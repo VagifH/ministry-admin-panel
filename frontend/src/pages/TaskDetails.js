@@ -19,6 +19,7 @@ import {
   TASK_STATUS, 
   TASK_STATUS_CONFIG, 
   getStatusBadgeClass, 
+  getStatusLabel,
   isReadOnlyStatus,
   getAvailableTransitions
 } from '../config/statusConfig';
