@@ -298,9 +298,14 @@ export default function TaskDetails() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Avatar 1">Avatar 1</SelectItem>
-                    <SelectItem value="Avatar 2">Avatar 2</SelectItem>
-                    <SelectItem value="Avatar 3">Avatar 3</SelectItem>
+                    {AVATAR_LIST.map((avatar) => (
+                      <SelectItem key={avatar} value={avatar}>
+                        <div className="flex items-center gap-2">
+                          <AvatarDisplay avatarName={avatar} size={20} />
+                          <span>{avatar}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
