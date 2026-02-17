@@ -224,11 +224,13 @@ class LoginResponse(BaseModel):
 class DashboardStats(BaseModel):
     draft: int
     submitted: int
-    producing: int
-    review: int
+    in_progress: int
+    ready_for_review: int
+    changes_requested: int
+    approved: int
+    rejected: int
     scheduled: int
     published: int
-    rejected: int
     scheduled_this_week: int
 
 # ==================== UTILITIES ====================
