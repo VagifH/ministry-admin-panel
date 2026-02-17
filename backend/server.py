@@ -1719,10 +1719,10 @@ async def delete_avatar_photo(
     # Find avatar
     avatar = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
     if not avatar:
-        raise HTTPException(status_code=404, detail="Avatar not found")
+        raise NotFoundError(message="Avatar not found", code=ErrorCode.AVATAR_NOT_FOUND)
     
     if not avatar.get("has_photo"):
-        raise HTTPException(status_code=400, detail="Avatar has no photo to delete")
+        raise ValidationError(message="Avatar has no photo to delete", code=ErrorCode.VALIDATION_ERROR)
     
     # Update avatar
     update_data = {
