@@ -220,23 +220,35 @@ export default function Calendar() {
   };
 
   const handlePrevious = () => {
-    if (view === 'month') {
-      setCurrentDate(subMonths(currentDate, 1));
-    } else {
-      setCurrentDate(subWeeks(currentDate, 1));
-    }
+    setIsTransitioning(true);
+    setTimeout(() => {
+      if (view === 'month') {
+        setCurrentDate(subMonths(currentDate, 1));
+      } else {
+        setCurrentDate(subWeeks(currentDate, 1));
+      }
+      setIsTransitioning(false);
+    }, 75);
   };
 
   const handleNext = () => {
-    if (view === 'month') {
-      setCurrentDate(addMonths(currentDate, 1));
-    } else {
-      setCurrentDate(addWeeks(currentDate, 1));
-    }
+    setIsTransitioning(true);
+    setTimeout(() => {
+      if (view === 'month') {
+        setCurrentDate(addMonths(currentDate, 1));
+      } else {
+        setCurrentDate(addWeeks(currentDate, 1));
+      }
+      setIsTransitioning(false);
+    }, 75);
   };
 
   const handleToday = () => {
-    setCurrentDate(new Date());
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentDate(new Date());
+      setIsTransitioning(false);
+    }, 75);
   };
 
   const days = view === 'month' ? getMonthDays() : getWeekDays();
