@@ -184,6 +184,7 @@ export default function Calendar() {
                 const dayTasks = getTasksForDate(day);
                 const isCurrentMonth = isSameMonth(day, currentDate);
                 const isToday = isSameDay(day, new Date());
+                const isSelected = selectedDate && isSameDay(day, selectedDate);
                 const maxVisible = 2;
                 const visibleTasks = dayTasks.slice(0, maxVisible);
                 const remainingCount = dayTasks.length - maxVisible;
@@ -192,29 +193,42 @@ export default function Calendar() {
                   <div
                     key={index}
                     data-testid={`calendar-day-${format(day, 'yyyy-MM-dd')}`}
-                    className={`h-[100px] p-2 border border-ministry-border-default rounded-ministry overflow-hidden ${
-                      !isCurrentMonth ? 'bg-ministry-bg-primary' : 'bg-ministry-bg-secondary'
-                    } ${isToday ? 'ring-2 ring-ministry-brand-primary' : ''}`}
+                    onClick={() => setSelectedDate(day)}
+                    className={`h-[100px] p-2 border rounded-ministry overflow-hidden cursor-pointer
+                      ${!isCurrentMonth ? 'bg-ministry-bg-primary border-ministry-border-default' : 'bg-ministry-bg-secondary border-ministry-border-default'}
+                      ${isToday ? 'ring-2 ring-ministry-brand-primary ring-inset' : ''}
+                      ${isSelected && !isToday ? 'bg-ministry-bg-tertiary' : ''}
+                    `}
                   >
-                    <div className={`text-sm font-medium mb-1 ${
-                      isCurrentMonth ? 'text-ministry-text-primary' : 'text-ministry-text-muted'
+                    {/* Day number - lighter weight, secondary color */}
+                    <div className={`text-sm font-normal mb-1.5 ${
+                      isCurrentMonth ? 'text-ministry-text-secondary' : 'text-ministry-text-muted'
                     }`}>
                       {format(day, 'd')}
                     </div>
-                    <div className="space-y-1">
+                    {/* Events container - 4px gap between events */}
+                    <div className="flex flex-col gap-1">
                       {visibleTasks.map((task) => (
                         <div
                           key={task.id}
-                          onClick={() => navigate(`/tasks/${task.id}`)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/tasks/${task.id}`);
+                          }}
                           data-testid={`calendar-task-${task.id}`}
-                          className={`text-xs px-1.5 py-0.5 rounded cursor-pointer truncate ${statusColors[task.status]}`}
+                          className="flex items-center gap-1 cursor-pointer group"
                           title={task.title}
                         >
-                          {task.title}
+                          {/* Content type accent bar */}
+                          <div className={`w-0.5 h-4 rounded-full flex-shrink-0 ${contentTypeAccent[task.content_type] || 'bg-gray-400'}`} />
+                          {/* Event text - medium weight, primary color, single line */}
+                          <span className={`text-xs font-medium text-ministry-text-primary truncate flex-1 px-1 py-0.5 rounded ${statusColors[task.status]}`}>
+                            {task.title}
+                          </span>
                         </div>
                       ))}
                       {remainingCount > 0 && (
-                        <div className="text-xs text-ministry-text-muted pl-1">
+                        <div className="text-xs text-ministry-text-muted pl-2">
                           +{remainingCount} more
                         </div>
                       )}
