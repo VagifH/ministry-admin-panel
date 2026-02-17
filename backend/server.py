@@ -126,29 +126,7 @@ def check_action_permission(role: str, action: str) -> tuple[bool, str]:
         return True, ""
     return False, f"Permission denied: {role} cannot perform {action}"
 
-def require_page_access(page: str):
-    """
-    Dependency factory for page access control.
-    Usage: Depends(require_page_access("settings"))
-    """
-    async def check_access(current_user = Depends(get_current_user)):
-        allowed, error = check_page_access(current_user.role, page)
-        if not allowed:
-            raise HTTPException(status_code=403, detail=error)
-        return current_user
-    return check_access
-
-def require_action(action: str):
-    """
-    Dependency factory for action permission control.
-    Usage: Depends(require_action("create_task"))
-    """
-    async def check_permission(current_user = Depends(get_current_user)):
-        allowed, error = check_action_permission(current_user.role, action)
-        if not allowed:
-            raise HTTPException(status_code=403, detail=error)
-        return current_user
-    return check_permission
+# Note: require_page_access and require_action are defined after get_current_user
 
 def migrate_status(status: str) -> str:
     """Migrate old status values to new ones"""
