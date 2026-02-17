@@ -188,12 +188,18 @@ export const isReadOnlyStatus = (status) => {
 export const TASK_WORKFLOW = {
   Admin: {
     [TASK_STATUS.DRAFT]: [{ label: 'Submit', targetStatus: TASK_STATUS.SUBMITTED }],
-    [TASK_STATUS.SUBMITTED]: [{ label: 'Move to Producing', targetStatus: TASK_STATUS.PRODUCING }],
-    [TASK_STATUS.PRODUCING]: [{ label: 'Move to Review', targetStatus: TASK_STATUS.REVIEW }],
-    [TASK_STATUS.REVIEW]: [
-      { label: 'Schedule', targetStatus: TASK_STATUS.SCHEDULED },
+    [TASK_STATUS.SUBMITTED]: [{ label: 'Start Work', targetStatus: TASK_STATUS.IN_PROGRESS }],
+    [TASK_STATUS.IN_PROGRESS]: [{ label: 'Ready for Review', targetStatus: TASK_STATUS.READY_FOR_REVIEW }],
+    [TASK_STATUS.READY_FOR_REVIEW]: [
+      { label: 'Approve', targetStatus: TASK_STATUS.APPROVED },
+      { label: 'Request Changes', targetStatus: TASK_STATUS.CHANGES_REQUESTED },
       { label: 'Reject', targetStatus: TASK_STATUS.REJECTED }
     ],
+    [TASK_STATUS.CHANGES_REQUESTED]: [
+      { label: 'Resubmit', targetStatus: TASK_STATUS.READY_FOR_REVIEW },
+      { label: 'Move to Draft', targetStatus: TASK_STATUS.DRAFT }
+    ],
+    [TASK_STATUS.APPROVED]: [{ label: 'Schedule', targetStatus: TASK_STATUS.SCHEDULED }],
     [TASK_STATUS.REJECTED]: [{ label: 'Move to Draft', targetStatus: TASK_STATUS.DRAFT }],
     [TASK_STATUS.SCHEDULED]: [{ label: 'Publish', targetStatus: TASK_STATUS.PUBLISHED }],
     [TASK_STATUS.PUBLISHED]: []
@@ -201,20 +207,25 @@ export const TASK_WORKFLOW = {
   Editor: {
     [TASK_STATUS.DRAFT]: [{ label: 'Submit', targetStatus: TASK_STATUS.SUBMITTED }],
     [TASK_STATUS.SUBMITTED]: [],
-    [TASK_STATUS.PRODUCING]: [],
-    [TASK_STATUS.REVIEW]: [],
+    [TASK_STATUS.IN_PROGRESS]: [{ label: 'Ready for Review', targetStatus: TASK_STATUS.READY_FOR_REVIEW }],
+    [TASK_STATUS.READY_FOR_REVIEW]: [],
+    [TASK_STATUS.CHANGES_REQUESTED]: [{ label: 'Resubmit', targetStatus: TASK_STATUS.READY_FOR_REVIEW }],
+    [TASK_STATUS.APPROVED]: [],
     [TASK_STATUS.REJECTED]: [],
     [TASK_STATUS.SCHEDULED]: [],
     [TASK_STATUS.PUBLISHED]: []
   },
   Approver: {
     [TASK_STATUS.DRAFT]: [],
-    [TASK_STATUS.SUBMITTED]: [],
-    [TASK_STATUS.PRODUCING]: [],
-    [TASK_STATUS.REVIEW]: [
-      { label: 'Schedule', targetStatus: TASK_STATUS.SCHEDULED },
+    [TASK_STATUS.SUBMITTED]: [{ label: 'Start Work', targetStatus: TASK_STATUS.IN_PROGRESS }],
+    [TASK_STATUS.IN_PROGRESS]: [],
+    [TASK_STATUS.READY_FOR_REVIEW]: [
+      { label: 'Approve', targetStatus: TASK_STATUS.APPROVED },
+      { label: 'Request Changes', targetStatus: TASK_STATUS.CHANGES_REQUESTED },
       { label: 'Reject', targetStatus: TASK_STATUS.REJECTED }
     ],
+    [TASK_STATUS.CHANGES_REQUESTED]: [],
+    [TASK_STATUS.APPROVED]: [{ label: 'Schedule', targetStatus: TASK_STATUS.SCHEDULED }],
     [TASK_STATUS.REJECTED]: [],
     [TASK_STATUS.SCHEDULED]: [],
     [TASK_STATUS.PUBLISHED]: []
@@ -228,7 +239,8 @@ export const TASK_WORKFLOW = {
  * @returns {Array} Array of available transitions
  */
 export const getAvailableTransitions = (currentStatus, role) => {
-  return TASK_WORKFLOW[role]?.[currentStatus] || [];
+  const migratedStatus = migrateStatus(currentStatus);
+  return TASK_WORKFLOW[role]?.[migratedStatus] || [];
 };
 
 // ============================================
