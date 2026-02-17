@@ -24,7 +24,7 @@ const TaskPopoverItem = ({ task, onClick }) => (
       transition-colors duration-[120ms] ease-out"
   >
     {/* Content type accent bar */}
-    <div className={`w-1 h-5 rounded-full flex-shrink-0 ${contentTypeAccent[task.content_type] || 'bg-gray-400'}`} />
+    <div className={`w-1 h-5 rounded-full flex-shrink-0 ${getContentTypeAccent(task.content_type)}`} />
     {/* Task info */}
     <div className="flex-1 min-w-0">
       <div className="text-sm font-medium text-ministry-text-primary truncate">
@@ -32,14 +32,14 @@ const TaskPopoverItem = ({ task, onClick }) => (
       </div>
     </div>
     {/* Status badge */}
-    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded flex-shrink-0 ${statusColors[task.status]}`}>
-      {task.status}
+    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded flex-shrink-0 ${getStatusBadgeClass(task.status)}`}>
+      {TASK_STATUS_CONFIG[task.status]?.label || task.status}
     </span>
   </button>
 );
 
 // DayCell component - handles individual day rendering with interactions
-const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectDate, onTaskClick, statusColors, contentTypeAccent }) => {
+const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectDate, onTaskClick }) => {
   const [isPressed, setIsPressed] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   
