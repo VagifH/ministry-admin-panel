@@ -50,7 +50,7 @@ import { VIDEO_RULES, getAllowedTypesText, getSizeLimitText } from '../config/vi
 // Consistent button height for Fluent alignment
 const BUTTON_HEIGHT = 'h-9'; // 36px
 
-export default function VideoTab({ taskId, taskStatus }) {
+export default function VideoTab({ taskId, taskStatus, isArchived = false }) {
   const { user } = useAuth();
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -63,11 +63,11 @@ export default function VideoTab({ taskId, taskStatus }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Permission checks from centralized matrix
-  const canUpload = hasPermission(user?.role, ACTIONS.UPLOAD_VIDEO) && !isReadOnlyStatus(taskStatus);
-  const canDelete = hasPermission(user?.role, ACTIONS.DELETE_VIDEO) && !isReadOnlyStatus(taskStatus);
+  // Permission checks from centralized matrix - archived tasks cannot upload/delete
+  const canUpload = hasPermission(user?.role, ACTIONS.UPLOAD_VIDEO) && !isReadOnlyStatus(taskStatus) && !isArchived;
+  const canDelete = hasPermission(user?.role, ACTIONS.DELETE_VIDEO) && !isReadOnlyStatus(taskStatus) && !isArchived;
   const canDownload = hasPermission(user?.role, ACTIONS.DOWNLOAD_VIDEO);
-  const isReadOnly = isReadOnlyStatus(taskStatus);
+  const isReadOnly = isReadOnlyStatus(taskStatus) || isArchived;
 
   // Status-based action availability
   const isReady = video?.status === VIDEO_STATUS.READY;
