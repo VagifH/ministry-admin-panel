@@ -33,11 +33,13 @@ export default function Dashboard() {
   const statCards = stats ? [
     { label: TASK_STATUS_CONFIG[TASK_STATUS.DRAFT].label, value: stats.draft, color: getStatusTextColor(TASK_STATUS.DRAFT) },
     { label: TASK_STATUS_CONFIG[TASK_STATUS.SUBMITTED].label, value: stats.submitted, color: getStatusTextColor(TASK_STATUS.SUBMITTED) },
-    { label: TASK_STATUS_CONFIG[TASK_STATUS.PRODUCING].label, value: stats.producing, color: getStatusTextColor(TASK_STATUS.PRODUCING) },
-    { label: TASK_STATUS_CONFIG[TASK_STATUS.REVIEW].label, value: stats.review, color: getStatusTextColor(TASK_STATUS.REVIEW) },
+    { label: TASK_STATUS_CONFIG[TASK_STATUS.IN_PROGRESS].label, value: stats.in_progress, color: getStatusTextColor(TASK_STATUS.IN_PROGRESS) },
+    { label: TASK_STATUS_CONFIG[TASK_STATUS.READY_FOR_REVIEW].label, value: stats.ready_for_review, color: getStatusTextColor(TASK_STATUS.READY_FOR_REVIEW) },
+    { label: TASK_STATUS_CONFIG[TASK_STATUS.CHANGES_REQUESTED].label, value: stats.changes_requested, color: getStatusTextColor(TASK_STATUS.CHANGES_REQUESTED) },
+    { label: TASK_STATUS_CONFIG[TASK_STATUS.APPROVED].label, value: stats.approved, color: getStatusTextColor(TASK_STATUS.APPROVED) },
+    { label: TASK_STATUS_CONFIG[TASK_STATUS.REJECTED].label, value: stats.rejected, color: getStatusTextColor(TASK_STATUS.REJECTED) },
     { label: TASK_STATUS_CONFIG[TASK_STATUS.SCHEDULED].label, value: stats.scheduled, color: getStatusTextColor(TASK_STATUS.SCHEDULED) },
     { label: TASK_STATUS_CONFIG[TASK_STATUS.PUBLISHED].label, value: stats.published, color: getStatusTextColor(TASK_STATUS.PUBLISHED) },
-    { label: TASK_STATUS_CONFIG[TASK_STATUS.REJECTED].label, value: stats.rejected, color: getStatusTextColor(TASK_STATUS.REJECTED) },
   ] : [];
 
   return (
@@ -48,8 +50,8 @@ export default function Dashboard() {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {Array.from({ length: 7 }).map((_, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+          {Array.from({ length: 9 }).map((_, i) => (
             <CardSkeleton key={i} />
           ))}
         </div>
@@ -57,7 +59,7 @@ export default function Dashboard() {
         <ErrorState description={error} onRetry={fetchStats} />
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
             {statCards.map((stat) => (
               <div
                 key={stat.label}
