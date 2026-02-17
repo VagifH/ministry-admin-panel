@@ -1209,7 +1209,7 @@ async def upload_avatar_photo(
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user)
 ):
-    """Upload a photo for an avatar (Admin only)"""
+    """Upload a photo for an avatar (Admin only) with automatic optimization"""
     import base64
     
     # Admin only
@@ -1238,11 +1238,25 @@ async def upload_avatar_photo(
             detail=f"File too large. Maximum size is {AVATAR_MAX_SIZE_MB}MB. Got: {file_size / (1024*1024):.1f}MB"
         )
     
-    # Encode to base64
-    photo_base64 = base64.b64encode(contents).decode('utf-8')
+    # Optimize image: center-crop, resize to 256x256, convert to WebP
+    try:
+        optimized_bytes, optimized_mime = optimize_avatar_image(contents, file.content_type)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Image processing failed. The file may be corrupted or invalid. {str(e)}"
+        )
+    
+    # Encode optimized image to base64
+    photo_base64 = base64.b64encode(optimized_bytes).decode('utf-8')
     
     # Create data URL with mime type prefix
-    photo_data = f"data:{file.content_type};base64,{photo_base64}"
+    photo_data = f"data:{optimized_mime};base64,{photo_base64}"
+    
+    # Log optimization stats
+    original_kb = file_size / 1024
+    optimized_kb = len(optimized_bytes) / 1024
+    logger.info(f"Avatar optimized: {original_kb:.1f}KB -> {optimized_kb:.1f}KB ({optimized_kb/original_kb*100:.0f}%)")
     
     # Update avatar
     update_data = {
@@ -1252,7 +1266,7 @@ async def upload_avatar_photo(
     }
     
     await db.avatars.update_one({"id": avatar_id}, {"$set": update_data})
-    await log_audit(current_user.id, current_user.name, "UPLOAD", "Avatar", avatar_id, None, file.filename)
+    await log_audit(current_user.id, current_user.name, "UPLOAD", "Avatar", avatar_id, None, f"{file.filename} (optimized: {optimized_kb:.1f}KB)")
     
     # Return updated avatar
     updated = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
