@@ -121,6 +121,13 @@ export default function TaskDetails() {
   };
 
   const handleStatusChange = async (newStatus) => {
+    // Validate transition on frontend before making API call
+    const validation = validateTransition(task.status, newStatus, user.role);
+    if (!validation.valid) {
+      showToast.error(validation.error);
+      return;
+    }
+    
     setSaving(true);
     try {
       await axios.patch(`${API_URL}/tasks/${taskId}/status`, { status: newStatus });
