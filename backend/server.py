@@ -1156,7 +1156,7 @@ async def get_video_status(task_id: str, current_user: User = Depends(get_curren
     }
 
 @api_router.post("/tasks/{task_id}/video/upload", response_model=VideoResponse)
-async def upload_video(task_id: str, file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
+async def upload_video(task_id: str, request: Request, file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
     """
     Upload a video file for a task.
     
