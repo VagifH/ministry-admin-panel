@@ -382,6 +382,7 @@ export default function Calendar() {
                     isSelected={isSelected}
                     onSelectDate={setSelectedDate}
                     onTaskClick={handleTaskClick}
+                    onDayClick={handleDayClick}
                   />
                 );
               })}
@@ -389,6 +390,42 @@ export default function Calendar() {
           </div>
         )}
       </div>
+
+      {/* Day Panel Dialog */}
+      <Dialog open={dayPanelOpen} onOpenChange={setDayPanelOpen}>
+        <DialogContent 
+          className="max-w-md bg-ministry-bg-secondary border-ministry-border-default rounded-ministry shadow-ministry-dialog"
+          data-testid="day-panel-dialog"
+        >
+          <DialogHeader className="border-b border-ministry-border-default pb-4">
+            <DialogTitle className="text-lg font-semibold text-ministry-text-primary">
+              {dayPanelDate && format(dayPanelDate, 'EEEE, MMMM d, yyyy')}
+            </DialogTitle>
+            <p className="text-sm text-ministry-text-secondary">
+              {dayPanelTasks.length} {dayPanelTasks.length === 1 ? 'task' : 'tasks'} scheduled
+            </p>
+          </DialogHeader>
+          
+          <div className="py-2 space-y-2 max-h-[400px] overflow-y-auto">
+            {dayPanelTasks.length === 0 ? (
+              <div className="text-center py-8 text-ministry-text-muted">
+                No tasks scheduled for this day
+              </div>
+            ) : (
+              dayPanelTasks.map((task) => (
+                <DayPanelTaskItem
+                  key={task.id}
+                  task={task}
+                  onClick={(taskId) => {
+                    setDayPanelOpen(false);
+                    handleTaskClick(taskId);
+                  }}
+                />
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
