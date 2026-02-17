@@ -229,7 +229,7 @@ export default function Settings() {
       <Tabs defaultValue="users" className="space-y-4">
         <TabsList className="bg-ministry-bg-tertiary rounded-ministry">
           <TabsTrigger value="users" data-testid="tab-users" className="rounded-ministry">Users</TabsTrigger>
-          <TabsTrigger value="avatars" data-testid="tab-avatars" className="rounded-ministry">Avatars</TabsTrigger>
+          <TabsTrigger value="avatars" data-testid="tab-avatars" className="rounded-ministry">AI Agents</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users">
