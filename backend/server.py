@@ -357,20 +357,88 @@ async def log_audit(actor_id: str, actor_name: str, action: str, object_type: st
     }
     await db.audit_logs.insert_one(log)
 
-STATUS_TRANSITIONS = {
+# ==================== WORKFLOW ENGINE ====================
+# Strict status transitions with role-based permissions
+
+# Valid transitions map: from_status -> [to_statuses]
+WORKFLOW_TRANSITIONS = {
     "Draft": ["Submitted"],
-    "Submitted": ["Producing"],
-    "Producing": ["Review"],
-    "Review": ["Scheduled", "Rejected"],
-    "Rejected": ["Draft"],
+    "Submitted": ["InProgress"],
+    "InProgress": ["ReadyForReview"],
+    "ReadyForReview": ["Approved", "ChangesRequested", "Rejected"],
+    "ChangesRequested": ["InProgress"],
+    "Approved": ["Scheduled"],
+    "Rejected": [],  # Terminal state (can only be moved by Admin)
     "Scheduled": ["Published"],
-    "Published": []
+    "Published": []  # Terminal state
 }
 
-def can_transition(from_status: str, to_status: str, is_admin: bool) -> bool:
-    if is_admin:
-        return True  # Admin can change any status
-    return to_status in STATUS_TRANSITIONS.get(from_status, [])
+# Role-based transition permissions
+# Each role can only perform specific transitions
+ROLE_TRANSITIONS = {
+    "Editor": {
+        # Ministry Editor permissions
+        "Draft": ["Submitted"],
+        "Approved": ["Scheduled"],
+        "Scheduled": ["Published"]
+    },
+    "Producer": {
+        # V Studio Producer permissions
+        "Submitted": ["InProgress"],
+        "InProgress": ["ReadyForReview"],
+        "ChangesRequested": ["InProgress"]
+    },
+    "Approver": {
+        # Approver permissions
+        "ReadyForReview": ["Approved", "ChangesRequested", "Rejected"]
+    },
+    "Admin": {
+        # Admin can do all valid transitions
+        "Draft": ["Submitted"],
+        "Submitted": ["InProgress"],
+        "InProgress": ["ReadyForReview"],
+        "ReadyForReview": ["Approved", "ChangesRequested", "Rejected"],
+        "ChangesRequested": ["InProgress"],
+        "Approved": ["Scheduled"],
+        "Rejected": ["Draft"],  # Admin can reset rejected tasks
+        "Scheduled": ["Published"]
+    }
+}
+
+def validate_transition(from_status: str, to_status: str, role: str) -> tuple[bool, str]:
+    """
+    Validate if a status transition is allowed for the given role.
+    Returns (is_valid, error_message)
+    """
+    # Migrate old status names
+    from_status = migrate_status(from_status)
+    to_status = migrate_status(to_status)
+    
+    # Check if transition is structurally valid
+    valid_targets = WORKFLOW_TRANSITIONS.get(from_status, [])
+    if to_status not in valid_targets:
+        # Admin special case: can reset Rejected to Draft
+        if role == "Admin" and from_status == "Rejected" and to_status == "Draft":
+            return True, ""
+        return False, f"Invalid transition: {from_status} → {to_status}"
+    
+    # Check if role is allowed to perform this transition
+    role_allowed = ROLE_TRANSITIONS.get(role, {})
+    allowed_targets = role_allowed.get(from_status, [])
+    
+    if to_status not in allowed_targets:
+        return False, f"{role} cannot transition from {from_status} to {to_status}"
+    
+    return True, ""
+
+def get_available_transitions_for_role(current_status: str, role: str) -> list:
+    """
+    Get list of valid next statuses for a given role and current status.
+    Returns list of status strings that the user can transition to.
+    """
+    current_status = migrate_status(current_status)
+    role_allowed = ROLE_TRANSITIONS.get(role, {})
+    return role_allowed.get(current_status, [])
 
 # ==================== STARTUP ====================
 
