@@ -1552,11 +1552,9 @@ async def update_avatar(
     if not avatar:
         raise HTTPException(status_code=404, detail="Avatar not found")
     
-    # Capture old values for audit
-    old_values = {
-        "display_name": avatar.get("display_name"),
-        "is_active": avatar.get("is_active")
-    }
+    # Capture old values for audit (used in changes dict)
+    old_display_name = avatar.get("display_name")
+    old_is_active = avatar.get("is_active")
     
     # Build update dict
     update_data = {"updated_at": datetime.now(timezone.utc).isoformat()}

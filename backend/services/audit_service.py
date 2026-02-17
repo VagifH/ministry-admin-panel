@@ -127,7 +127,7 @@ class AuditLogger:
             import json
             try:
                 return json.dumps(value, default=str)
-            except:
+            except Exception:
                 return str(value)
         return str(value)
     
