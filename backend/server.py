@@ -270,6 +270,10 @@ class Task(BaseModel):
     owner: str  # user id
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    # Archive fields for soft delete
+    is_archived: bool = False
+    archived_at: Optional[datetime] = None
+    archived_by: Optional[str] = None
 
     @field_validator('script')
     @classmethod
