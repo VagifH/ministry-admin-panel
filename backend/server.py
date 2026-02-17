@@ -835,7 +835,7 @@ async def list_tasks(
 async def get_task(task_id: str, current_user: User = Depends(get_current_user)):
     task = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
     if isinstance(task.get('created_at'), str):
         task['created_at'] = datetime.fromisoformat(task['created_at'])
@@ -877,14 +877,14 @@ async def create_task(task_data: TaskCreate, request: Request, current_user: Use
 async def update_task(task_id: str, task_data: TaskUpdate, request: Request, current_user: User = Depends(get_current_user)):
     existing = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if not existing:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
     # Permission checks
     if current_user.role == "Approver":
-        raise HTTPException(status_code=403, detail="Approvers cannot edit task fields")
+        raise ForbiddenError(message="Approvers cannot edit task fields", code=ErrorCode.PERMISSION_DENIED)
     
     if current_user.role == "Editor" and existing["status"] in ["Scheduled", "Published"]:
-        raise HTTPException(status_code=403, detail="Cannot edit tasks that are Scheduled or Published")
+        raise ForbiddenError(message="Cannot edit tasks that are Scheduled or Published", code=ErrorCode.PERMISSION_DENIED)
     
     update_dict = {k: v for k, v in task_data.model_dump().items() if v is not None}
     if update_dict:
@@ -914,7 +914,7 @@ async def update_task(task_id: str, task_data: TaskUpdate, request: Request, cur
 async def change_task_status(task_id: str, status_change: StatusChange, request: Request, current_user: User = Depends(get_current_user)):
     existing = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if not existing:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
     old_status = migrate_status(existing["status"])
     new_status = status_change.status
@@ -922,7 +922,7 @@ async def change_task_status(task_id: str, status_change: StatusChange, request:
     # Validate transition using workflow engine
     is_valid, error_msg = validate_transition(old_status, new_status, current_user.role)
     if not is_valid:
-        raise HTTPException(status_code=403, detail=error_msg)
+        raise ForbiddenError(message=error_msg, code=ErrorCode.INVALID_STATUS_TRANSITION)
     
     # Check video requirement for Published
     if new_status == "Published":
@@ -959,7 +959,7 @@ async def delete_task(task_id: str, request: Request, current_user: User = Depen
     
     result = await db.tasks.delete_one({"id": task_id})
     if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
     # Audit log with try/catch safety
     try:
