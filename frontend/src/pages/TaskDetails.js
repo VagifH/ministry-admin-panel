@@ -236,7 +236,7 @@ export default function TaskDetails() {
                   {getStatusLabel(task.status)}
                 </Badge>
               </div>
-              <span className="text-sm text-ministry-text-secondary mt-0.5 block">{task.avatar}</span>
+              <span className="text-sm text-ministry-text-secondary mt-0.5 block">{getAvatarDisplayName(task.avatar)}</span>
               
               {/* Action Buttons - Fluent Enterprise Standard */}
               {statusActions.length > 0 && (
