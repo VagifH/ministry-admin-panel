@@ -218,31 +218,49 @@ export default function TaskDetails() {
       </Button>
 
       <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
-        <div className="p-6 border-b border-ministry-border-default flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <AvatarDisplay avatarName={task.avatar} size={40} />
-            <div>
-              <h1 className="text-2xl font-semibold text-ministry-text-primary">{task.title}</h1>
-              <span className="text-sm text-ministry-text-secondary">{task.avatar}</span>
+        <div className="p-6 border-b border-ministry-border-default">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <AvatarDisplay avatarName={task.avatar} size={40} />
+              <div>
+                <h1 className="text-2xl font-semibold text-ministry-text-primary">{task.title}</h1>
+                <span className="text-sm text-ministry-text-secondary">{task.avatar}</span>
+              </div>
+              <Badge className={`${getStatusBadgeClass(task.status)} rounded-md`} data-testid="task-status-badge">
+                {getStatusLabel(task.status)}
+              </Badge>
             </div>
-            <Badge className={`${getStatusBadgeClass(task.status)} rounded-md`} data-testid="task-status-badge">
-              {getStatusLabel(task.status)}
-            </Badge>
           </div>
-          <div className="flex gap-2">
-            {statusActions.map((action) => (
-              <Button
-                key={action.status}
-                onClick={() => handleStatusChange(action.status)}
-                disabled={saving}
-                data-testid={`status-action-${action.status.toLowerCase()}`}
-                className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry disabled:opacity-50"
-                size="sm"
-              >
-                {action.label}
-              </Button>
-            ))}
-          </div>
+          
+          {/* Action Buttons - Fluent-style compact layout */}
+          {statusActions.length > 0 && (
+            <div className="flex gap-2 mt-4 pt-4 border-t border-ministry-border-default">
+              {statusActions.map((action) => {
+                // Style based on action type
+                const isApprove = action.status === TASK_STATUS.APPROVED;
+                const isReject = action.status === TASK_STATUS.REJECTED;
+                const isChanges = action.status === TASK_STATUS.CHANGES_REQUESTED;
+                
+                let buttonClass = "bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white";
+                if (isApprove) buttonClass = "bg-ministry-status-approved hover:bg-ministry-status-approved/90 text-white";
+                if (isReject) buttonClass = "bg-ministry-status-rejected hover:bg-ministry-status-rejected/90 text-white";
+                if (isChanges) buttonClass = "bg-ministry-status-changesrequested hover:bg-ministry-status-changesrequested/90 text-white";
+                
+                return (
+                  <Button
+                    key={action.status}
+                    onClick={() => handleStatusChange(action.status)}
+                    disabled={saving}
+                    data-testid={`status-action-${action.status.toLowerCase()}`}
+                    className={`${buttonClass} rounded-ministry disabled:opacity-50 text-sm px-4 h-8`}
+                    size="sm"
+                  >
+                    {action.label}
+                  </Button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         <Tabs defaultValue="details" className="p-6">
