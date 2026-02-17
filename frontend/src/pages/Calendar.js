@@ -175,34 +175,39 @@ export default function Calendar() {
                 const dayTasks = getTasksForDate(day);
                 const isCurrentMonth = isSameMonth(day, currentDate);
                 const isToday = isSameDay(day, new Date());
+                const maxVisible = 2;
+                const visibleTasks = dayTasks.slice(0, maxVisible);
+                const remainingCount = dayTasks.length - maxVisible;
 
                 return (
                   <div
                     key={index}
                     data-testid={`calendar-day-${format(day, 'yyyy-MM-dd')}`}
-                    className={`min-h-[120px] p-2 border border-ministry-border-default rounded-ministry ${
+                    className={`h-[100px] p-2 border border-ministry-border-default rounded-ministry overflow-hidden ${
                       !isCurrentMonth ? 'bg-ministry-bg-primary' : 'bg-ministry-bg-secondary'
                     } ${isToday ? 'ring-2 ring-ministry-brand-primary' : ''}`}
                   >
-                    <div className={`text-sm font-medium mb-2 ${
+                    <div className={`text-sm font-medium mb-1 ${
                       isCurrentMonth ? 'text-ministry-text-primary' : 'text-ministry-text-muted'
                     }`}>
                       {format(day, 'd')}
                     </div>
                     <div className="space-y-1">
-                      {dayTasks.slice(0, 3).map((task) => (
+                      {visibleTasks.map((task) => (
                         <div
                           key={task.id}
                           onClick={() => navigate(`/tasks/${task.id}`)}
                           data-testid={`calendar-task-${task.id}`}
-                          className="text-xs p-1 rounded cursor-pointer hover:opacity-80"
-                          style={{ backgroundColor: statusColors[task.status].replace('bg-', '#').split(' ')[0] }}
+                          className={`text-xs px-1.5 py-0.5 rounded cursor-pointer truncate ${statusColors[task.status]}`}
+                          title={task.title}
                         >
-                          <div className="text-white truncate font-medium">{task.title}</div>
+                          {task.title}
                         </div>
                       ))}
-                      {dayTasks.length > 3 && (
-                        <div className="text-xs text-ministry-text-secondary">+{dayTasks.length - 3} more</div>
+                      {remainingCount > 0 && (
+                        <div className="text-xs text-ministry-text-muted pl-1">
+                          +{remainingCount} more
+                        </div>
                       )}
                     </div>
                   </div>
