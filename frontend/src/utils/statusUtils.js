@@ -256,4 +256,4 @@ export const getStatusFilterOptions = (includeAll = true) => {
 };
 
 // Re-export constants for convenience
-export { STATUS, TASK_STATUSES, STATUS_LIST, TERMINAL_STATUSES, READ_ONLY_STATUSES };
+export { STATUS, TASK_STATUSES, TERMINAL_STATUSES, READ_ONLY_STATUSES } from '../config/taskStatuses';
