@@ -184,40 +184,62 @@ export const isReadOnlyStatus = (status) => {
 /**
  * Task workflow transitions by role
  * Defines which status transitions are allowed for each role
+ * 
+ * WORKFLOW:
+ * Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved|ChangesRequested|Rejected)
+ * ChangesRequested -> InProgress
+ * Approved -> Scheduled -> Published
+ * 
+ * ROLES:
+ * - Editor (Ministry Editor): Draft->Submitted, Approved->Scheduled, Scheduled->Published
+ * - Producer (V Studio): Submitted->InProgress, InProgress->ReadyForReview, ChangesRequested->InProgress
+ * - Approver: ReadyForReview -> Approved/ChangesRequested/Rejected
+ * - Admin: All transitions
  */
 export const TASK_WORKFLOW = {
   Admin: {
     [TASK_STATUS.DRAFT]: [{ label: 'Submit', targetStatus: TASK_STATUS.SUBMITTED }],
-    [TASK_STATUS.SUBMITTED]: [{ label: 'Start Work', targetStatus: TASK_STATUS.IN_PROGRESS }],
+    [TASK_STATUS.SUBMITTED]: [{ label: 'Start Production', targetStatus: TASK_STATUS.IN_PROGRESS }],
     [TASK_STATUS.IN_PROGRESS]: [{ label: 'Ready for Review', targetStatus: TASK_STATUS.READY_FOR_REVIEW }],
     [TASK_STATUS.READY_FOR_REVIEW]: [
       { label: 'Approve', targetStatus: TASK_STATUS.APPROVED },
       { label: 'Request Changes', targetStatus: TASK_STATUS.CHANGES_REQUESTED },
       { label: 'Reject', targetStatus: TASK_STATUS.REJECTED }
     ],
-    [TASK_STATUS.CHANGES_REQUESTED]: [
-      { label: 'Resubmit', targetStatus: TASK_STATUS.READY_FOR_REVIEW },
-      { label: 'Move to Draft', targetStatus: TASK_STATUS.DRAFT }
-    ],
+    [TASK_STATUS.CHANGES_REQUESTED]: [{ label: 'Resume Production', targetStatus: TASK_STATUS.IN_PROGRESS }],
     [TASK_STATUS.APPROVED]: [{ label: 'Schedule', targetStatus: TASK_STATUS.SCHEDULED }],
-    [TASK_STATUS.REJECTED]: [{ label: 'Move to Draft', targetStatus: TASK_STATUS.DRAFT }],
+    [TASK_STATUS.REJECTED]: [{ label: 'Reset to Draft', targetStatus: TASK_STATUS.DRAFT }],
     [TASK_STATUS.SCHEDULED]: [{ label: 'Publish', targetStatus: TASK_STATUS.PUBLISHED }],
     [TASK_STATUS.PUBLISHED]: []
   },
   Editor: {
+    // Ministry Editor: Submit, Schedule, Publish
     [TASK_STATUS.DRAFT]: [{ label: 'Submit', targetStatus: TASK_STATUS.SUBMITTED }],
     [TASK_STATUS.SUBMITTED]: [],
+    [TASK_STATUS.IN_PROGRESS]: [],
+    [TASK_STATUS.READY_FOR_REVIEW]: [],
+    [TASK_STATUS.CHANGES_REQUESTED]: [],
+    [TASK_STATUS.APPROVED]: [{ label: 'Schedule', targetStatus: TASK_STATUS.SCHEDULED }],
+    [TASK_STATUS.REJECTED]: [],
+    [TASK_STATUS.SCHEDULED]: [{ label: 'Publish', targetStatus: TASK_STATUS.PUBLISHED }],
+    [TASK_STATUS.PUBLISHED]: []
+  },
+  Producer: {
+    // V Studio Producer: Production workflow
+    [TASK_STATUS.DRAFT]: [],
+    [TASK_STATUS.SUBMITTED]: [{ label: 'Start Production', targetStatus: TASK_STATUS.IN_PROGRESS }],
     [TASK_STATUS.IN_PROGRESS]: [{ label: 'Ready for Review', targetStatus: TASK_STATUS.READY_FOR_REVIEW }],
     [TASK_STATUS.READY_FOR_REVIEW]: [],
-    [TASK_STATUS.CHANGES_REQUESTED]: [{ label: 'Resubmit', targetStatus: TASK_STATUS.READY_FOR_REVIEW }],
+    [TASK_STATUS.CHANGES_REQUESTED]: [{ label: 'Resume Production', targetStatus: TASK_STATUS.IN_PROGRESS }],
     [TASK_STATUS.APPROVED]: [],
     [TASK_STATUS.REJECTED]: [],
     [TASK_STATUS.SCHEDULED]: [],
     [TASK_STATUS.PUBLISHED]: []
   },
   Approver: {
+    // Approver: Review decisions only
     [TASK_STATUS.DRAFT]: [],
-    [TASK_STATUS.SUBMITTED]: [{ label: 'Start Work', targetStatus: TASK_STATUS.IN_PROGRESS }],
+    [TASK_STATUS.SUBMITTED]: [],
     [TASK_STATUS.IN_PROGRESS]: [],
     [TASK_STATUS.READY_FOR_REVIEW]: [
       { label: 'Approve', targetStatus: TASK_STATUS.APPROVED },
@@ -225,7 +247,7 @@ export const TASK_WORKFLOW = {
       { label: 'Reject', targetStatus: TASK_STATUS.REJECTED }
     ],
     [TASK_STATUS.CHANGES_REQUESTED]: [],
-    [TASK_STATUS.APPROVED]: [{ label: 'Schedule', targetStatus: TASK_STATUS.SCHEDULED }],
+    [TASK_STATUS.APPROVED]: [],
     [TASK_STATUS.REJECTED]: [],
     [TASK_STATUS.SCHEDULED]: [],
     [TASK_STATUS.PUBLISHED]: []
