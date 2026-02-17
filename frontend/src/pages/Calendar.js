@@ -315,55 +315,20 @@ export default function Calendar() {
                 const isCurrentMonth = isSameMonth(day, currentDate);
                 const isToday = isSameDay(day, new Date());
                 const isSelected = selectedDate && isSameDay(day, selectedDate);
-                const maxVisible = 2;
-                const visibleTasks = dayTasks.slice(0, maxVisible);
-                const remainingCount = dayTasks.length - maxVisible;
 
                 return (
-                  <div
+                  <DayCell
                     key={index}
-                    data-testid={`calendar-day-${format(day, 'yyyy-MM-dd')}`}
-                    onClick={() => setSelectedDate(day)}
-                    className={`h-[100px] p-2 border rounded-ministry overflow-hidden cursor-pointer
-                      ${!isCurrentMonth ? 'bg-ministry-bg-primary border-ministry-border-default' : 'bg-ministry-bg-secondary border-ministry-border-default'}
-                      ${isToday ? 'ring-2 ring-ministry-brand-primary ring-inset' : ''}
-                      ${isSelected && !isToday ? 'bg-ministry-bg-tertiary' : ''}
-                    `}
-                  >
-                    {/* Day number - lighter weight, secondary color */}
-                    <div className={`text-sm font-normal mb-1.5 ${
-                      isCurrentMonth ? 'text-ministry-text-secondary' : 'text-ministry-text-muted'
-                    }`}>
-                      {format(day, 'd')}
-                    </div>
-                    {/* Events container - 4px gap between events */}
-                    <div className="flex flex-col gap-1">
-                      {visibleTasks.map((task) => (
-                        <div
-                          key={task.id}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/tasks/${task.id}`);
-                          }}
-                          data-testid={`calendar-task-${task.id}`}
-                          className="flex items-center gap-1 cursor-pointer group"
-                          title={task.title}
-                        >
-                          {/* Content type accent bar */}
-                          <div className={`w-0.5 h-4 rounded-full flex-shrink-0 ${contentTypeAccent[task.content_type] || 'bg-gray-400'}`} />
-                          {/* Event text - medium weight, primary color, single line */}
-                          <span className={`text-xs font-medium text-ministry-text-primary truncate flex-1 px-1 py-0.5 rounded ${statusColors[task.status]}`}>
-                            {task.title}
-                          </span>
-                        </div>
-                      ))}
-                      {remainingCount > 0 && (
-                        <div className="text-xs text-ministry-text-muted pl-2">
-                          +{remainingCount} more
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                    day={day}
+                    dayTasks={dayTasks}
+                    isCurrentMonth={isCurrentMonth}
+                    isToday={isToday}
+                    isSelected={isSelected}
+                    onSelectDate={setSelectedDate}
+                    onTaskClick={handleTaskClick}
+                    statusColors={statusColors}
+                    contentTypeAccent={contentTypeAccent}
+                  />
                 );
               })}
             </div>
