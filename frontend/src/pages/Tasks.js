@@ -231,9 +231,9 @@ export default function Tasks() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
-                {TASK_STATUS_LIST.map((status) => (
-                  <SelectItem key={status} value={status}>
-                    {TASK_STATUS_CONFIG[status]?.label || status}
+                {getStatusList().map((status) => (
+                  <SelectItem key={status.value} value={status.value}>
+                    {status.label}
                   </SelectItem>
                 ))}
               </SelectContent>
