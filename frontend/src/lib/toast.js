@@ -36,7 +36,10 @@ export const showToast = {
 };
 
 export function showApiError(error, defaultMessage = 'An error occurred') {
-  const message = error?.response?.data?.detail || error?.message || defaultMessage;
+  // New unified error format: { error: { code, message } }
+  // Legacy format: { detail: "message" }
+  const errorData = error?.response?.data;
+  const message = errorData?.error?.message || errorData?.detail || error?.message || defaultMessage;
   showToast.error(message);
   return message;
 }
