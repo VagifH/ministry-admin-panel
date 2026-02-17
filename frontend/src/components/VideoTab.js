@@ -239,9 +239,9 @@ export default function VideoTab({ taskId, taskStatus }) {
               ? 'border-ministry-brand-primary bg-ministry-brand-primary/5' 
               : 'border-ministry-border-default bg-ministry-bg-tertiary hover:border-ministry-border-hover'
             }
-            ${!canModify ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+            ${!canUpload ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           `}
-          onClick={() => canModify && fileInputRef.current?.click()}
+          onClick={() => canUpload && fileInputRef.current?.click()}
           data-testid="video-drop-zone"
         >
           <div className="flex flex-col items-center">
