@@ -341,7 +341,8 @@ class VideoResponse(BaseModel):
     status: str
     error_message: Optional[str] = None
     storage_provider: Optional[str] = None
-    storage_key: Optional[str] = None
+    storage_path: Optional[str] = None  # New: Abstract storage path
+    storage_key: Optional[str] = None   # Legacy: For backward compatibility
     uploaded_by: str
     uploaded_by_name: str
     created_at: datetime
