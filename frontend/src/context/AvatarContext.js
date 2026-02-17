@@ -42,6 +42,29 @@ export function AvatarProvider({ children }) {
     return avatar?.has_photo ? avatar.photo_data : null;
   }, [getAvatarByName]);
 
+  // Get avatar display name
+  const getAvatarDisplayName = useCallback((name) => {
+    const avatar = getAvatarByName(name);
+    return avatar?.display_name || name;
+  }, [getAvatarByName]);
+
+  // Check if avatar is active
+  const isAvatarActive = useCallback((name) => {
+    const avatar = getAvatarByName(name);
+    return avatar?.is_active !== false; // Default to true if not set
+  }, [getAvatarByName]);
+
+  // Get only active avatars (for selection dropdowns)
+  const getActiveAvatars = useCallback(() => {
+    return avatars.filter((a) => a.is_active !== false);
+  }, [avatars]);
+
+  // Get avatar initials (A1, A2, A3)
+  const getAvatarInitials = useCallback((name) => {
+    const match = name?.match(/Avatar\s*(\d)/i);
+    return match ? `A${match[1]}` : 'A';
+  }, []);
+
   const value = {
     avatars,
     loading,
@@ -49,6 +72,10 @@ export function AvatarProvider({ children }) {
     fetchAvatars,
     getAvatarByName,
     getAvatarPhoto,
+    getAvatarDisplayName,
+    isAvatarActive,
+    getActiveAvatars,
+    getAvatarInitials,
   };
 
   return (
