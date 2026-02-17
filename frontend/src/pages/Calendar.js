@@ -34,7 +34,7 @@ const TaskPopoverItem = ({ task, onClick }) => (
     </div>
     {/* Status badge */}
     <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded flex-shrink-0 ${getStatusBadgeClass(task.status)}`}>
-      {TASK_STATUS_CONFIG[task.status]?.label || task.status}
+      {getStatusLabel(task.status)}
     </span>
   </button>
 );
