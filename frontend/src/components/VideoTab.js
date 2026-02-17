@@ -43,7 +43,7 @@ import {
   formatDuration 
 } from '../services/videoService';
 import { showToast, showApiError } from '../lib/toast';
-import { isReadOnlyStatus } from '../config/statusConfig';
+import { isReadOnlyStatus } from '../utils/statusUtils';
 import { useAuth } from '../context/AuthContext';
 import { hasPermission, ACTIONS } from '../config/permissionsMatrix';
 import { VIDEO_RULES, getAllowedTypesText, getSizeLimitText } from '../config/videoRules';
