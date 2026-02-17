@@ -11,6 +11,7 @@ import { showApiError } from '../lib/toast';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
+// Status colors for task badges
 const statusColors = {
   Draft: 'bg-ministry-status-draft text-white',
   Submitted: 'bg-ministry-status-submitted text-white',
@@ -21,11 +22,19 @@ const statusColors = {
   Rejected: 'bg-ministry-status-rejected text-white',
 };
 
+// Content type accent colors (left bar indicator)
+const contentTypeAccent = {
+  'Announcement': 'bg-gray-400',      // Neutral
+  'Short Lesson': 'bg-blue-500',      // Blue
+  'Full Lesson': 'bg-purple-500',     // Purple
+};
+
 export default function Calendar() {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState('month');
+  const [selectedDate, setSelectedDate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
