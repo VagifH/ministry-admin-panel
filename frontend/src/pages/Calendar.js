@@ -35,7 +35,10 @@ const TaskPopoverItem = ({ task, onClick, statusColors, contentTypeAccent }) => 
   <button
     onClick={onClick}
     data-testid={`popover-task-${task.id}`}
-    className="w-full flex items-center gap-2 p-2 rounded hover:bg-ministry-bg-tertiary text-left focus:outline-none focus:bg-ministry-bg-tertiary"
+    className="w-full flex items-center gap-2 p-2 rounded text-left cursor-pointer
+      focus:outline-none focus:bg-ministry-bg-tertiary
+      hover:bg-ministry-bg-tertiary
+      transition-colors duration-[120ms] ease-out"
   >
     {/* Content type accent bar */}
     <div className={`w-1 h-5 rounded-full flex-shrink-0 ${contentTypeAccent[task.content_type] || 'bg-gray-400'}`} />
