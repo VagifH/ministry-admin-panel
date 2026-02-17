@@ -137,7 +137,9 @@ export default function Tasks() {
   // Editor and Admin can create tasks, Producer and Approver cannot
   const canCreateTask = canPerformAction(user, ACTIONS.CREATE_TASK);
   const canDeleteTask = canPerformAction(user, ACTIONS.DELETE_TASK);
-  const hasActiveFilters = filters.search || filters.status || filters.content_type || filters.avatar || filters.archived !== 'false';
+  // Only Admin and Editor can view archived tasks
+  const canViewArchived = user?.role === 'Admin' || user?.role === 'Editor';
+  const hasActiveFilters = filters.search || filters.status || filters.content_type || filters.avatar || (canViewArchived && filters.archived !== 'false');
 
   // Archive handler
   const handleArchive = async () => {
