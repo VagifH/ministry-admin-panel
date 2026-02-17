@@ -161,7 +161,7 @@ export default function Tasks() {
           <TableRow className="border-ministry-border-default">
             <TableHead className="text-ministry-text-primary font-semibold">Title</TableHead>
             <TableHead className="text-ministry-text-primary font-semibold">Content Type</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">Avatar</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold">AI Agent</TableHead>
             <TableHead className="text-ministry-text-primary font-semibold">Status</TableHead>
             <TableHead className="text-ministry-text-primary font-semibold">Publish Date</TableHead>
           </TableRow>
