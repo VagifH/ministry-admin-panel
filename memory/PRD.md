@@ -55,6 +55,22 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
 ## What's Been Implemented
 
 ### Feb 17, 2026
+- **P0 Completed: VIDEO MODULE HARDENING**
+  - Created storage abstraction layer: `/app/backend/services/storage_service.py`
+    - `save_file()` - Save file to storage with unique filename
+    - `stream_file()` - Async generator for streaming file content
+    - `get_file_response()` - Returns FastAPI StreamingResponse with proper headers
+    - `delete_file()` - Delete file and cleanup empty directories
+    - `file_exists()` / `get_file_size()` - File existence and size checks
+  - Updated Video model with `storage_path` field for abstraction
+  - Refactored upload/download/delete endpoints to use storage service
+  - Download endpoint returns streaming response with:
+    - Content-Type: video mime type
+    - Content-Disposition: attachment with original filename
+    - Content-Length: file size
+  - Backward compatible with legacy `storage_key` format
+  - S3-ready architecture (just swap StorageService implementation)
+
 - **P0 Completed: PERMISSIONS & ROLES ENGINE (RBAC)**
   - Centralized backend RBAC configuration (PAGE_PERMISSIONS, ACTION_PERMISSIONS)
   - `require_action()` and `require_page_access()` dependency factories for route protection
