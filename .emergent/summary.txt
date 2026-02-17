@@ -3,70 +3,64 @@ Build a web admin panel for a Ministry with a Microsoft/Fluent-inspired UI. The 
 
 PRODUCT REQUIREMENTS:
 - **UI:** Left sidebar, top command bar, table-first pages, light neutral theme, subtle borders, 8px radius, and Segoe UI/system-ui typography.
-- **Data Models:** User, Task, Comment, and AuditLog.
+- **Data Models:** User, Task, Comment, and AuditLog. A  model has been added.
 - **Task Status Flow:** A strict lifecycle for tasks: Draft -> Submitted -> Producing -> Review -> (Scheduled or Rejected) -> Published.
 - **Role Permissions:**
-    - **Editor:** Create/edit non-finalized tasks, submit for review.
-    - **Approver:** Approve/reject tasks in the 'Review' state.
+    - **Editor:** Create/edit non-finalized tasks, submit for review, upload/manage videos.
+    - **Approver:** Approve/reject tasks in 'Review' state, download videos.
     - **Admin:** Full access to all data and status transitions.
 - **Business Rules:**
     - Task fields become read-only for Editor/Approver once 'Scheduled'.
-    - A placeholder for video upload is required, with a rule that tasks cannot be 'Published' without a video (to be implemented in Phase 2).
+    - Tasks cannot be 'Published' without a video.
     - Inline validation errors are required.
-- **Pages:** Dashboard, Tasks (with search, filter, sort), Task Details (with tabs: Details, Comments, Activity, Video), Calendar (month/week view), Activity Log, and Settings (Admin-only).
-- **Authentication:** Use simple JWT-based custom authentication.
-- **Initial User:** Create a default admin user:  / .
-- **UX Logic Hardening:** Implement consistent loading, empty, and error states across all pages. Implement route guards for authentication and permissions.
+- **Pages:** Dashboard, Tasks, Task Details (with tabs: Details, Comments, Activity, Video), Calendar (month/week view), Activity Log, and Settings.
+- **Authentication:** Simple JWT-based custom authentication.
+- **Initial User:**  / .
+- **UX Logic:** Consistent loading, empty, and error states. Route guards for authentication and permissions.
+- **Video Module:** Implement video upload (local storage), download, and streaming.
+- **Calendar:** Display tasks directly within the calendar cells with a visual hierarchy.
 
 **User's preferred language**: The user communicates in English. The next agent MUST respond in English.
 
 **what currently exists?**
-A full-stack application with a FastAPI backend, MongoDB database, and a React frontend. The UI adheres to a Microsoft/Fluent-inspired design system with tokens defined in . All pages and core features from the initial problem statement have been implemented. The application has also been hardened with consistent loading (spinners), empty state (e.g., No results found), and error handling (toasts/banners) across all pages. Route guards are in place to redirect unauthenticated users to the login page.
+A full-stack application with a FastAPI backend, MongoDB database, and a React frontend. The application includes user authentication, role-based permissions, and full CRUD operations for tasks and users. A complete video module has been implemented, supporting local file uploads, downloads, and streaming. The calendar has been enhanced to display tasks directly within day cells, featuring a Microsoft/Fluent-inspired visual hierarchy. The application has been through a full stability validation and is considered stable.
 
 **Last working item**:
-    - Last item agent was working: The agent was executing PHASE 2 — STABILITY VALIDATION as requested by the user. This involves a comprehensive manual test of all UI logic, including filters, tabs, modals, dropdowns, and navigation, to identify and fix any remaining stability issues like state bugs, duplicate renders, or console warnings. The agent had just started this process by outlining the plan.
-    - Status: NOT STARTED
-    - Agent Testing Done: N
-    - Which testing method agent to use? The agent should first perform manual validation as planned. After addressing any findings, a final run with the  is recommended for comprehensive regression testing.
+    - Last item agent was working: CALENDAR C2 — VISUAL HIERARCHY. The agent implemented styling adjustments to the calendar to improve its visual clarity, including typography changes, status indicators, and a new 'today' highlight, as requested by the user.
+    - Status: USER VERIFICATION PENDING
+    - Agent Testing Done: Y (Visual verification via screenshot)
+    - Which testing method agent to use? screenshot tool.
     - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-There are no known pending issues. The previously reported Webpack error overlay was thoroughly investigated and found to be non-reproducible. It has been documented as a transient issue.
+*   None.
 
 **In progress Task List**:
-*   **Task 1: Complete PHASE 2 — STABILITY VALIDATION.**
+*   **Task 1: CALENDAR C2 — VISUAL HIERARCHY**
     *   **Priority:** P0
-
-**Task Detail:**
-*   **Task 1: Complete PHASE 2 — STABILITY VALIDATION.**
-    *   **Where to resume:** Continue the systematic validation of the application's UI flows as per the user's request (Message 254). Test each page and interaction type:
-        *   Filters and sorting on the Tasks page.
-        *   Tabs and form submissions on the Task Details page.
-        *   Opening, closing, and submitting data in all modals (Create Task, Create/Edit User).
-        *   Dropdowns and the date picker.
-        *   Navigation between all pages.
-        *   Verify loading, empty, and error states trigger correctly.
-    *   **What will be achieved with this?** This will ensure the application is stable and free of UX bugs before moving on to new feature development (like video uploads).
-    *   **Status:** IN PROGRESS
+    *   **Where to resume:** Await user feedback on the visual changes implemented on the Calendar page. The changes are complete but not yet approved by the user.
+    *   **What will be achieved with this?** A clearer, more scannable calendar UI that aligns with Microsoft/Fluent design principles.
+    *   **Status:** USER VERIFICATION PENDING
     *   **Should Test frontend/backend/both after fix?** Frontend
-    - **Blocked on something:** None
+    *   **Blocked on something:** User feedback.
 
 **Upcoming and Future Tasks**
 *   **Future Tasks:**
-    *   **P1: Video Upload Implementation (Phase 2):** The current application has a placeholder for video uploads. This task involves implementing the full functionality, including a file upload UI, backend storage logic, and enforcing the business rule that tasks cannot be published without an associated video.
+    *   **P1: Cloud Storage for Videos:** The current video upload functionality uses local backend storage (). A future phase could involve integrating a cloud storage provider like AWS S3 or Google Cloud Storage for scalability and persistence.
+    *   **P2: Calendar Interactivity Enhancements:**
+        *   Implement a popover or modal when clicking the  indicator on a calendar day to show all tasks for that day.
+        *   Add hover effects to tasks within the calendar for better discoverability.
 
 **Completed work in this session**
-- **Webpack Error Investigation:** Investigated the recurring Webpack error overlay and concluded it was non-reproducible. Documented this finding in .
-- **Design System Lock (Verification):** Confirmed that all frontend pages and components were already correctly using the design tokens from .
-- **UX Logic Hardening:**
-    - Created shared components for consistent user experience: , , and .
-    - Refactored all pages (Dashboard, Tasks, TaskDetails, Calendar, ActivityLog, Settings) to use these components, providing clear loading, empty, and error states.
-    - Disabled submission buttons during API calls to prevent duplicate requests.
-- **Bug Fix:** Resolved a JavaScript syntax error () in  that was introduced during refactoring.
-- **Testing:** Successfully used the testing agent to validate the UX hardening changes, achieving a 100% pass rate.
+- **Stability Validation:** Completed a comprehensive manual test of the entire application, confirming all features work as expected and the UI is stable. No critical defects were found.
+- **Video Module Foundation:** Created the backend models, API endpoints (GET, POST, PATCH, DELETE), and frontend service architecture for managing video metadata associated with tasks.
+- **Video Upload MVP:** Implemented the end-to-end video upload feature using local file storage. This included a new  component with a drag-and-drop UI, progress indicators, status badges, and role-based action buttons (Replace, Remove).
+- **Video Download/Streaming:** Added backend endpoints and frontend functionality to allow users to download and stream uploaded videos. This includes support for HTTP Range requests for efficient streaming.
+- **Calendar Data Visibility Layer (C1):** Modified the calendar to render up to two tasks directly within each day cell, with a  indicator for overflow.
+- **Calendar Visual Hierarchy (C2):** Applied Fluent/Microsoft-inspired styling to the calendar, improving typography, adding task type indicators (accent bars), and refining the 'today' and 'selected day' states.
 
 **Earlier issues found/mentioned but not fixed**
-*   None. The previously mentioned Webpack overlay was investigated and found to be non-reproducible.
+*   None.
 
 **Known issue recurrence from previous fork**
 *   None.
@@ -76,7 +70,7 @@ There are no known pending issues. The previously reported Webpack error overlay
 
 **Key Technical Concepts**
 *   **Frontend:** React, React Router, Tailwind CSS, Shadcn UI
-*   **Backend:** FastAPI, Python, MongoDB (Pymongo)
+*   **Backend:** FastAPI, Python, MongoDB (Pymongo),  for async file I/O
 *   **Authentication:** JSON Web Tokens (JWT)
 *   **Design:** Microsoft Fluent-inspired design principles
 
@@ -85,63 +79,65 @@ There are no known pending issues. The previously reported Webpack error overlay
 *   **tasks:** 
 *   **comments:** 
 *   **audit_logs:** 
+*   **videos:** 
 
 **changes in tech stack**
-*   None.
+*   **** was added to the backend dependencies () to handle asynchronous file operations for video uploads.
 
 **All files of reference**
-*   : All page components were updated for UX hardening.
-*   : New component for loading states.
-*   : New component for empty/no-results states.
-*   : New component for API error states.
-*   : Report on the non-reproducible webpack error.
-*   : Contains updated product requirements.
-*   : Test report from the successful UX hardening validation.
+*   : Modified to add Video model, all video-related API endpoints (metadata, upload, download, stream), and file deletion logic.
+*   : Modified to implement both the data visibility layer (C1) and the visual hierarchy (C2).
+*   : Modified to integrate the new  component.
+*   : New file containing the complete UI for video management, including drag-and-drop upload, progress display, and status-based actions.
+*   : New file providing an abstraction layer for all frontend API calls related to the video module.
+*   : Modified to include .
 
 **Areas that need refactoring**:
-*   None. The major UI refactoring is complete and verified.
+*   None identified.
 
 **key api endpoints**
 *   
-*    and 
-*    and 
+*    & 
+*    & 
 *   
-*   
+*   : (GET, POST, PATCH, DELETE) for video metadata.
+*   : (GET) for lightweight status check.
+*   : (POST) for uploading video files.
+*   : (GET) for downloading video files.
+*   : (GET) for streaming video files with Range support.
 
 **Critical Info for New Agent**
-*   Your first and highest priority task is to complete the PHASE 2 — STABILITY VALIDATION. Do not start any new features until you have thoroughly tested all existing UI flows and confirmed the application is stable.
-*   The previous Webpack error overlay is not a current issue. Do not spend time trying to debug it unless it reappears.
-*   The Design System Lock task is complete. All components now use the  tokens from .
+*   Your first action should be to present the recent Calendar styling changes to the user for approval. The task is complete but awaits verification.
+*   The application is stable. Do not perform another full stability validation unless requested.
+*   The Video Module is fully functional but uses local storage. Be aware that cloud integration is a likely future request.
+*   Follow the user's phased approach (e.g., C1, C2) for new features. Await the next set of instructions after the current calendar work is approved.
 
 **documents and test reports created in this job**
-*   
 *    (updated)
-*   
-*   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User (Msg 254):** Kicked off PHASE 2 — STABILITY VALIDATION, requesting a full UI logic validation to ensure the system is stable before adding new features. (In Progress)
-2.  **User (Msg 252):** Praised the working No results found empty state. (Completed)
-3.  **User (Msg 243):** Acknowledged the app is working after a bug fix. (Completed)
-4.  **User (Msg 240):** Pointed out a syntax error. (Completed)
-5.  **User (Msg 143):** Initiated PHASE 2 — UX LOGIC HARDENING to implement loading, empty, and error states. (Completed)
-6.  **User (Msg 142):** Received confirmation that the Design System Lock was complete. (Completed)
-7.  **User (Msg 111):** Approved the plan to refactor the UI to use design system tokens, unaware it was already done. (Completed)
-8.  **User (Msg 104):** Accepted the finding that the webpack error was not reproducible and instructed the agent to document it and proceed to the Design System Lock phase. (Completed)
-9.  **User (Msg 74):** Requested the agent to resume work, prioritizing the fix for the Webpack overlay error. (Completed)
-10. **User (Msg 71):** Acknowledged the previous agent's work and asked to finish the project. (Completed)
+1.  **User (Msg 312):** Requested CALENDAR C2 — VISUAL HIERARCHY, providing specific styling adjustments for a Fluent/Microsoft look. (In Progress - Awaiting Verification)
+2.  **User (Msg 304):** Requested CALENDAR C1 — DATA VISIBILITY LAYER to show tasks inside calendar cells. (Completed)
+3.  **User (Msg 290):** Requested CALENDAR PHASE 1 — DATA VISIBILITY LAYER. (Completed, this was a duplicate of Msg 304)
+4.  **User (Msg 224):** Requested PHASE 4.2 — VIDEO DOWNLOAD, to allow users to download uploaded files. (Completed)
+5.  **User (Msg 150):** Requested PHASE 4 — VIDEO UPLOAD MVP, to implement the full local upload functionality. (Completed)
+6.  **User (Msg 102):** Requested PHASE 3 — VIDEO MODULE FOUNDATION, to create the architectural skeleton for video uploads without the upload logic itself. (Completed)
+7.  **User (Msg 100):** Re-confirmed the start of PHASE 2 — Stability Validation. (Completed)
+8.  **User (Msg 5):** Approved the plan to start PHASE 2 — Stability Validation and provided a detailed checklist. (Completed)
+9.  **User (Msg 254 in previous fork):** Kicked off PHASE 2 — STABILITY VALIDATION, requesting a full UI logic validation. (Completed)
+10. **User (Msg 252 in previous fork):** Praised the working No results found empty state. (Completed)
 
 **Project Health Check:**
 *   **Broken:** None.
-*   **Mocked:** Video upload functionality is a placeholder.
+*   **Mocked:** None. Video functionality is now implemented using local storage.
 
 **3rd Party Integrations**
-*   None.
+*   ****: A Python library for handling local asynchronous file operations. Used in the backend for video uploads.
 
 **Testing status**
-*   **Testing agent used after significant changes:** YES, successfully used after the UX hardening phase.
+*   **Testing agent used after significant changes:** NO (Agent performed extensive manual testing for each phase using  and  tools).
 *   **Troubleshoot agent used after agent stuck in loop:** NO
-*   **Test files created:** None
+*   **Test files created:** A temporary file () was created for testing uploads and downloads.
 *   **Known regressions:** None.
 
 **Credentials to test flow:**
@@ -149,4 +145,4 @@ There are no known pending issues. The previously reported Webpack error overlay
 *   **Password:** 
 
 **What agent forgot to execute**
-*   The agent did not forget to execute any tasks. It was in the middle of performing the user-requested Stability Validation when the session ended.</analysis>
+*   The agent successfully executed all user requests in a phased and systematic manner. Nothing was forgotten.</analysis>
