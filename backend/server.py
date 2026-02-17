@@ -1464,26 +1464,26 @@ async def stream_video(
     # Find video record
     video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
     if not video:
-        raise HTTPException(status_code=404, detail="No video found for this task")
+        raise NotFoundError(message="No video found for this task", code=ErrorCode.VIDEO_NOT_FOUND)
     
     # Check video status
     if video.get("status") != "ready":
-        raise HTTPException(
-            status_code=409, 
-            detail=f"Video is not ready for streaming. Current status: {video.get('status')}"
+        raise ConflictError(
+            message=f"Video is not ready for streaming. Current status: {video.get('status')}",
+            code=ErrorCode.RESOURCE_CONFLICT
         )
     
     # Check storage provider and get file path
     if video.get("storage_provider") != "local":
-        raise HTTPException(status_code=501, detail="Only local storage streaming is supported")
+        raise AppError(message="Only local storage streaming is supported", code=ErrorCode.NOT_IMPLEMENTED, status_code=501)
     
     storage_key = video.get("storage_key")
     if not storage_key:
-        raise HTTPException(status_code=404, detail="Video file path not found")
+        raise NotFoundError(message="Video file path not found", code=ErrorCode.FILE_NOT_FOUND)
     
     file_path = VIDEO_UPLOAD_DIR / storage_key
     if not file_path.exists():
-        raise HTTPException(status_code=404, detail="Video file not found on server")
+        raise NotFoundError(message="Video file not found on server", code=ErrorCode.FILE_NOT_FOUND)
     
     file_size = file_path.stat().st_size
     
@@ -1499,7 +1499,7 @@ async def stream_video(
     
     # Ensure valid range
     if start >= file_size:
-        raise HTTPException(status_code=416, detail="Range not satisfiable")
+        raise ValidationError(message="Range not satisfiable", code=ErrorCode.VALIDATION_ERROR)
     
     end = min(end, file_size - 1)
     content_length = end - start + 1
