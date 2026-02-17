@@ -36,9 +36,14 @@ ALLOWED_VIDEO_TYPES = ["video/mp4"]
 
 # Avatar Upload Configuration
 AVATAR_UPLOAD_DIR = ROOT_DIR / "uploads" / "avatars"
-AVATAR_MAX_SIZE_MB = 2
-AVATAR_MAX_SIZE_BYTES = AVATAR_MAX_SIZE_MB * 1024 * 1024  # 2MB
+AVATAR_MAX_SIZE_MB = 5  # Increased to 5MB (will be optimized before storage)
+AVATAR_MAX_SIZE_BYTES = AVATAR_MAX_SIZE_MB * 1024 * 1024  # 5MB
 ALLOWED_AVATAR_TYPES = ["image/png", "image/jpeg", "image/webp"]
+
+# Avatar Optimization Configuration
+AVATAR_OUTPUT_SIZE = 256  # Max width/height in pixels
+AVATAR_OUTPUT_QUALITY = 80  # WebP quality (75-85 range)
+AVATAR_TARGET_SIZE_KB = 150  # Target ~100-250KB
 
 # Status Configuration
 VALID_STATUSES = ["Draft", "Submitted", "InProgress", "ReadyForReview", "ChangesRequested", "Approved", "Rejected", "Scheduled", "Published"]
