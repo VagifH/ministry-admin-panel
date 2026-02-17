@@ -1741,6 +1741,14 @@ async def delete_avatar_photo(
     
     return None
 
+# ==================== TEST ENDPOINT (DEV ONLY) ====================
+
+@api_router.get("/test/server-error")
+async def test_server_error():
+    """Test endpoint to simulate unexpected server error (for error handling testing)"""
+    # This will trigger the generic exception handler
+    raise RuntimeError("Simulated server error for testing")
+
 # Include router
 app.include_router(api_router)
 
