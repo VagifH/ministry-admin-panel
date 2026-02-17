@@ -299,7 +299,7 @@ export default function TaskDetails() {
           <TabsContent value="details" className="space-y-4 mt-6">
             {isReadOnly && (
               <div className="bg-ministry-brand-light border border-ministry-status-review text-ministry-text-primary p-3 rounded-ministry text-sm">
-                This task is read-only. {user?.role === 'Approver' ? 'Approvers cannot edit task fields.' : `Tasks cannot be edited once ${TASK_STATUS.SCHEDULED} or ${TASK_STATUS.PUBLISHED}.`}
+                This task is read-only. {user?.role === 'Approver' ? 'Approvers cannot edit task fields.' : `Tasks cannot be edited once ${getStatusLabel(STATUS.SCHEDULED)} or ${getStatusLabel(STATUS.PUBLISHED)}.`}
               </div>
             )}
 
