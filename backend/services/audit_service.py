@@ -44,6 +44,8 @@ class AuditAction:
     REJECT = "REJECT"
     SCHEDULE = "SCHEDULE"
     PUBLISH = "PUBLISH"
+    ARCHIVE = "ARCHIVE"
+    RESTORE = "RESTORE"
     
     # Video actions
     UPLOAD = "UPLOAD"
