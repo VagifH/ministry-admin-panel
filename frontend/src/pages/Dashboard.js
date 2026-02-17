@@ -3,6 +3,7 @@ import axios from 'axios';
 import { CardSkeleton } from '../components/ui/loading';
 import { ErrorState } from '../components/ui/empty-state';
 import { showApiError } from '../lib/toast';
+import { TASK_STATUS, TASK_STATUS_CONFIG, getStatusTextColor } from '../config/statusConfig';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
@@ -30,13 +31,13 @@ export default function Dashboard() {
   };
 
   const statCards = stats ? [
-    { label: 'Draft', value: stats.draft, color: 'text-ministry-status-draft' },
-    { label: 'Submitted', value: stats.submitted, color: 'text-ministry-status-submitted' },
-    { label: 'Producing', value: stats.producing, color: 'text-ministry-status-producing' },
-    { label: 'Review', value: stats.review, color: 'text-ministry-status-review' },
-    { label: 'Scheduled', value: stats.scheduled, color: 'text-ministry-status-scheduled' },
-    { label: 'Published', value: stats.published, color: 'text-ministry-status-published' },
-    { label: 'Rejected', value: stats.rejected, color: 'text-ministry-status-rejected' },
+    { label: TASK_STATUS_CONFIG[TASK_STATUS.DRAFT].label, value: stats.draft, color: getStatusTextColor(TASK_STATUS.DRAFT) },
+    { label: TASK_STATUS_CONFIG[TASK_STATUS.SUBMITTED].label, value: stats.submitted, color: getStatusTextColor(TASK_STATUS.SUBMITTED) },
+    { label: TASK_STATUS_CONFIG[TASK_STATUS.PRODUCING].label, value: stats.producing, color: getStatusTextColor(TASK_STATUS.PRODUCING) },
+    { label: TASK_STATUS_CONFIG[TASK_STATUS.REVIEW].label, value: stats.review, color: getStatusTextColor(TASK_STATUS.REVIEW) },
+    { label: TASK_STATUS_CONFIG[TASK_STATUS.SCHEDULED].label, value: stats.scheduled, color: getStatusTextColor(TASK_STATUS.SCHEDULED) },
+    { label: TASK_STATUS_CONFIG[TASK_STATUS.PUBLISHED].label, value: stats.published, color: getStatusTextColor(TASK_STATUS.PUBLISHED) },
+    { label: TASK_STATUS_CONFIG[TASK_STATUS.REJECTED].label, value: stats.rejected, color: getStatusTextColor(TASK_STATUS.REJECTED) },
   ] : [];
 
   return (
