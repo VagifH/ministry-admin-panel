@@ -439,13 +439,13 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("sub")
         if user_id is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
+            raise AuthError(message="Invalid token", code=ErrorCode.INVALID_TOKEN)
     except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        raise AuthError(message="Invalid token", code=ErrorCode.INVALID_TOKEN)
     
     user_doc = await db.users.find_one({"id": user_id}, {"_id": 0})
     if user_doc is None:
-        raise HTTPException(status_code=401, detail="User not found")
+        raise AuthError(message="User not found", code=ErrorCode.INVALID_TOKEN)
     
     if isinstance(user_doc.get('created_at'), str):
         user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
@@ -463,7 +463,7 @@ def require_page_access(page: str):
     async def check_access(current_user: User = Depends(get_current_user)):
         allowed, error = check_page_access(current_user.role, page)
         if not allowed:
-            raise HTTPException(status_code=403, detail=error)
+            raise ForbiddenError(message=error, code=ErrorCode.PERMISSION_DENIED)
         return current_user
     return check_access
 
