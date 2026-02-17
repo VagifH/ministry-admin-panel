@@ -160,15 +160,22 @@ export default function TaskDetails() {
 
   const canEdit = () => {
     if (!task || !user) return false;
+    // Archived tasks cannot be edited
+    if (task.is_archived) return false;
     return canEditInStatus(task.status, user.role);
   };
 
   const getAvailableStatusActions = () => {
     if (!task || !user) return [];
+    // Archived tasks cannot have status changes
+    if (task.is_archived) return [];
     
     const transitions = getAvailableTransitions(task.status, user.role);
     return transitions.map(t => ({ label: t.label, status: t.target }));
   };
+
+  // Check if task is archived
+  const isArchived = task?.is_archived;
 
   if (loading) {
     return (
