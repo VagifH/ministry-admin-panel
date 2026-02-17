@@ -1244,44 +1244,52 @@ async def upload_video(task_id: str, file: UploadFile = File(...), current_user:
 
 @api_router.get("/tasks/{task_id}/video/download")
 async def download_video(task_id: str, current_user: User = Depends(get_current_user)):
-    """Download video file for a task"""
-    # All authenticated roles can download (Admin, Editor, Approver)
+    """
+    Download video file for a task.
+    
+    Returns:
+    - 200: Streaming file download with proper headers
+    - 404: No video found or file missing
+    - 400: Video not ready for download
+    
+    Headers set:
+    - Content-Type: video mime type
+    - Content-Disposition: attachment with original filename
+    - Content-Length: file size
+    """
+    # All authenticated roles can download (Admin, Editor, Approver, Producer)
     
     # Find video record
     video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
     if not video:
         raise HTTPException(status_code=404, detail="No video found for this task")
     
-    # Check video status
+    # Check video status - only allow download when ready
     if video.get("status") != "ready":
         raise HTTPException(
-            status_code=409, 
+            status_code=400, 
             detail=f"Video is not ready for download. Current status: {video.get('status')}"
         )
     
-    # Check storage provider and get file path
-    if video.get("storage_provider") != "local":
-        raise HTTPException(status_code=501, detail="Only local storage downloads are supported")
+    # Get storage path (use storage_path, fallback to storage_key for legacy)
+    storage_path = video.get("storage_path") or video.get("storage_key")
+    if not storage_path:
+        raise HTTPException(status_code=404, detail="Video file path not found in database")
     
-    storage_key = video.get("storage_key")
-    if not storage_key:
-        raise HTTPException(status_code=404, detail="Video file path not found")
-    
-    file_path = VIDEO_UPLOAD_DIR / storage_key
-    if not file_path.exists():
+    # Check if file exists via storage service
+    if not storage_service.file_exists(storage_path):
         raise HTTPException(status_code=404, detail="Video file not found on server")
     
     # Get original filename and mime type
     original_filename = video.get("original_filename", "video.mp4")
     mime_type = video.get("mime_type", "video/mp4")
     
-    return FileResponse(
-        path=str(file_path),
-        filename=original_filename,
+    # Return streaming response via storage service
+    return await storage_service.get_file_response(
+        storage_path=storage_path,
+        original_filename=original_filename,
         media_type=mime_type,
-        headers={
-            "Content-Disposition": f'attachment; filename="{original_filename}"'
-        }
+        as_attachment=True
     )
 
 @api_router.get("/tasks/{task_id}/video/stream")
