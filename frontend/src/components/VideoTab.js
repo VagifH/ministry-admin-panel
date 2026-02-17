@@ -466,8 +466,8 @@ export default function VideoTab({ taskId, taskStatus }) {
 
       {/* Actions */}
       <div className="flex gap-3 flex-wrap">
-        {/* Download - always available when video is ready */}
-        {isReady && (
+        {/* Download - available based on permission when video is ready */}
+        {isReady && canDownload && (
           <Button 
             onClick={handleDownload}
             disabled={downloading}
@@ -484,31 +484,34 @@ export default function VideoTab({ taskId, taskStatus }) {
           </Button>
         )}
 
-        {/* Replace and Delete - only for non-finalized tasks */}
-        {!isReadOnly && (
-          <>
-            <Button 
-              onClick={handleReplace}
-              disabled={!canModify}
-              variant="outline"
-              className="border-ministry-border-default rounded-ministry"
-              data-testid="replace-video-button"
-            >
-              <Upload size={16} className="mr-2" />
-              Replace Video
-            </Button>
-            <Button 
-              onClick={handleDelete}
-              disabled={!canModify}
-              variant="outline"
-              className="border-ministry-status-rejected text-ministry-status-rejected hover:bg-red-50 rounded-ministry"
-              data-testid="delete-video-button"
-            >
-              {deleting ? (
-                <RefreshCw size={16} className="mr-2 animate-spin" />
-              ) : (
-                <Trash2 size={16} className="mr-2" />
-              )}
+        {/* Replace - only for users with upload permission on non-finalized tasks */}
+        {canUpload && (
+          <Button 
+            onClick={handleReplace}
+            disabled={uploading}
+            variant="outline"
+            className="border-ministry-border-default rounded-ministry"
+            data-testid="replace-video-button"
+          >
+            <Upload size={16} className="mr-2" />
+            Replace Video
+          </Button>
+        )}
+        
+        {/* Delete - only for users with delete permission on non-finalized tasks */}
+        {canDelete && (
+          <Button 
+            onClick={handleDelete}
+            disabled={deleting}
+            variant="outline"
+            className="border-ministry-status-rejected text-ministry-status-rejected hover:bg-red-50 rounded-ministry"
+            data-testid="delete-video-button"
+          >
+            {deleting ? (
+              <RefreshCw size={16} className="mr-2 animate-spin" />
+            ) : (
+              <Trash2 size={16} className="mr-2" />
+            )}
               {deleting ? 'Deleting...' : 'Remove Video'}
             </Button>
           </>
