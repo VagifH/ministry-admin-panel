@@ -826,12 +826,17 @@ async def list_tasks(
 ):
     query = {}
     
-    # Archive filter (default: show only non-archived)
-    if archived == "false":
+    # Archive filter - Producer and Approver cannot see archived tasks
+    can_view_archived = current_user.role in ["Admin", "Editor"]
+    
+    if not can_view_archived:
+        # Producer/Approver: Always filter out archived tasks regardless of filter param
+        query["$or"] = [{"is_archived": False}, {"is_archived": {"$exists": False}}]
+    elif archived == "false":
         query["$or"] = [{"is_archived": False}, {"is_archived": {"$exists": False}}]
     elif archived == "true":
         query["is_archived"] = True
-    # "all" - no filter on is_archived
+    # "all" - no filter on is_archived (only for Admin/Editor)
     
     if search:
         search_condition = [
