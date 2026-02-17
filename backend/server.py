@@ -1468,6 +1468,7 @@ async def list_avatars(current_user: User = Depends(get_current_user)):
 async def update_avatar(
     avatar_id: str,
     avatar_update: AvatarUpdate,
+    request: Request,
     current_user: User = Depends(require_action("manage_avatars"))
 ):
     """Update avatar display_name or is_active status (Admin only)"""
@@ -1476,24 +1477,31 @@ async def update_avatar(
     if not avatar:
         raise HTTPException(status_code=404, detail="Avatar not found")
     
+    # Capture old values for audit
+    old_values = {
+        "display_name": avatar.get("display_name"),
+        "is_active": avatar.get("is_active")
+    }
+    
     # Build update dict
     update_data = {"updated_at": datetime.now(timezone.utc).isoformat()}
+    changes = {}
     
     if avatar_update.display_name is not None:
         update_data["display_name"] = avatar_update.display_name
+        changes["display_name"] = avatar_update.display_name
     
     if avatar_update.is_active is not None:
         update_data["is_active"] = avatar_update.is_active
+        changes["is_active"] = avatar_update.is_active
     
     await db.avatars.update_one({"id": avatar_id}, {"$set": update_data})
     
-    # Log the change
-    changes = []
-    if avatar_update.display_name is not None:
-        changes.append(f"name: {avatar_update.display_name}")
-    if avatar_update.is_active is not None:
-        changes.append(f"active: {avatar_update.is_active}")
-    await log_audit(current_user.id, current_user.name, "UPDATE", "Avatar", avatar_id, None, ", ".join(changes))
+    # Audit log with try/catch safety
+    try:
+        await audit_logger.log_avatar_update(current_user, avatar_id, changes, request)
+    except Exception as e:
+        logger.error(f"Audit logging failed for avatar update: {e}")
     
     # Return updated avatar
     updated = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
@@ -1511,6 +1519,7 @@ async def update_avatar(
 @api_router.post("/avatars/{avatar_id}/photo", response_model=AvatarResponse)
 async def upload_avatar_photo(
     avatar_id: str,
+    request: Request,
     file: UploadFile = File(...),
     current_user: User = Depends(require_action("manage_avatars"))
 ):
@@ -1567,7 +1576,12 @@ async def upload_avatar_photo(
     }
     
     await db.avatars.update_one({"id": avatar_id}, {"$set": update_data})
-    await log_audit(current_user.id, current_user.name, "UPLOAD", "Avatar", avatar_id, None, f"{file.filename} (optimized: {optimized_kb:.1f}KB)")
+    
+    # Audit log with try/catch safety
+    try:
+        await audit_logger.log_avatar_photo_upload(current_user, avatar_id, f"{file.filename} (optimized: {optimized_kb:.1f}KB)", request)
+    except Exception as e:
+        logger.error(f"Audit logging failed for avatar photo upload: {e}")
     
     # Return updated avatar
     updated = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
@@ -1585,6 +1599,7 @@ async def upload_avatar_photo(
 @api_router.delete("/avatars/{avatar_id}/photo", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_avatar_photo(
     avatar_id: str,
+    request: Request,
     current_user: User = Depends(require_action("manage_avatars"))
 ):
     """Remove photo from an avatar (Admin only)"""
@@ -1604,7 +1619,12 @@ async def delete_avatar_photo(
     }
     
     await db.avatars.update_one({"id": avatar_id}, {"$set": update_data})
-    await log_audit(current_user.id, current_user.name, "DELETE", "Avatar Photo", avatar_id, None, None)
+    
+    # Audit log with try/catch safety
+    try:
+        await audit_logger.log_avatar_photo_delete(current_user, avatar_id, request)
+    except Exception as e:
+        logger.error(f"Audit logging failed for avatar photo delete: {e}")
     
     return None
 
