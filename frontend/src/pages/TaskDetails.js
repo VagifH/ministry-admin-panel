@@ -219,48 +219,68 @@ export default function TaskDetails() {
 
       <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
         <div className="p-6 border-b border-ministry-border-default">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <AvatarDisplay avatarName={task.avatar} size={40} />
-              <div>
-                <h1 className="text-2xl font-semibold text-ministry-text-primary">{task.title}</h1>
-                <span className="text-sm text-ministry-text-secondary">{task.avatar}</span>
+          {/* Header Row: Avatar, Title, Status Badge */}
+          <div className="flex items-start gap-4">
+            <AvatarDisplay avatarName={task.avatar} size={40} />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="text-2xl font-semibold text-ministry-text-primary leading-tight">{task.title}</h1>
+                <Badge className={`${getStatusBadgeClass(task.status)} rounded-md px-2.5 py-0.5 text-xs font-medium`} data-testid="task-status-badge">
+                  {getStatusLabel(task.status)}
+                </Badge>
               </div>
-              <Badge className={`${getStatusBadgeClass(task.status)} rounded-md`} data-testid="task-status-badge">
-                {getStatusLabel(task.status)}
-              </Badge>
+              <span className="text-sm text-ministry-text-secondary mt-0.5 block">{task.avatar}</span>
+              
+              {/* Action Buttons - Fluent Enterprise Standard */}
+              {statusActions.length > 0 && (
+                <div className="flex items-center gap-2 mt-3" data-testid="task-action-bar">
+                  {statusActions.map((action) => {
+                    const isApprove = action.status === TASK_STATUS.APPROVED;
+                    const isReject = action.status === TASK_STATUS.REJECTED;
+                    const isChanges = action.status === TASK_STATUS.CHANGES_REQUESTED;
+                    
+                    // Button hierarchy: Primary (Approve) > Secondary (Changes/Default) > Danger-Outline (Reject)
+                    let buttonClass = '';
+                    
+                    if (isApprove) {
+                      // Primary action - strongest visual weight
+                      buttonClass = 'bg-ministry-status-approved hover:bg-ministry-status-approved/90 text-white shadow-ministry-sm';
+                    } else if (isReject) {
+                      // Danger outline - does NOT dominate visually
+                      buttonClass = 'bg-transparent border border-ministry-status-rejected text-ministry-status-rejected hover:bg-ministry-status-rejected/10';
+                    } else if (isChanges) {
+                      // Secondary action - medium weight
+                      buttonClass = 'bg-ministry-bg-tertiary border border-ministry-border-default text-ministry-text-primary hover:bg-ministry-border-default';
+                    } else {
+                      // Default action (Submit, Schedule, Publish, etc.)
+                      buttonClass = 'bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white shadow-ministry-sm';
+                    }
+                    
+                    return (
+                      <button
+                        key={action.status}
+                        onClick={() => handleStatusChange(action.status)}
+                        disabled={saving}
+                        data-testid={`status-action-${action.status.toLowerCase()}`}
+                        className={`
+                          ${buttonClass}
+                          h-8 px-3 
+                          text-ministry-sm font-medium leading-none
+                          rounded-[6px]
+                          transition-colors duration-150
+                          focus:outline-none focus:ring-2 focus:ring-ministry-brand-primary/40 focus:ring-offset-1
+                          active:scale-[0.98]
+                          disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
+                        `}
+                      >
+                        {action.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
-          
-          {/* Action Buttons - Fluent-style compact layout */}
-          {statusActions.length > 0 && (
-            <div className="flex gap-2 mt-4 pt-4 border-t border-ministry-border-default">
-              {statusActions.map((action) => {
-                // Style based on action type
-                const isApprove = action.status === TASK_STATUS.APPROVED;
-                const isReject = action.status === TASK_STATUS.REJECTED;
-                const isChanges = action.status === TASK_STATUS.CHANGES_REQUESTED;
-                
-                let buttonClass = "bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white";
-                if (isApprove) buttonClass = "bg-ministry-status-approved hover:bg-ministry-status-approved/90 text-white";
-                if (isReject) buttonClass = "bg-ministry-status-rejected hover:bg-ministry-status-rejected/90 text-white";
-                if (isChanges) buttonClass = "bg-ministry-status-changesrequested hover:bg-ministry-status-changesrequested/90 text-white";
-                
-                return (
-                  <Button
-                    key={action.status}
-                    onClick={() => handleStatusChange(action.status)}
-                    disabled={saving}
-                    data-testid={`status-action-${action.status.toLowerCase()}`}
-                    className={`${buttonClass} rounded-ministry disabled:opacity-50 text-sm px-4 h-8`}
-                    size="sm"
-                  >
-                    {action.label}
-                  </Button>
-                );
-              })}
-            </div>
-          )}
         </div>
 
         <Tabs defaultValue="details" className="p-6">
