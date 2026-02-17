@@ -55,6 +55,22 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
 ## What's Been Implemented
 
 ### Feb 17, 2026
+- **P0 COMPLETED: DATA PROTECTION (SOFT DELETE + ARCHIVE/RESTORE)**
+  - **Backend:**
+    - Added `is_archived`, `archived_at`, `archived_by` fields to Task model
+    - `PATCH /api/tasks/{id}/archive` - Archive task (soft delete)
+    - `PATCH /api/tasks/{id}/restore` - Restore archived task
+    - `DELETE /api/tasks/{id}` - Permanent delete (requires: archived=true AND no video)
+    - `GET /api/tasks?archived=false|true|all` - Filter support (default: false)
+    - Audit logging for ARCHIVE, RESTORE, DELETE actions
+    - New error codes: TASK_ARCHIVED, DELETE_REQUIRES_ARCHIVE, DELETE_REQUIRES_NO_VIDEO, TASK_NOT_ARCHIVED, TASK_ALREADY_ARCHIVED
+  - **Frontend:**
+    - Archive filter toggle: Active | Archived | All
+    - Archived tasks show "Archived" badge and dimmed styling
+    - Archive/Restore/Delete confirmation dialogs
+    - TaskDetails: Archive banner + read-only mode for archived tasks
+    - VideoTab: Upload disabled for archived tasks, download still available
+
 - **P0 COMPLETED: ERROR HANDLING LAYER (ENTERPRISE GRADE)**
   - Created centralized error service: `/app/backend/services/error_service.py`
     - `AppError` (base), `ValidationError` (400), `AuthError` (401), `ForbiddenError` (403), `NotFoundError` (404), `ConflictError` (409), `ServerError` (500)
