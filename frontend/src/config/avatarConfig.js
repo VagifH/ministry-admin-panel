@@ -26,8 +26,8 @@ export const getAvatarName = (avatarId) => {
 
 // Upload constraints
 export const AVATAR_UPLOAD_CONSTRAINTS = {
-  maxSizeMB: 2,
-  maxSizeBytes: 2 * 1024 * 1024,
+  maxSizeMB: 5,
+  maxSizeBytes: 5 * 1024 * 1024,
   allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
   allowedExtensions: ['.jpg', '.jpeg', '.png', '.webp'],
 };
