@@ -614,12 +614,22 @@ async def seed_default_avatars():
 # ==================== AUTH ENDPOINTS ====================
 
 @api_router.post("/auth/login", response_model=LoginResponse)
-async def login(request: LoginRequest):
+async def login(request: LoginRequest, http_request: Request):
     user_doc = await db.users.find_one({"email": request.email}, {"_id": 0})
-    if not user_doc or not verify_password(request.password, user_doc["hashed_password"]):
+    
+    if not user_doc:
+        # Log failed login attempt
+        await audit_logger.log_login_failed(request.email, "User not found", http_request)
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    if not verify_password(request.password, user_doc["hashed_password"]):
+        # Log failed login attempt
+        await audit_logger.log_login_failed(request.email, "Invalid password", http_request)
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
     if not user_doc["is_active"]:
+        # Log failed login attempt
+        await audit_logger.log_login_failed(request.email, "Account disabled", http_request)
         raise HTTPException(status_code=403, detail="Account is disabled")
     
     token = create_access_token({"sub": user_doc["id"]})
@@ -628,6 +638,10 @@ async def login(request: LoginRequest):
         user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
     
     user = User(**user_doc)
+    
+    # Log successful login
+    await audit_logger.log_login_success(user, http_request)
+    
     return LoginResponse(token=token, user=user)
 
 @api_router.get("/auth/me", response_model=User)
