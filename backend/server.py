@@ -124,7 +124,7 @@ class User(BaseModel):
     id: str
     name: str
     email: str
-    role: Literal["Admin", "Editor", "Approver"]
+    role: Literal["Admin", "Editor", "Producer", "Approver"]
     is_active: bool = True
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -132,12 +132,12 @@ class UserCreate(BaseModel):
     name: str
     email: str
     password: str
-    role: Literal["Admin", "Editor", "Approver"]
+    role: Literal["Admin", "Editor", "Producer", "Approver"]
     is_active: bool = True
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
-    role: Optional[Literal["Admin", "Editor", "Approver"]] = None
+    role: Optional[Literal["Admin", "Editor", "Producer", "Approver"]] = None
     is_active: Optional[bool] = None
 
 class Task(BaseModel):
