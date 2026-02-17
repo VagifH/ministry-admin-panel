@@ -1,0 +1,207 @@
+/**
+ * Permissions Matrix Configuration
+ * Centralized role-based access control for all actions
+ */
+
+/**
+ * User roles
+ */
+export const ROLES = {
+  ADMIN: 'Admin',
+  EDITOR: 'Editor',
+  APPROVER: 'Approver'
+};
+
+/**
+ * Action types
+ */
+export const ACTIONS = {
+  // Task actions
+  VIEW_TASKS: 'view_tasks',
+  CREATE_TASK: 'create_task',
+  EDIT_TASK: 'edit_task',
+  DELETE_TASK: 'delete_task',
+  
+  // Status transition actions
+  SUBMIT_TASK: 'submit_task',
+  PRODUCE_TASK: 'produce_task',
+  REVIEW_TASK: 'review_task',
+  SCHEDULE_TASK: 'schedule_task',
+  PUBLISH_TASK: 'publish_task',
+  REJECT_TASK: 'reject_task',
+  
+  // Video actions
+  UPLOAD_VIDEO: 'upload_video',
+  DOWNLOAD_VIDEO: 'download_video',
+  DELETE_VIDEO: 'delete_video',
+  STREAM_VIDEO: 'stream_video',
+  
+  // User management actions
+  VIEW_USERS: 'view_users',
+  CREATE_USER: 'create_user',
+  EDIT_USER: 'edit_user',
+  DELETE_USER: 'delete_user',
+  
+  // Audit actions
+  VIEW_AUDIT_LOGS: 'view_audit_logs',
+  
+  // Comment actions
+  VIEW_COMMENTS: 'view_comments',
+  ADD_COMMENT: 'add_comment'
+};
+
+/**
+ * Permissions matrix
+ * Maps roles to their allowed actions
+ */
+export const PERMISSIONS_MATRIX = {
+  [ROLES.ADMIN]: {
+    // Full access to all actions
+    [ACTIONS.VIEW_TASKS]: true,
+    [ACTIONS.CREATE_TASK]: true,
+    [ACTIONS.EDIT_TASK]: true,
+    [ACTIONS.DELETE_TASK]: true,
+    
+    [ACTIONS.SUBMIT_TASK]: true,
+    [ACTIONS.PRODUCE_TASK]: true,
+    [ACTIONS.REVIEW_TASK]: true,
+    [ACTIONS.SCHEDULE_TASK]: true,
+    [ACTIONS.PUBLISH_TASK]: true,
+    [ACTIONS.REJECT_TASK]: true,
+    
+    [ACTIONS.UPLOAD_VIDEO]: true,
+    [ACTIONS.DOWNLOAD_VIDEO]: true,
+    [ACTIONS.DELETE_VIDEO]: true,
+    [ACTIONS.STREAM_VIDEO]: true,
+    
+    [ACTIONS.VIEW_USERS]: true,
+    [ACTIONS.CREATE_USER]: true,
+    [ACTIONS.EDIT_USER]: true,
+    [ACTIONS.DELETE_USER]: true,
+    
+    [ACTIONS.VIEW_AUDIT_LOGS]: true,
+    
+    [ACTIONS.VIEW_COMMENTS]: true,
+    [ACTIONS.ADD_COMMENT]: true
+  },
+  
+  [ROLES.EDITOR]: {
+    // Can create/edit non-finalized tasks, upload videos
+    [ACTIONS.VIEW_TASKS]: true,
+    [ACTIONS.CREATE_TASK]: true,
+    [ACTIONS.EDIT_TASK]: true,  // Conditional: only for non-finalized
+    [ACTIONS.DELETE_TASK]: false,
+    
+    [ACTIONS.SUBMIT_TASK]: true,
+    [ACTIONS.PRODUCE_TASK]: false,
+    [ACTIONS.REVIEW_TASK]: false,
+    [ACTIONS.SCHEDULE_TASK]: false,
+    [ACTIONS.PUBLISH_TASK]: false,
+    [ACTIONS.REJECT_TASK]: false,
+    
+    [ACTIONS.UPLOAD_VIDEO]: true,  // Conditional: only for non-finalized
+    [ACTIONS.DOWNLOAD_VIDEO]: true,
+    [ACTIONS.DELETE_VIDEO]: true,  // Conditional: only for non-finalized
+    [ACTIONS.STREAM_VIDEO]: true,
+    
+    [ACTIONS.VIEW_USERS]: false,
+    [ACTIONS.CREATE_USER]: false,
+    [ACTIONS.EDIT_USER]: false,
+    [ACTIONS.DELETE_USER]: false,
+    
+    [ACTIONS.VIEW_AUDIT_LOGS]: true,
+    
+    [ACTIONS.VIEW_COMMENTS]: true,
+    [ACTIONS.ADD_COMMENT]: true
+  },
+  
+  [ROLES.APPROVER]: {
+    // Can approve/reject tasks in review, download videos
+    [ACTIONS.VIEW_TASKS]: true,
+    [ACTIONS.CREATE_TASK]: false,
+    [ACTIONS.EDIT_TASK]: false,
+    [ACTIONS.DELETE_TASK]: false,
+    
+    [ACTIONS.SUBMIT_TASK]: false,
+    [ACTIONS.PRODUCE_TASK]: false,
+    [ACTIONS.REVIEW_TASK]: false,
+    [ACTIONS.SCHEDULE_TASK]: true,  // Can schedule from Review
+    [ACTIONS.PUBLISH_TASK]: false,
+    [ACTIONS.REJECT_TASK]: true,    // Can reject from Review
+    
+    [ACTIONS.UPLOAD_VIDEO]: false,
+    [ACTIONS.DOWNLOAD_VIDEO]: true,
+    [ACTIONS.DELETE_VIDEO]: false,
+    [ACTIONS.STREAM_VIDEO]: true,
+    
+    [ACTIONS.VIEW_USERS]: false,
+    [ACTIONS.CREATE_USER]: false,
+    [ACTIONS.EDIT_USER]: false,
+    [ACTIONS.DELETE_USER]: false,
+    
+    [ACTIONS.VIEW_AUDIT_LOGS]: true,
+    
+    [ACTIONS.VIEW_COMMENTS]: true,
+    [ACTIONS.ADD_COMMENT]: true
+  }
+};
+
+/**
+ * Check if a role has permission for an action
+ * @param {string} role - User role
+ * @param {string} action - Action to check
+ * @returns {boolean}
+ */
+export const hasPermission = (role, action) => {
+  return PERMISSIONS_MATRIX[role]?.[action] ?? false;
+};
+
+/**
+ * Check if user can perform action (convenience function)
+ * @param {Object} user - User object with role property
+ * @param {string} action - Action to check
+ * @returns {boolean}
+ */
+export const canPerformAction = (user, action) => {
+  if (!user?.role) return false;
+  return hasPermission(user.role, action);
+};
+
+/**
+ * Get all allowed actions for a role
+ * @param {string} role - User role
+ * @returns {string[]} Array of allowed action names
+ */
+export const getAllowedActions = (role) => {
+  const permissions = PERMISSIONS_MATRIX[role];
+  if (!permissions) return [];
+  return Object.entries(permissions)
+    .filter(([_, allowed]) => allowed)
+    .map(([action]) => action);
+};
+
+/**
+ * Role display configuration
+ */
+export const ROLE_CONFIG = {
+  [ROLES.ADMIN]: {
+    label: 'Admin',
+    description: 'Full system access',
+    order: 1
+  },
+  [ROLES.EDITOR]: {
+    label: 'Editor',
+    description: 'Create and edit content',
+    order: 2
+  },
+  [ROLES.APPROVER]: {
+    label: 'Approver',
+    description: 'Review and approve content',
+    order: 3
+  }
+};
+
+/**
+ * All roles as array (for dropdowns)
+ */
+export const ROLE_LIST = Object.values(ROLES);
