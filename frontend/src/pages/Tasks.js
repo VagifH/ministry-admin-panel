@@ -171,8 +171,8 @@ export default function Tasks() {
               <TableCell className="text-ministry-text-secondary">{task.content_type}</TableCell>
               <TableCell className="text-ministry-text-secondary">{task.avatar}</TableCell>
               <TableCell>
-                <Badge className={`${statusColors[task.status]} rounded-md`}>
-                  {task.status}
+                <Badge className={`${getStatusBadgeClass(task.status)} rounded-md`}>
+                  {TASK_STATUS_CONFIG[task.status]?.label || task.status}
                 </Badge>
               </TableCell>
               <TableCell className="text-ministry-text-secondary">
@@ -225,13 +225,11 @@ export default function Tasks() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="Draft">Draft</SelectItem>
-                <SelectItem value="Submitted">Submitted</SelectItem>
-                <SelectItem value="Producing">Producing</SelectItem>
-                <SelectItem value="Review">Review</SelectItem>
-                <SelectItem value="Scheduled">Scheduled</SelectItem>
-                <SelectItem value="Published">Published</SelectItem>
-                <SelectItem value="Rejected">Rejected</SelectItem>
+                {TASK_STATUS_LIST.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {TASK_STATUS_CONFIG[status]?.label || status}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Select value={filters.content_type || "all"} onValueChange={(value) => setFilters({ ...filters, content_type: value === "all" ? "" : value })}>
@@ -240,9 +238,9 @@ export default function Tasks() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="Announcement">Announcement</SelectItem>
-                <SelectItem value="Short Lesson">Short Lesson</SelectItem>
-                <SelectItem value="Full Lesson">Full Lesson</SelectItem>
+                {CONTENT_TYPE_LIST.map((type) => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Select value={filters.avatar || "all"} onValueChange={(value) => setFilters({ ...filters, avatar: value === "all" ? "" : value })}>
