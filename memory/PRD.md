@@ -18,27 +18,29 @@ Build a web admin panel for a Ministry with a Microsoft/Fluent-inspired UI. The 
 - **Task:** title, content_type, avatar, script, notes, publish_datetime, status, owner
 - **Comment:** task_id, author, message, created_at
 - **AuditLog:** actor, action, object_type, object_id, old_value, new_value, created_at
+- **Video:** id, task_id, filename, file_size, mime_type, status, uploaded_by
+- **Avatar:** id, name, has_photo, photo_data (base64)
 
 ### Task Status Flow
-Draft -> Submitted -> Producing -> Review -> (Scheduled or Rejected) -> Published
+Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested/Rejected) -> Scheduled -> Published
 
 ### Role Permissions
-- **Editor:** Create/edit non-finalized tasks, submit for review
-- **Approver:** Approve/reject tasks in 'Review' state
-- **Admin:** Full access to all data and status transitions
+- **Editor:** Create/edit non-finalized tasks, submit for review, upload videos
+- **Approver:** Approve/reject tasks in 'ReadyForReview' state, download videos
+- **Admin:** Full access to all data and status transitions, manage avatars
 
 ### Business Rules
 - Task fields become read-only for Editor/Approver once 'Scheduled'
-- Tasks cannot be 'Published' without a video (Phase 2)
+- Tasks cannot be 'Published' without a video (dependent on content type)
 - Inline validation errors required
 
 ### Pages
 - Dashboard: Overview of task status counts
 - Tasks: Search, filter, sort with Create Task modal
 - Task Details: Tabs for Details, Comments, Activity, Video
-- Calendar: Month/week view of tasks by publish date
+- Calendar: Month view with interactive day cells and task popovers
 - Activity Log: Audit trail with filters
-- Settings: User management (Admin-only)
+- Settings: User management + Avatars management (Admin-only)
 
 ### Authentication
 - JWT-based custom authentication
