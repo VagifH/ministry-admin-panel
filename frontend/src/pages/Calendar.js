@@ -330,13 +330,16 @@ export default function Calendar() {
           <div className="p-4">
             <div className="grid grid-cols-7 gap-2 mb-2">
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                <div key={day} className="text-center text-sm font-semibold text-ministry-text-secondary py-2">
+                <div key={day} className="text-center text-sm font-semibold text-ministry-text-secondary py-2 cursor-default">
                   {day}
                 </div>
               ))}
             </div>
 
-            <div className="grid grid-cols-7 gap-2">
+            {/* Calendar grid with fade transition on month change */}
+            <div 
+              className={`grid grid-cols-7 gap-2 transition-opacity duration-[150ms] ease-out ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
+            >
               {days.map((day, index) => {
                 const dayTasks = getTasksForDate(day);
                 const isCurrentMonth = isSameMonth(day, currentDate);
