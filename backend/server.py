@@ -1520,13 +1520,9 @@ async def upload_avatar_photo(
 @api_router.delete("/avatars/{avatar_id}/photo", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_avatar_photo(
     avatar_id: str,
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_action("manage_avatars"))
 ):
     """Remove photo from an avatar (Admin only)"""
-    # Admin only
-    if current_user.role != "Admin":
-        raise HTTPException(status_code=403, detail="Only Admin can delete avatar photos")
-    
     # Find avatar
     avatar = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
     if not avatar:
