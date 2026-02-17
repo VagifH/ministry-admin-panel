@@ -524,7 +524,7 @@ export default function TaskDetails() {
           </TabsContent>
 
           <TabsContent value="video" className="mt-6">
-            <VideoTab taskId={taskId} taskStatus={task?.status} />
+            <VideoTab taskId={taskId} taskStatus={task?.status} isArchived={isArchived} />
           </TabsContent>
         </Tabs>
       </div>
