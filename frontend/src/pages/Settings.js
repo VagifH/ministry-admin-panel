@@ -252,7 +252,7 @@ export default function Settings() {
 
         <TabsContent value="avatars">
           <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card p-6">
-            <h2 className="text-lg font-semibold text-ministry-text-primary mb-4">Avatar Library</h2>
+            <h2 className="text-lg font-semibold text-ministry-text-primary mb-4">AI Agent Library</h2>
             <p className="text-sm text-ministry-text-secondary mb-6">
               Manage the photos for each avatar. These will appear throughout the application when a task uses that avatar.
             </p>
