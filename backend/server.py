@@ -219,6 +219,23 @@ class VideoResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+# ==================== AVATAR MODELS ====================
+
+class AvatarResponse(BaseModel):
+    """Response model for avatar data"""
+    id: str
+    name: str
+    has_photo: bool
+    photo_data: Optional[str] = None  # base64 encoded image
+    updated_at: Optional[datetime] = None
+
+# Default avatars configuration
+DEFAULT_AVATARS = [
+    {"id": "avatar-1", "name": "Avatar 1"},
+    {"id": "avatar-2", "name": "Avatar 2"},
+    {"id": "avatar-3", "name": "Avatar 3"},
+]
+
 class LoginRequest(BaseModel):
     email: str
     password: str
