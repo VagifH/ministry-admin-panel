@@ -17,6 +17,8 @@ import { EmptyState, NoResultsState, ErrorState } from '../components/ui/empty-s
 import { showToast, showApiError } from '../lib/toast';
 import { TASK_STATUS, TASK_STATUS_CONFIG, TASK_STATUS_LIST, getStatusBadgeClass, getStatusLabel } from '../config/statusConfig';
 import { CONTENT_TYPE, CONTENT_TYPE_LIST } from '../config/contentTypeConfig';
+import { AVATAR_LIST } from '../config/avatarConfig';
+import { AvatarDisplay } from '../components/AvatarDisplay';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
