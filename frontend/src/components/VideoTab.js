@@ -40,8 +40,7 @@ import {
   validateVideoFile,
   VIDEO_STATUS, 
   VIDEO_STATUS_CONFIG,
-  formatFileSize,
-  formatDuration 
+  formatFileSize
 } from '../services/videoService';
 import { showToast, showApiError } from '../lib/toast';
 import { isReadOnlyStatus } from '../utils/statusUtils';
