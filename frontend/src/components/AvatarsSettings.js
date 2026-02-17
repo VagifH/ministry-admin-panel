@@ -176,7 +176,7 @@ export default function AvatarsSettings() {
         <AvatarCard key={avatar.id} avatar={avatar} onUpdate={fetchAvatars} />
       ))}
       <p className="text-xs text-ministry-text-secondary mt-4">
-        Supported formats: JPG, PNG, WebP. Maximum size: 2MB.
+        Supported formats: JPG, PNG, WebP. Maximum size: 5MB. Images are automatically optimized to 256×256 WebP.
       </p>
     </div>
   );
