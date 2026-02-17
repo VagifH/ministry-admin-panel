@@ -136,7 +136,12 @@ const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectD
             <PopoverContent 
               align="start" 
               sideOffset={4}
-              className="w-64 p-2 bg-ministry-bg-secondary border-ministry-border-default rounded-ministry shadow-ministry-card max-h-60 overflow-y-auto"
+              className="w-64 p-2 bg-ministry-bg-secondary border-ministry-border-default rounded-ministry shadow-ministry-card max-h-60 overflow-y-auto
+                data-[state=open]:animate-in data-[state=closed]:animate-out
+                data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
+                data-[state=closed]:zoom-out-98 data-[state=open]:zoom-in-98
+                data-[side=bottom]:slide-in-from-top-1 data-[side=top]:slide-in-from-bottom-1
+                duration-[140ms]"
               data-testid={`calendar-popover-${format(day, 'yyyy-MM-dd')}`}
             >
               <div className="text-xs font-semibold text-ministry-text-secondary mb-2 px-2">
