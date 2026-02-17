@@ -477,12 +477,27 @@ async def seed_default_avatars():
             avatar_doc = {
                 "id": avatar["id"],
                 "name": avatar["name"],
+                "display_name": avatar.get("display_name", avatar["name"]),
+                "is_active": avatar.get("is_active", True),
                 "has_photo": False,
                 "photo_data": None,
+                "created_at": datetime.now(timezone.utc).isoformat(),
                 "updated_at": datetime.now(timezone.utc).isoformat()
             }
             await db.avatars.insert_one(avatar_doc)
             logger.info(f"Seeded avatar: {avatar['name']}")
+        else:
+            # Ensure existing avatars have the new fields
+            update_fields = {}
+            if 'display_name' not in existing:
+                update_fields['display_name'] = existing.get('name', avatar['name'])
+            if 'is_active' not in existing:
+                update_fields['is_active'] = True
+            if 'created_at' not in existing:
+                update_fields['created_at'] = datetime.now(timezone.utc).isoformat()
+            if update_fields:
+                await db.avatars.update_one({"id": avatar["id"]}, {"$set": update_fields})
+                logger.info(f"Updated avatar with new fields: {avatar['name']}")
 
 # ==================== AUTH ENDPOINTS ====================
 
