@@ -240,9 +240,9 @@ export default function TaskDetails() {
               {statusActions.length > 0 && (
                 <div className="flex items-center gap-2 mt-3" data-testid="task-action-bar">
                   {statusActions.map((action) => {
-                    const isApprove = action.status === TASK_STATUS.APPROVED;
-                    const isReject = action.status === TASK_STATUS.REJECTED;
-                    const isChanges = action.status === TASK_STATUS.CHANGES_REQUESTED;
+                    const isApprove = action.status === STATUS.APPROVED;
+                    const isReject = action.status === STATUS.REJECTED;
+                    const isChanges = action.status === STATUS.CHANGES_REQUESTED;
                     
                     // Button hierarchy: Primary (Approve) > Secondary (Changes/Default) > Danger-Outline (Reject)
                     let buttonClass = '';
