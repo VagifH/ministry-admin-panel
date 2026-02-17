@@ -20,7 +20,9 @@ export default function Login() {
       await login(email, password);
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Login failed');
+      const errorData = error.response?.data;
+      const message = errorData?.error?.message || errorData?.detail || 'Login failed';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
