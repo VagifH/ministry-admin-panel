@@ -889,12 +889,15 @@ async def change_task_status(task_id: str, status_change: StatusChange, request:
     return Task(**updated)
 
 @api_router.delete("/tasks/{task_id}")
-async def delete_task(task_id: str, current_user: User = Depends(require_action("delete_task"))):
+async def delete_task(task_id: str, request: Request, current_user: User = Depends(require_action("delete_task"))):
+    # Get task title before deletion for audit log
+    task_doc = await db.tasks.find_one({"id": task_id}, {"_id": 0, "title": 1})
+    
     result = await db.tasks.delete_one({"id": task_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Task not found")
     
-    await log_audit(current_user.id, current_user.name, "DELETE", "Task", task_id, None, None)
+    await audit_logger.log_task_delete(current_user, task_id, task_doc.get("title") if task_doc else None, request)
     return {"message": "Task deleted"}
 
 # ==================== COMMENT ENDPOINTS ====================
