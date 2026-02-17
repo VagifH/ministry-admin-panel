@@ -240,6 +240,7 @@ export default function Tasks() {
             <TableHead className="text-ministry-text-primary font-semibold">AI Agent</TableHead>
             <TableHead className="text-ministry-text-primary font-semibold">Status</TableHead>
             <TableHead className="text-ministry-text-primary font-semibold">Publish Date</TableHead>
+            {canDeleteTask && <TableHead className="text-ministry-text-primary font-semibold w-[120px]">Actions</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -248,9 +249,18 @@ export default function Tasks() {
               key={task.id}
               data-testid={`task-row-${task.id}`}
               onClick={() => navigate(`/tasks/${task.id}`)}
-              className="cursor-pointer hover:bg-ministry-bg-tertiary border-ministry-border-default"
+              className={`cursor-pointer hover:bg-ministry-bg-tertiary border-ministry-border-default ${task.is_archived ? 'opacity-70' : ''}`}
             >
-              <TableCell className="font-medium text-ministry-text-primary">{task.title}</TableCell>
+              <TableCell className="font-medium text-ministry-text-primary">
+                <div className="flex items-center gap-2">
+                  {task.title}
+                  {task.is_archived && (
+                    <Badge variant="outline" className="text-xs border-amber-500 text-amber-600 bg-amber-50">
+                      Archived
+                    </Badge>
+                  )}
+                </div>
+              </TableCell>
               <TableCell className="text-ministry-text-secondary">{task.content_type}</TableCell>
               <TableCell>
                 <AvatarDisplay avatarName={task.avatar} size={28} showLabel />
@@ -263,6 +273,49 @@ export default function Tasks() {
               <TableCell className="text-ministry-text-secondary">
                 {format(new Date(task.publish_datetime), 'MMM dd, yyyy HH:mm')}
               </TableCell>
+              {canDeleteTask && (
+                <TableCell onClick={(e) => e.stopPropagation()}>
+                  <div className="flex gap-1">
+                    {!task.is_archived ? (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setArchiveDialog({ open: true, task })}
+                        data-testid={`archive-task-${task.id}`}
+                        className="h-8 w-8 p-0 text-ministry-text-secondary hover:text-amber-600"
+                        title="Archive task"
+                      >
+                        <Archive size={16} />
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setRestoreDialog({ open: true, task })}
+                          data-testid={`restore-task-${task.id}`}
+                          className="h-8 w-8 p-0 text-ministry-text-secondary hover:text-green-600"
+                          title="Restore task"
+                        >
+                          <ArchiveRestore size={16} />
+                        </Button>
+                        {!taskVideos[task.id] && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setDeleteDialog({ open: true, task })}
+                            data-testid={`delete-task-${task.id}`}
+                            className="h-8 w-8 p-0 text-ministry-text-secondary hover:text-red-600"
+                            title="Delete permanently"
+                          >
+                            <Trash2 size={16} />
+                          </Button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>
