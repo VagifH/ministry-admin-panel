@@ -587,6 +587,113 @@ export default function Tasks() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Archive Confirmation Dialog */}
+      <Dialog open={archiveDialog.open} onOpenChange={(open) => !open && setArchiveDialog({ open: false, task: null })}>
+        <DialogContent className="bg-ministry-bg-secondary border border-ministry-border-default rounded-ministry max-w-md">
+          <DialogHeader className="px-6 pt-6">
+            <DialogTitle className="text-xl text-ministry-text-primary flex items-center gap-2">
+              <Archive size={20} className="text-amber-500" />
+              Archive Task
+            </DialogTitle>
+            <DialogDescription className="text-ministry-text-secondary mt-2">
+              Are you sure you want to archive "{archiveDialog.task?.title}"?
+              <br /><br />
+              Archived tasks are read-only and won't appear in the active task list. You can restore them later.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="px-6 py-4 border-t border-ministry-border-default flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setArchiveDialog({ open: false, task: null })}
+              disabled={actionSubmitting}
+              className="h-9 border-ministry-border-default rounded-ministry"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleArchive}
+              disabled={actionSubmitting}
+              data-testid="confirm-archive-button"
+              className="h-9 bg-amber-500 hover:bg-amber-600 text-white rounded-ministry"
+            >
+              {actionSubmitting ? 'Archiving...' : 'Archive'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Restore Confirmation Dialog */}
+      <Dialog open={restoreDialog.open} onOpenChange={(open) => !open && setRestoreDialog({ open: false, task: null })}>
+        <DialogContent className="bg-ministry-bg-secondary border border-ministry-border-default rounded-ministry max-w-md">
+          <DialogHeader className="px-6 pt-6">
+            <DialogTitle className="text-xl text-ministry-text-primary flex items-center gap-2">
+              <ArchiveRestore size={20} className="text-green-500" />
+              Restore Task
+            </DialogTitle>
+            <DialogDescription className="text-ministry-text-secondary mt-2">
+              Are you sure you want to restore "{restoreDialog.task?.title}"?
+              <br /><br />
+              The task will be moved back to the active task list and can be edited again.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="px-6 py-4 border-t border-ministry-border-default flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setRestoreDialog({ open: false, task: null })}
+              disabled={actionSubmitting}
+              className="h-9 border-ministry-border-default rounded-ministry"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleRestore}
+              disabled={actionSubmitting}
+              data-testid="confirm-restore-button"
+              className="h-9 bg-green-500 hover:bg-green-600 text-white rounded-ministry"
+            >
+              {actionSubmitting ? 'Restoring...' : 'Restore'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Permanent Delete Confirmation Dialog */}
+      <Dialog open={deleteDialog.open} onOpenChange={(open) => !open && setDeleteDialog({ open: false, task: null })}>
+        <DialogContent className="bg-ministry-bg-secondary border border-ministry-border-default rounded-ministry max-w-md">
+          <DialogHeader className="px-6 pt-6">
+            <DialogTitle className="text-xl text-ministry-text-primary flex items-center gap-2">
+              <Trash2 size={20} className="text-red-500" />
+              Permanently Delete Task
+            </DialogTitle>
+            <DialogDescription className="text-ministry-text-secondary mt-2">
+              <span className="text-red-600 font-semibold">Warning: This action cannot be undone!</span>
+              <br /><br />
+              Are you sure you want to permanently delete "{deleteDialog.task?.title}"?
+              <br /><br />
+              All comments and history associated with this task will be lost forever.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="px-6 py-4 border-t border-ministry-border-default flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialog({ open: false, task: null })}
+              disabled={actionSubmitting}
+              className="h-9 border-ministry-border-default rounded-ministry"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handlePermanentDelete}
+              disabled={actionSubmitting}
+              data-testid="confirm-delete-button"
+              className="h-9 bg-red-600 hover:bg-red-700 text-white rounded-ministry"
+            >
+              {actionSubmitting ? 'Deleting...' : 'Delete Forever'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
