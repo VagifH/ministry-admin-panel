@@ -254,7 +254,7 @@ export default function Tasks() {
             </Select>
             <Select value={filters.avatar || "all"} onValueChange={(value) => setFilters({ ...filters, avatar: value === "all" ? "" : value })}>
               <SelectTrigger className="w-[180px] border-ministry-border-default rounded-ministry" data-testid="filter-avatar">
-                <SelectValue placeholder="Avatar" />
+                <SelectValue placeholder="AI Agent" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Avatars</SelectItem>
