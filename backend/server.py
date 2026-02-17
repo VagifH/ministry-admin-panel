@@ -671,10 +671,7 @@ async def create_user(user_data: UserCreate, current_user: User = Depends(requir
     return User(**user_dict)
 
 @api_router.patch("/users/{user_id}", response_model=User)
-async def update_user(user_id: str, user_data: UserUpdate, current_user: User = Depends(get_current_user)):
-    if current_user.role != "Admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
-    
+async def update_user(user_id: str, user_data: UserUpdate, current_user: User = Depends(require_action("edit_user"))):
     existing = await db.users.find_one({"id": user_id}, {"_id": 0})
     if not existing:
         raise HTTPException(status_code=404, detail="User not found")
@@ -690,10 +687,7 @@ async def update_user(user_id: str, user_data: UserUpdate, current_user: User = 
     return User(**updated)
 
 @api_router.delete("/users/{user_id}")
-async def delete_user(user_id: str, current_user: User = Depends(get_current_user)):
-    if current_user.role != "Admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
-    
+async def delete_user(user_id: str, current_user: User = Depends(require_action("delete_user"))):
     if user_id == current_user.id:
         raise HTTPException(status_code=400, detail="Cannot delete yourself")
     
