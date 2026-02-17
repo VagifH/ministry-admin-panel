@@ -283,7 +283,7 @@ export default function VideoTab({ taskId, taskStatus }) {
         <input
           ref={fileInputRef}
           type="file"
-          accept="video/mp4"
+          accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov"
           onChange={handleInputChange}
           className="hidden"
           data-testid="video-file-input"
