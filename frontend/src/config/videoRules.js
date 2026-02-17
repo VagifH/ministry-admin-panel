@@ -1,33 +1,36 @@
 /**
  * Video Upload Rules Configuration
  * Centralized config for video upload constraints and validation
+ * 
+ * MAX UPLOAD SIZE: 100MB
  */
 
 /**
  * Allowed video MIME types
  */
-export const ALLOWED_MIME_TYPES = ['video/mp4'];
+export const ALLOWED_MIME_TYPES = ['video/mp4', 'video/webm', 'video/quicktime'];
 
 /**
  * Allowed file extensions
  */
-export const ALLOWED_EXTENSIONS = ['.mp4'];
+export const ALLOWED_EXTENSIONS = ['.mp4', '.webm', '.mov'];
 
 /**
  * File size limits (in bytes)
+ * MAX SIZE: 100MB
  */
 export const SIZE_LIMITS = {
-  // Soft limit - show warning but allow upload
-  SOFT_LIMIT_MB: 100,
-  SOFT_LIMIT_BYTES: 100 * 1024 * 1024,
+  // Hard limit - block upload (100MB)
+  MAX_SIZE_MB: 100,
+  MAX_SIZE_BYTES: 100 * 1024 * 1024,
   
-  // Hard limit - block upload
-  HARD_LIMIT_MB: 120,
-  HARD_LIMIT_BYTES: 120 * 1024 * 1024,
+  // Soft limit - show warning but allow upload (80MB)
+  SOFT_LIMIT_MB: 80,
+  SOFT_LIMIT_BYTES: 80 * 1024 * 1024,
   
-  // Maximum allowed (for display/validation)
-  MAX_SIZE_MB: 120,
-  MAX_SIZE_BYTES: 120 * 1024 * 1024
+  // Hard limit aliases for backward compatibility
+  HARD_LIMIT_MB: 100,
+  HARD_LIMIT_BYTES: 100 * 1024 * 1024
 };
 
 /**
