@@ -646,7 +646,7 @@ async def login(request: LoginRequest, http_request: Request):
             await audit_logger.log_login_failed(request.email, "User not found", http_request)
         except Exception as e:
             logger.error(f"Audit logging failed for login failure: {e}")
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise AuthError(message="Invalid credentials", code=ErrorCode.INVALID_CREDENTIALS)
     
     if not verify_password(request.password, user_doc["hashed_password"]):
         # Log failed login attempt (safe)
@@ -654,7 +654,7 @@ async def login(request: LoginRequest, http_request: Request):
             await audit_logger.log_login_failed(request.email, "Invalid password", http_request)
         except Exception as e:
             logger.error(f"Audit logging failed for login failure: {e}")
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise AuthError(message="Invalid credentials", code=ErrorCode.INVALID_CREDENTIALS)
     
     if not user_doc["is_active"]:
         # Log failed login attempt (safe)
@@ -662,7 +662,7 @@ async def login(request: LoginRequest, http_request: Request):
             await audit_logger.log_login_failed(request.email, "Account disabled", http_request)
         except Exception as e:
             logger.error(f"Audit logging failed for login failure: {e}")
-        raise HTTPException(status_code=403, detail="Account is disabled")
+        raise ForbiddenError(message="Account is disabled", code=ErrorCode.ACCOUNT_DISABLED)
     
     token = create_access_token({"sub": user_doc["id"]})
     
