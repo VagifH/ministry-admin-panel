@@ -66,6 +66,52 @@ def migrate_task_status(task: dict) -> dict:
         task['status'] = migrate_status(task['status'])
     return task
 
+def optimize_avatar_image(image_bytes: bytes, original_mime: str) -> tuple[bytes, str]:
+    """
+    Optimize avatar image for storage:
+    - Center-crop to square
+    - Resize to max 256x256
+    - Convert to WebP with quality 80
+    - Returns (optimized_bytes, mime_type)
+    """
+    try:
+        # Open image from bytes
+        img = Image.open(io.BytesIO(image_bytes))
+        
+        # Convert to RGB if necessary (handles RGBA, P mode, etc.)
+        if img.mode in ('RGBA', 'LA', 'P'):
+            # Create white background for transparent images
+            background = Image.new('RGB', img.size, (255, 255, 255))
+            if img.mode == 'P':
+                img = img.convert('RGBA')
+            background.paste(img, mask=img.split()[-1] if img.mode == 'RGBA' else None)
+            img = background
+        elif img.mode != 'RGB':
+            img = img.convert('RGB')
+        
+        # Center-crop to square
+        width, height = img.size
+        min_dim = min(width, height)
+        left = (width - min_dim) // 2
+        top = (height - min_dim) // 2
+        right = left + min_dim
+        bottom = top + min_dim
+        img = img.crop((left, top, right, bottom))
+        
+        # Resize to max 256x256
+        if img.size[0] > AVATAR_OUTPUT_SIZE:
+            img = img.resize((AVATAR_OUTPUT_SIZE, AVATAR_OUTPUT_SIZE), Image.Resampling.LANCZOS)
+        
+        # Convert to WebP with quality optimization
+        output = io.BytesIO()
+        img.save(output, format='WEBP', quality=AVATAR_OUTPUT_QUALITY, method=6)
+        optimized_bytes = output.getvalue()
+        
+        return optimized_bytes, 'image/webp'
+        
+    except Exception as e:
+        raise ValueError(f"Failed to process image: {str(e)}")
+
 # Create the main app
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
