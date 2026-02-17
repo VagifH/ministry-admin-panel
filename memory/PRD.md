@@ -55,6 +55,24 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
 ## What's Been Implemented
 
 ### Feb 17, 2026
+- **P0 Completed: PERMISSIONS & ROLES ENGINE (RBAC)**
+  - Centralized backend RBAC configuration (PAGE_PERMISSIONS, ACTION_PERMISSIONS)
+  - `require_action()` and `require_page_access()` dependency factories for route protection
+  - New endpoint: `GET /api/auth/permissions` - Returns user's accessible pages, actions, and workflow transitions
+  - Server-side enforcement: 403 responses with clear error messages for unauthorized access
+  - Frontend permissions matrix (`permissionsMatrix.js`) with `canPerformAction()` and `canAccessPage()` helpers
+  - ProtectedRoute component updated to check page-level access
+  - Layout sidebar dynamically filters nav items by user role
+  - Create Task button visibility based on role permissions
+  - Access Denied page with clear role-based messaging
+  - Testing: 100% pass rate (25/25 backend tests, all frontend features verified)
+  
+  **Permission Matrix:**
+  - Admin: Full access (all pages, all actions)
+  - Editor: Dashboard, Tasks, Calendar, Activity Log; can create/edit tasks
+  - Producer: Dashboard, Tasks, Calendar; can produce tasks, no create
+  - Approver: Dashboard, Tasks, Calendar; can approve/reject, no create/edit
+
 - **P0 Completed: AVATAR SYSTEM FINALIZATION**
   - Extended Avatar model with: `display_name`, `is_active`, `created_at`, `updated_at`
   - New backend endpoint: `PATCH /api/avatars/{id}` - Update display_name and is_active (Admin only)
