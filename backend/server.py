@@ -279,15 +279,23 @@ class AvatarResponse(BaseModel):
     """Response model for avatar data"""
     id: str
     name: str
+    display_name: str
+    is_active: bool = True
     has_photo: bool
     photo_data: Optional[str] = None  # base64 encoded image
+    created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+class AvatarUpdate(BaseModel):
+    """Update model for avatar"""
+    display_name: Optional[str] = None
+    is_active: Optional[bool] = None
 
 # Default avatars configuration
 DEFAULT_AVATARS = [
-    {"id": "avatar-1", "name": "Avatar 1"},
-    {"id": "avatar-2", "name": "Avatar 2"},
-    {"id": "avatar-3", "name": "Avatar 3"},
+    {"id": "avatar-1", "name": "Avatar 1", "display_name": "Avatar 1", "is_active": True},
+    {"id": "avatar-2", "name": "Avatar 2", "display_name": "Avatar 2", "is_active": True},
+    {"id": "avatar-3", "name": "Avatar 3", "display_name": "Avatar 3", "is_active": True},
 ]
 
 class LoginRequest(BaseModel):
