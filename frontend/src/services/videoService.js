@@ -178,40 +178,12 @@ export const uploadVideo = async (taskId, file, onProgress) => {
 
 /**
  * Validate a video file before upload
+ * Uses centralized validation from videoRules config
  * @param {File} file - The file to validate
- * @returns {Object} { valid: boolean, error?: string }
+ * @returns {Object} { valid: boolean, error?: string, warning?: string }
  */
 export const validateVideoFile = (file) => {
-  if (!file) {
-    return { valid: false, error: 'No file selected' };
-  }
-
-  // Check file type
-  if (!VIDEO_CONFIG.ALLOWED_TYPES.includes(file.type)) {
-    return {
-      valid: false,
-      error: `Invalid file type. Only MP4 videos are allowed. Got: ${file.type || 'unknown'}`
-    };
-  }
-
-  // Check file extension
-  const extension = '.' + file.name.split('.').pop().toLowerCase();
-  if (!VIDEO_CONFIG.ALLOWED_EXTENSIONS.includes(extension)) {
-    return {
-      valid: false,
-      error: `Invalid file extension. Only .mp4 files are allowed.`
-    };
-  }
-
-  // Check file size
-  if (file.size > VIDEO_CONFIG.MAX_SIZE_BYTES) {
-    return {
-      valid: false,
-      error: `File too large. Maximum size is ${VIDEO_CONFIG.MAX_SIZE_MB}MB. Your file: ${(file.size / (1024 * 1024)).toFixed(1)}MB`
-    };
-  }
-
-  return { valid: true };
+  return validateFile(file);
 };
 
 /**
