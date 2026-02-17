@@ -1299,6 +1299,54 @@ async def list_avatars(current_user: User = Depends(get_current_user)):
     
     return result
 
+@api_router.patch("/avatars/{avatar_id}", response_model=AvatarResponse)
+async def update_avatar(
+    avatar_id: str,
+    avatar_update: AvatarUpdate,
+    current_user: User = Depends(get_current_user)
+):
+    """Update avatar display_name or is_active status (Admin only)"""
+    # Admin only
+    if current_user.role != "Admin":
+        raise HTTPException(status_code=403, detail="Only Admin can update avatars")
+    
+    # Find avatar
+    avatar = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
+    if not avatar:
+        raise HTTPException(status_code=404, detail="Avatar not found")
+    
+    # Build update dict
+    update_data = {"updated_at": datetime.now(timezone.utc).isoformat()}
+    
+    if avatar_update.display_name is not None:
+        update_data["display_name"] = avatar_update.display_name
+    
+    if avatar_update.is_active is not None:
+        update_data["is_active"] = avatar_update.is_active
+    
+    await db.avatars.update_one({"id": avatar_id}, {"$set": update_data})
+    
+    # Log the change
+    changes = []
+    if avatar_update.display_name is not None:
+        changes.append(f"name: {avatar_update.display_name}")
+    if avatar_update.is_active is not None:
+        changes.append(f"active: {avatar_update.is_active}")
+    await log_audit(current_user.id, current_user.name, "UPDATE", "Avatar", avatar_id, None, ", ".join(changes))
+    
+    # Return updated avatar
+    updated = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
+    if 'display_name' not in updated:
+        updated['display_name'] = updated.get('name', 'Avatar')
+    if 'is_active' not in updated:
+        updated['is_active'] = True
+    if isinstance(updated.get('updated_at'), str):
+        updated['updated_at'] = datetime.fromisoformat(updated['updated_at'])
+    if isinstance(updated.get('created_at'), str):
+        updated['created_at'] = datetime.fromisoformat(updated['created_at'])
+    
+    return AvatarResponse(**updated)
+
 @api_router.post("/avatars/{avatar_id}/photo", response_model=AvatarResponse)
 async def upload_avatar_photo(
     avatar_id: str,
