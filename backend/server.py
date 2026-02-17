@@ -338,6 +338,22 @@ async def create_default_admin():
         await db.users.insert_one(admin)
         logger.info("Default admin user created")
 
+@app.on_event("startup")
+async def seed_default_avatars():
+    """Seed the 3 fixed avatars if they don't exist"""
+    for avatar in DEFAULT_AVATARS:
+        existing = await db.avatars.find_one({"id": avatar["id"]})
+        if not existing:
+            avatar_doc = {
+                "id": avatar["id"],
+                "name": avatar["name"],
+                "has_photo": False,
+                "photo_data": None,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.avatars.insert_one(avatar_doc)
+            logger.info(f"Seeded avatar: {avatar['name']}")
+
 # ==================== AUTH ENDPOINTS ====================
 
 @api_router.post("/auth/login", response_model=LoginResponse)
