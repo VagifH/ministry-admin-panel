@@ -8,12 +8,14 @@ import os
 import logging
 import shutil
 import aiofiles
+import io
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, field_validator
 from typing import List, Optional, Literal
 from datetime import datetime, timezone, timedelta
 import bcrypt
 from jose import JWTError, jwt
+from PIL import Image
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
