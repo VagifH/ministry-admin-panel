@@ -165,14 +165,21 @@ export const TASK_STATUS_LIST = Object.entries(TASK_STATUS_CONFIG)
 /**
  * Read-only statuses - tasks in these statuses cannot be edited by Editor/Approver
  */
-export const READ_ONLY_STATUSES = [TASK_STATUS.SCHEDULED, TASK_STATUS.PUBLISHED];
+export const READ_ONLY_STATUSES = [
+  TASK_STATUS.APPROVED,
+  TASK_STATUS.SCHEDULED, 
+  TASK_STATUS.PUBLISHED
+];
 
 /**
  * Check if a status is read-only for editing
  * @param {string} status - Task status value
  * @returns {boolean}
  */
-export const isReadOnlyStatus = (status) => READ_ONLY_STATUSES.includes(status);
+export const isReadOnlyStatus = (status) => {
+  const migratedStatus = migrateStatus(status);
+  return READ_ONLY_STATUSES.includes(migratedStatus);
+};
 
 /**
  * Task workflow transitions by role
