@@ -346,43 +346,45 @@ export default function Tasks() {
 
       <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
         <div className="p-4 border-b border-ministry-border-default">
-          {/* Archive Filter Toggle */}
-          <div className="flex gap-2 mb-4">
-            <Button
-              variant={filters.archived === 'false' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilters({ ...filters, archived: 'false' })}
-              data-testid="filter-active-tasks"
-              className={filters.archived === 'false' 
-                ? 'bg-ministry-brand-primary text-white' 
-                : 'border-ministry-border-default text-ministry-text-secondary'}
-            >
-              Active
-            </Button>
-            <Button
-              variant={filters.archived === 'true' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilters({ ...filters, archived: 'true' })}
-              data-testid="filter-archived-tasks"
-              className={filters.archived === 'true' 
-                ? 'bg-amber-500 text-white hover:bg-amber-600' 
-                : 'border-ministry-border-default text-ministry-text-secondary'}
-            >
-              <Archive size={14} className="mr-1" />
-              Archived
-            </Button>
-            <Button
-              variant={filters.archived === 'all' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilters({ ...filters, archived: 'all' })}
-              data-testid="filter-all-tasks"
-              className={filters.archived === 'all' 
-                ? 'bg-ministry-brand-primary text-white' 
-                : 'border-ministry-border-default text-ministry-text-secondary'}
-            >
-              All
-            </Button>
-          </div>
+          {/* Archive Filter Toggle - Only visible to Admin and Editor */}
+          {canViewArchived && (
+            <div className="flex gap-2 mb-4">
+              <Button
+                variant={filters.archived === 'false' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setFilters({ ...filters, archived: 'false' })}
+                data-testid="filter-active-tasks"
+                className={filters.archived === 'false' 
+                  ? 'bg-ministry-brand-primary text-white' 
+                  : 'border-ministry-border-default text-ministry-text-secondary'}
+              >
+                Active
+              </Button>
+              <Button
+                variant={filters.archived === 'true' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setFilters({ ...filters, archived: 'true' })}
+                data-testid="filter-archived-tasks"
+                className={filters.archived === 'true' 
+                  ? 'bg-amber-500 text-white hover:bg-amber-600' 
+                  : 'border-ministry-border-default text-ministry-text-secondary'}
+              >
+                <Archive size={14} className="mr-1" />
+                Archived
+              </Button>
+              <Button
+                variant={filters.archived === 'all' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setFilters({ ...filters, archived: 'all' })}
+                data-testid="filter-all-tasks"
+                className={filters.archived === 'all' 
+                  ? 'bg-ministry-brand-primary text-white' 
+                  : 'border-ministry-border-default text-ministry-text-secondary'}
+              >
+                All
+              </Button>
+            </div>
+          )}
 
           <div className="flex gap-4 flex-wrap items-center">
             <div className="flex-1 min-w-[200px]">
