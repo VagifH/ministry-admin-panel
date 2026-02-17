@@ -150,10 +150,7 @@ export default function TaskDetails() {
 
   const canEdit = () => {
     if (!task || !user) return false;
-    if (user.role === 'Admin') return true;
-    if (user.role === 'Approver') return false;
-    if ((user.role === 'Editor' || user.role === 'Producer') && isReadOnlyStatus(task.status)) return false;
-    return true;
+    return canEditInStatus(task.status, user.role);
   };
 
   const getAvailableStatusActions = () => {
