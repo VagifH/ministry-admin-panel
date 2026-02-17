@@ -1414,8 +1414,14 @@ async def upload_avatar_photo(
     
     # Return updated avatar
     updated = await db.avatars.find_one({"id": avatar_id}, {"_id": 0})
+    if 'display_name' not in updated:
+        updated['display_name'] = updated.get('name', 'Avatar')
+    if 'is_active' not in updated:
+        updated['is_active'] = True
     if isinstance(updated.get('updated_at'), str):
         updated['updated_at'] = datetime.fromisoformat(updated['updated_at'])
+    if isinstance(updated.get('created_at'), str):
+        updated['created_at'] = datetime.fromisoformat(updated['created_at'])
     
     return AvatarResponse(**updated)
 
