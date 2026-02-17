@@ -328,6 +328,75 @@ class AuditLogger:
             new_value=changes,
             request=request
         )
+    
+    async def log_avatar_photo_upload(self, user: Any, avatar_id: str, filename: str, request: Optional[Request] = None):
+        """Log avatar photo upload"""
+        return await self.log(
+            user=user,
+            action=AuditAction.UPLOAD,
+            entity_type=EntityType.AVATAR,
+            entity_id=avatar_id,
+            new_value=filename,
+            request=request
+        )
+    
+    async def log_avatar_photo_delete(self, user: Any, avatar_id: str, request: Optional[Request] = None):
+        """Log avatar photo deletion"""
+        return await self.log(
+            user=user,
+            action=AuditAction.DELETE,
+            entity_type=EntityType.AVATAR,
+            entity_id=avatar_id,
+            old_value="photo",
+            request=request
+        )
+    
+    async def log_comment_create(self, user: Any, task_id: str, comment_preview: str, request: Optional[Request] = None):
+        """Log comment creation"""
+        return await self.log(
+            user=user,
+            action=AuditAction.CREATE,
+            entity_type=EntityType.COMMENT,
+            entity_id=task_id,
+            new_value=comment_preview,
+            request=request
+        )
+    
+    async def log_video_create(self, user: Any, video_id: str, filename: str, request: Optional[Request] = None):
+        """Log video record creation"""
+        return await self.log(
+            user=user,
+            action=AuditAction.CREATE,
+            entity_type=EntityType.VIDEO,
+            entity_id=video_id,
+            new_value=filename,
+            request=request
+        )
+    
+    async def log_video_status_change(self, user: Any, video_id: str, old_status: str, new_status: str, request: Optional[Request] = None):
+        """Log video status change"""
+        return await self.log(
+            user=user,
+            action=AuditAction.STATUS_CHANGE,
+            entity_type=EntityType.VIDEO,
+            entity_id=video_id,
+            old_value=old_status,
+            new_value=new_status,
+            request=request
+        )
+    
+    async def safe_log(self, **kwargs) -> Optional[str]:
+        """
+        Safe wrapper for logging that catches exceptions.
+        Audit logging should never break the main endpoint.
+        Returns log_id on success, None on failure.
+        """
+        try:
+            return await self.log(**kwargs)
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).error(f"Audit logging failed: {e}")
+            return None
 
 
 # Singleton instance
