@@ -136,7 +136,7 @@ export default function AvatarsSettings() {
       <Table>
         <TableHeader>
           <TableRow className="border-ministry-border-default">
-            <TableHead className="text-ministry-text-primary font-semibold w-[80px]">Avatar</TableHead>
+            <TableHead className="text-ministry-text-primary font-semibold w-[80px]">Agent</TableHead>
             <TableHead className="text-ministry-text-primary font-semibold w-[60px]">Preview</TableHead>
             <TableHead className="text-ministry-text-primary font-semibold">Display Name</TableHead>
             <TableHead className="text-ministry-text-primary font-semibold w-[80px]">Active</TableHead>
