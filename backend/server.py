@@ -972,6 +972,10 @@ async def change_task_status(task_id: str, status_change: StatusChange, request:
     if not existing:
         raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
+    # Block status changes on archived tasks
+    if existing.get("is_archived"):
+        raise ForbiddenError(message="Cannot change status of archived tasks. Restore the task first.", code=ErrorCode.TASK_ARCHIVED)
+    
     old_status = migrate_status(existing["status"])
     new_status = status_change.status
     
