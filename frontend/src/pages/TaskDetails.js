@@ -220,7 +220,11 @@ export default function TaskDetails() {
       <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
         <div className="p-6 border-b border-ministry-border-default flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-semibold text-ministry-text-primary">{task.title}</h1>
+            <AvatarDisplay avatarName={task.avatar} size={40} />
+            <div>
+              <h1 className="text-2xl font-semibold text-ministry-text-primary">{task.title}</h1>
+              <span className="text-sm text-ministry-text-secondary">{task.avatar}</span>
+            </div>
             <Badge className={`${getStatusBadgeClass(task.status)} rounded-md`} data-testid="task-status-badge">
               {getStatusLabel(task.status)}
             </Badge>
