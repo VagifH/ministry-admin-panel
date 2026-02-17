@@ -1125,7 +1125,15 @@ async def get_video_status(task_id: str, current_user: User = Depends(get_curren
 
 @api_router.post("/tasks/{task_id}/video/upload", response_model=VideoResponse)
 async def upload_video(task_id: str, file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
-    """Upload a video file for a task"""
+    """
+    Upload a video file for a task.
+    
+    Validates:
+    - Max size: 100MB
+    - Allowed types: video/mp4, video/webm, video/quicktime
+    
+    Uses storage service abstraction for file operations.
+    """
     import uuid
     
     # Check permissions - Admins and Editors can upload videos
@@ -1152,7 +1160,7 @@ async def upload_video(task_id: str, file: UploadFile = File(...), current_user:
     contents = await file.read()
     file_size = len(contents)
     
-    # Validate file size
+    # Validate file size (100MB limit)
     if file_size > VIDEO_MAX_SIZE_BYTES:
         raise HTTPException(
             status_code=400, 
@@ -1162,22 +1170,23 @@ async def upload_video(task_id: str, file: UploadFile = File(...), current_user:
     # Check if video already exists - if so, delete old file first
     existing_video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
     if existing_video:
-        # Delete old file if exists
-        if existing_video.get("storage_provider") == "local" and existing_video.get("storage_key"):
-            old_file_path = VIDEO_UPLOAD_DIR / existing_video["storage_key"]
-            if old_file_path.exists():
-                old_file_path.unlink()
+        # Delete old file via storage service
+        if existing_video.get("storage_path"):
+            await storage_service.delete_file(existing_video["storage_path"])
         # Delete old record
         await db.videos.delete_one({"task_id": task_id})
     
-    # Create directory structure
-    task_dir = VIDEO_UPLOAD_DIR / task_id
-    task_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Generate unique filename
+    # Generate unique video ID
     video_id = str(uuid.uuid4())
-    file_extension = Path(file.filename).suffix.lower() or ".mp4"
-    stored_filename = f"{video_id}{file_extension}"
+    
+    try:
+        # Save file via storage service
+        storage_result = await storage_service.save_file(
+            file_data=contents,
+            original_filename=file.filename,
+            folder="videos",
+            subfolder=task_id
+        )
     storage_key = f"{task_id}/{stored_filename}"
     file_path = VIDEO_UPLOAD_DIR / storage_key
     
