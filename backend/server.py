@@ -1241,7 +1241,7 @@ async def upload_video(task_id: str, request: Request, file: UploadFile = File(.
         }
         
         await db.videos.insert_one(video_dict)
-        await log_audit(current_user.id, current_user.name, "UPLOAD", "Video", video_id, None, file.filename)
+        await audit_logger.log_video_upload(current_user, task_id, file.filename, request)
         
         video_dict['created_at'] = now
         video_dict['updated_at'] = now
@@ -1270,7 +1270,14 @@ async def upload_video(task_id: str, request: Request, file: UploadFile = File(.
         }
         
         await db.videos.insert_one(video_dict)
-        await log_audit(current_user.id, current_user.name, "UPLOAD_FAILED", "Video", video_id, None, str(e))
+        await audit_logger.log(
+            user=current_user,
+            action=AuditAction.UPLOAD_FAILED,
+            entity_type=EntityType.VIDEO,
+            entity_id=task_id,
+            new_value=str(e),
+            request=request
+        )
         
         raise HTTPException(status_code=500, detail=f"Failed to save video: {str(e)}")
 
