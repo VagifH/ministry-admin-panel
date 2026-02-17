@@ -1219,12 +1219,12 @@ async def delete_video(task_id: str, request: Request, current_user: User = Depe
     
     # Check permissions
     if current_user.role not in ["Admin", "Editor"]:
-        raise HTTPException(status_code=403, detail="Only Admin and Editor roles can delete videos")
+        raise ForbiddenError(message="Only Admin and Editor roles can delete videos", code=ErrorCode.PERMISSION_DENIED)
     
     # Verify task isn't published
     task = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if task and task.get("status") == "Published":
-        raise HTTPException(status_code=400, detail="Cannot delete video from a published task")
+        raise ValidationError(message="Cannot delete video from a published task", code=ErrorCode.VALIDATION_ERROR)
     
     # Delete the actual file via storage service
     storage_path = video.get("storage_path")
@@ -1275,22 +1275,22 @@ async def upload_video(task_id: str, request: Request, file: UploadFile = File(.
     
     # Check permissions - Admins and Editors can upload videos
     if current_user.role not in ["Admin", "Editor"]:
-        raise HTTPException(status_code=403, detail="Only Admin and Editor roles can upload videos")
+        raise ForbiddenError(message="Only Admin and Editor roles can upload videos", code=ErrorCode.PERMISSION_DENIED)
     
     # Verify task exists
     task = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
     # Check task status - cannot upload to Published tasks
     if task.get("status") == "Published":
-        raise HTTPException(status_code=400, detail="Cannot upload video to a published task")
+        raise ValidationError(message="Cannot upload video to a published task", code=ErrorCode.VALIDATION_ERROR)
     
     # Validate file type
     if file.content_type not in ALLOWED_VIDEO_TYPES:
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Invalid file type. Only MP4, WebM, MOV allowed. Got: {file.content_type}"
+        raise ValidationError(
+            message=f"Invalid file type. Only MP4, WebM, MOV allowed. Got: {file.content_type}",
+            code=ErrorCode.INVALID_FILE_TYPE
         )
     
     # Read file to check size (and for writing)
@@ -1299,9 +1299,9 @@ async def upload_video(task_id: str, request: Request, file: UploadFile = File(.
     
     # Validate file size (100MB limit)
     if file_size > VIDEO_MAX_SIZE_BYTES:
-        raise HTTPException(
-            status_code=400, 
-            detail=f"File too large. Maximum size is {VIDEO_MAX_SIZE_MB}MB. Got: {file_size / (1024*1024):.1f}MB"
+        raise ValidationError(
+            message=f"File too large. Maximum size is {VIDEO_MAX_SIZE_MB}MB. Got: {file_size / (1024*1024):.1f}MB",
+            code=ErrorCode.FILE_TOO_LARGE
         )
     
     # Check if video already exists - if so, delete old file first
