@@ -31,15 +31,15 @@ export default function Dashboard() {
   };
 
   const statCards = stats ? [
-    { label: TASK_STATUS_CONFIG[TASK_STATUS.DRAFT].label, value: stats.draft, color: getStatusTextColor(TASK_STATUS.DRAFT) },
-    { label: TASK_STATUS_CONFIG[TASK_STATUS.SUBMITTED].label, value: stats.submitted, color: getStatusTextColor(TASK_STATUS.SUBMITTED) },
-    { label: TASK_STATUS_CONFIG[TASK_STATUS.IN_PROGRESS].label, value: stats.in_progress, color: getStatusTextColor(TASK_STATUS.IN_PROGRESS) },
-    { label: TASK_STATUS_CONFIG[TASK_STATUS.READY_FOR_REVIEW].label, value: stats.ready_for_review, color: getStatusTextColor(TASK_STATUS.READY_FOR_REVIEW) },
-    { label: TASK_STATUS_CONFIG[TASK_STATUS.CHANGES_REQUESTED].label, value: stats.changes_requested, color: getStatusTextColor(TASK_STATUS.CHANGES_REQUESTED) },
-    { label: TASK_STATUS_CONFIG[TASK_STATUS.APPROVED].label, value: stats.approved, color: getStatusTextColor(TASK_STATUS.APPROVED) },
-    { label: TASK_STATUS_CONFIG[TASK_STATUS.REJECTED].label, value: stats.rejected, color: getStatusTextColor(TASK_STATUS.REJECTED) },
-    { label: TASK_STATUS_CONFIG[TASK_STATUS.SCHEDULED].label, value: stats.scheduled, color: getStatusTextColor(TASK_STATUS.SCHEDULED) },
-    { label: TASK_STATUS_CONFIG[TASK_STATUS.PUBLISHED].label, value: stats.published, color: getStatusTextColor(TASK_STATUS.PUBLISHED) },
+    { label: getStatusLabel(STATUS.DRAFT), value: stats.draft, color: getStatusTextColor(STATUS.DRAFT) },
+    { label: getStatusLabel(STATUS.SUBMITTED), value: stats.submitted, color: getStatusTextColor(STATUS.SUBMITTED) },
+    { label: getStatusLabel(STATUS.IN_PROGRESS), value: stats.in_progress, color: getStatusTextColor(STATUS.IN_PROGRESS) },
+    { label: getStatusLabel(STATUS.READY_FOR_REVIEW), value: stats.ready_for_review, color: getStatusTextColor(STATUS.READY_FOR_REVIEW) },
+    { label: getStatusLabel(STATUS.CHANGES_REQUESTED), value: stats.changes_requested, color: getStatusTextColor(STATUS.CHANGES_REQUESTED) },
+    { label: getStatusLabel(STATUS.APPROVED), value: stats.approved, color: getStatusTextColor(STATUS.APPROVED) },
+    { label: getStatusLabel(STATUS.REJECTED), value: stats.rejected, color: getStatusTextColor(STATUS.REJECTED) },
+    { label: getStatusLabel(STATUS.SCHEDULED), value: stats.scheduled, color: getStatusTextColor(STATUS.SCHEDULED) },
+    { label: getStatusLabel(STATUS.PUBLISHED), value: stats.published, color: getStatusTextColor(STATUS.PUBLISHED) },
   ] : [];
 
   return (
