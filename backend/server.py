@@ -1394,7 +1394,7 @@ async def upload_video(task_id: str, request: Request, file: UploadFile = File(.
         except Exception as audit_e:
             logger.error(f"Audit logging failed for video upload failure: {audit_e}")
         
-        raise HTTPException(status_code=500, detail=f"Failed to save video: {str(e)}")
+        raise ServerError(message="Failed to save video. Please try again.")
 
 @api_router.get("/tasks/{task_id}/video/download")
 async def download_video(task_id: str, current_user: User = Depends(get_current_user)):
@@ -1416,13 +1416,13 @@ async def download_video(task_id: str, current_user: User = Depends(get_current_
     # Find video record
     video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
     if not video:
-        raise HTTPException(status_code=404, detail="No video found for this task")
+        raise NotFoundError(message="No video found for this task", code=ErrorCode.VIDEO_NOT_FOUND)
     
     # Check video status - only allow download when ready
     if video.get("status") != "ready":
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Video is not ready for download. Current status: {video.get('status')}"
+        raise ValidationError(
+            message=f"Video is not ready for download. Current status: {video.get('status')}",
+            code=ErrorCode.VALIDATION_ERROR
         )
     
     # Get storage path (use storage_path, fallback to storage_key for legacy)
@@ -1434,11 +1434,11 @@ async def download_video(task_id: str, current_user: User = Depends(get_current_
             storage_path = f"videos/{storage_key}"
     
     if not storage_path:
-        raise HTTPException(status_code=404, detail="Video file path not found in database")
+        raise NotFoundError(message="Video file path not found in database", code=ErrorCode.FILE_NOT_FOUND)
     
     # Check if file exists via storage service
     if not storage_service.file_exists(storage_path):
-        raise HTTPException(status_code=404, detail="Video file not found on server")
+        raise NotFoundError(message="Video file not found on server", code=ErrorCode.FILE_NOT_FOUND)
     
     # Get original filename and mime type
     original_filename = video.get("original_filename", "video.mp4")
