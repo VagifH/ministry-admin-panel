@@ -931,6 +931,10 @@ async def update_task(task_id: str, task_data: TaskUpdate, request: Request, cur
     if not existing:
         raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
+    # Block edits on archived tasks
+    if existing.get("is_archived"):
+        raise ForbiddenError(message="Cannot edit archived tasks. Restore the task first.", code=ErrorCode.TASK_ARCHIVED)
+    
     # Permission checks
     if current_user.role == "Approver":
         raise ForbiddenError(message="Approvers cannot edit task fields", code=ErrorCode.PERMISSION_DENIED)
