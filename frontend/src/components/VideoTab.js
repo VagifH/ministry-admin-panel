@@ -335,15 +335,15 @@ export default function VideoTab({ taskId, taskStatus }) {
       {/* Status Banner */}
       <div className={`p-4 rounded-ministry ${
         isReady 
-          ? 'bg-green-50 border border-green-200' 
+          ? 'bg-ministry-status-success-bg border border-ministry-status-success-border' 
           : isFailed 
-            ? 'bg-red-50 border border-red-200'
+            ? 'bg-ministry-status-error-bg border border-ministry-status-error-border'
             : 'bg-ministry-bg-tertiary border border-ministry-border-default'
       }`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {isReady ? (
-              <CheckCircle2 className="text-ministry-status-published" size={24} />
+              <CheckCircle2 className="text-ministry-status-success" size={24} />
             ) : isFailed ? (
               <AlertCircle className="text-ministry-status-rejected" size={24} />
             ) : (
