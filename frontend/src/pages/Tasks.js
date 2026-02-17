@@ -15,18 +15,9 @@ import { format } from 'date-fns';
 import { TableSkeleton } from '../components/ui/loading';
 import { EmptyState, NoResultsState, ErrorState } from '../components/ui/empty-state';
 import { showToast, showApiError } from '../lib/toast';
+import { TASK_STATUS, TASK_STATUS_CONFIG, TASK_STATUS_LIST, getStatusBadgeClass, CONTENT_TYPE_LIST } from '../config/statusConfig';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
-
-const statusColors = {
-  Draft: 'bg-ministry-status-draft text-white',
-  Submitted: 'bg-ministry-status-submitted text-white',
-  Producing: 'bg-ministry-status-producing text-white',
-  Review: 'bg-ministry-status-review text-white',
-  Scheduled: 'bg-ministry-status-scheduled text-white',
-  Published: 'bg-ministry-status-published text-white',
-  Rejected: 'bg-ministry-status-rejected text-white',
-};
 
 export default function Tasks() {
   const { user } = useAuth();
