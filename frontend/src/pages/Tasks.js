@@ -327,7 +327,7 @@ export default function Tasks() {
               </div>
 
               <div>
-                <Label className="text-ministry-text-primary text-sm font-medium">Avatar *</Label>
+                <Label className="text-ministry-text-primary text-sm font-medium">AI Agent *</Label>
                 <Select value={newTask.avatar} onValueChange={(value) => setNewTask({ ...newTask, avatar: value })}>
                   <SelectTrigger className="mt-1.5 h-9 border-ministry-border-default rounded-ministry">
                     <SelectValue />
