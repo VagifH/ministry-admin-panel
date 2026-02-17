@@ -34,6 +34,12 @@ VIDEO_MAX_SIZE_MB = 200
 VIDEO_MAX_SIZE_BYTES = VIDEO_MAX_SIZE_MB * 1024 * 1024  # 200MB
 ALLOWED_VIDEO_TYPES = ["video/mp4"]
 
+# Avatar Upload Configuration
+AVATAR_UPLOAD_DIR = ROOT_DIR / "uploads" / "avatars"
+AVATAR_MAX_SIZE_MB = 2
+AVATAR_MAX_SIZE_BYTES = AVATAR_MAX_SIZE_MB * 1024 * 1024  # 2MB
+ALLOWED_AVATAR_TYPES = ["image/png", "image/jpeg", "image/webp"]
+
 # Status Configuration
 VALID_STATUSES = ["Draft", "Submitted", "InProgress", "ReadyForReview", "ChangesRequested", "Approved", "Rejected", "Scheduled", "Published"]
 
