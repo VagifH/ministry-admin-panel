@@ -263,10 +263,10 @@ export default function VideoTab({ taskId, taskStatus }) {
               }
             </p>
 
-            {!isReadOnly && (
+            {!isReadOnly && canUpload && (
               <>
                 <Button
-                  disabled={!canModify}
+                  disabled={!canUpload || uploading}
                   className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry mb-4"
                   data-testid="upload-video-button"
                 >
