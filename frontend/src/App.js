@@ -34,8 +34,22 @@ function App() {
             <Route path="tasks" element={<Tasks />} />
             <Route path="tasks/:taskId" element={<TaskDetails />} />
             <Route path="calendar" element={<Calendar />} />
-            <Route path="activity" element={<ActivityLog />} />
-            <Route path="settings" element={<Settings />} />
+            <Route 
+              path="activity" 
+              element={
+                <ProtectedRoute page="activity_log">
+                  <ActivityLog />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="settings" 
+              element={
+                <ProtectedRoute page="settings">
+                  <Settings />
+                </ProtectedRoute>
+              } 
+            />
           </Route>
         </Routes>
       </BrowserRouter>
