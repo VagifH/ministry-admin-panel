@@ -1014,7 +1014,7 @@ async def upload_video(task_id: str, file: UploadFile = File(...), current_user:
     if file.content_type not in ALLOWED_VIDEO_TYPES:
         raise HTTPException(
             status_code=400, 
-            detail=f"Invalid file type. Only {', '.join(ALLOWED_VIDEO_TYPES)} allowed. Got: {file.content_type}"
+            detail=f"Invalid file type. Only MP4, WebM, MOV allowed. Got: {file.content_type}"
         )
     
     # Read file to check size (and for writing)
