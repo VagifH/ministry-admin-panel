@@ -820,7 +820,7 @@ async def create_task(task_data: TaskCreate, request: Request, current_user: Use
     return Task(**task_dict)
 
 @api_router.patch("/tasks/{task_id}", response_model=Task)
-async def update_task(task_id: str, task_data: TaskUpdate, current_user: User = Depends(get_current_user)):
+async def update_task(task_id: str, task_data: TaskUpdate, request: Request, current_user: User = Depends(get_current_user)):
     existing = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if not existing:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -839,7 +839,7 @@ async def update_task(task_id: str, task_data: TaskUpdate, current_user: User = 
         update_dict["updated_at"] = datetime.now(timezone.utc).isoformat()
         
         await db.tasks.update_one({"id": task_id}, {"$set": update_dict})
-        await log_audit(current_user.id, current_user.name, "UPDATE", "Task", task_id, None, str(update_dict))
+        await audit_logger.log_task_update(current_user, task_id, update_dict, request)
     
     updated = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if isinstance(updated.get('created_at'), str):
@@ -852,7 +852,7 @@ async def update_task(task_id: str, task_data: TaskUpdate, current_user: User = 
     return Task(**updated)
 
 @api_router.patch("/tasks/{task_id}/status", response_model=Task)
-async def change_task_status(task_id: str, status_change: StatusChange, current_user: User = Depends(get_current_user)):
+async def change_task_status(task_id: str, status_change: StatusChange, request: Request, current_user: User = Depends(get_current_user)):
     existing = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if not existing:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -876,7 +876,7 @@ async def change_task_status(task_id: str, status_change: StatusChange, current_
     }
     
     await db.tasks.update_one({"id": task_id}, {"$set": update_dict})
-    await log_audit(current_user.id, current_user.name, "STATUS_CHANGE", "Task", task_id, old_status, new_status)
+    await audit_logger.log_status_change(current_user, task_id, old_status, new_status, request)
     
     updated = await db.tasks.find_one({"id": task_id}, {"_id": 0})
     if isinstance(updated.get('created_at'), str):
