@@ -1,10 +1,12 @@
 import { useAvatars } from '../context/AvatarContext';
 
 /**
- * AvatarDisplay - Shows avatar thumbnail with optional label
+ * AvatarDisplay - Unified avatar component used throughout the app
+ * Shows avatar thumbnail (photo or initials fallback) with optional label
+ * 
  * @param {string} avatarName - The avatar name (e.g., "Avatar 1")
  * @param {number} size - Size in pixels (default: 32)
- * @param {boolean} showLabel - Whether to show the display name
+ * @param {boolean} showLabel - Whether to show the display name label
  * @param {boolean} useDisplayName - Whether to use display_name instead of avatar name
  * @param {string} className - Additional CSS classes
  */
@@ -19,7 +21,7 @@ export function AvatarDisplay({ avatarName, size = 32, showLabel = false, useDis
       <div
         className="rounded-full bg-ministry-bg-tertiary border border-ministry-border-default flex items-center justify-center overflow-hidden flex-shrink-0"
         style={{ width: size, height: size }}
-        data-testid={`avatar-display-${avatarName?.toLowerCase().replace(' ', '-')}`}
+        data-testid={`avatar-display-${avatarName?.toLowerCase().replace(/\s+/g, '-')}`}
       >
         {photoUrl ? (
           <img
@@ -30,7 +32,7 @@ export function AvatarDisplay({ avatarName, size = 32, showLabel = false, useDis
         ) : (
           <span 
             className="text-ministry-text-secondary font-medium"
-            style={{ fontSize: size * 0.4 }}
+            style={{ fontSize: Math.max(size * 0.4, 10) }}
           >
             {initials}
           </span>
