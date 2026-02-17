@@ -765,10 +765,7 @@ async def get_task(task_id: str, current_user: User = Depends(get_current_user))
     return Task(**task)
 
 @api_router.post("/tasks", response_model=Task)
-async def create_task(task_data: TaskCreate, current_user: User = Depends(get_current_user)):
-    if current_user.role == "Approver":
-        raise HTTPException(status_code=403, detail="Approvers cannot create tasks")
-    
+async def create_task(task_data: TaskCreate, current_user: User = Depends(require_action("create_task"))):
     import uuid
     task_dict = task_data.model_dump()
     task_dict["id"] = str(uuid.uuid4())
