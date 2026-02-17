@@ -1263,17 +1263,19 @@ async def list_avatars(current_user: User = Depends(get_current_user)):
     """Get all 3 fixed avatars with their photo data"""
     avatars = await db.avatars.find({}, {"_id": 0}).to_list(10)
     
-    # Ensure all 3 avatars exist
+    # Ensure all 3 avatars exist with new fields
     if len(avatars) < 3:
-        # Re-seed missing avatars
         for default_avatar in DEFAULT_AVATARS:
             existing = await db.avatars.find_one({"id": default_avatar["id"]})
             if not existing:
                 avatar_doc = {
                     "id": default_avatar["id"],
                     "name": default_avatar["name"],
+                    "display_name": default_avatar.get("display_name", default_avatar["name"]),
+                    "is_active": default_avatar.get("is_active", True),
                     "has_photo": False,
                     "photo_data": None,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
                     "updated_at": datetime.now(timezone.utc).isoformat()
                 }
                 await db.avatars.insert_one(avatar_doc)
@@ -1281,8 +1283,18 @@ async def list_avatars(current_user: User = Depends(get_current_user)):
     
     result = []
     for avatar in avatars:
+        # Ensure all required fields exist
+        if 'display_name' not in avatar:
+            avatar['display_name'] = avatar.get('name', 'Avatar')
+        if 'is_active' not in avatar:
+            avatar['is_active'] = True
+        if 'created_at' not in avatar:
+            avatar['created_at'] = None
+        
         if isinstance(avatar.get('updated_at'), str):
             avatar['updated_at'] = datetime.fromisoformat(avatar['updated_at'])
+        if isinstance(avatar.get('created_at'), str):
+            avatar['created_at'] = datetime.fromisoformat(avatar['created_at'])
         result.append(AvatarResponse(**avatar))
     
     return result
