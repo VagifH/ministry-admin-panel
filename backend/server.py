@@ -422,6 +422,33 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     
     return User(**user_doc)
 
+# ==================== RBAC DEPENDENCY FACTORIES ====================
+# These must be defined after get_current_user
+
+def require_page_access(page: str):
+    """
+    Dependency factory for page access control.
+    Usage: Depends(require_page_access("settings"))
+    """
+    async def check_access(current_user: User = Depends(get_current_user)):
+        allowed, error = check_page_access(current_user.role, page)
+        if not allowed:
+            raise HTTPException(status_code=403, detail=error)
+        return current_user
+    return check_access
+
+def require_action(action: str):
+    """
+    Dependency factory for action permission control.
+    Usage: Depends(require_action("create_task"))
+    """
+    async def check_permission(current_user: User = Depends(get_current_user)):
+        allowed, error = check_action_permission(current_user.role, action)
+        if not allowed:
+            raise HTTPException(status_code=403, detail=error)
+        return current_user
+    return check_permission
+
 async def log_audit(actor_id: str, actor_name: str, action: str, object_type: str, object_id: str, old_value: Optional[str] = None, new_value: Optional[str] = None):
     import uuid
     log = {
