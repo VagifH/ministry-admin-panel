@@ -134,7 +134,7 @@ class TaskUpdate(BaseModel):
         return v
 
 class StatusChange(BaseModel):
-    status: Literal["Draft", "Submitted", "Producing", "Review", "Scheduled", "Published", "Rejected"]
+    status: Literal["Draft", "Submitted", "InProgress", "ReadyForReview", "ChangesRequested", "Approved", "Rejected", "Scheduled", "Published"]
 
 class Comment(BaseModel):
     model_config = ConfigDict(extra="ignore")
