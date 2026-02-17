@@ -110,112 +110,74 @@ const DayPanelTaskItem = ({ task, onClick }) => {
   );
 };
 
-// DayCell component - handles individual day rendering with interactions
-const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectDate, onTaskClick }) => {
+// DayCell component - handles individual day rendering with Outlook-style event chips
+const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectDate, onTaskClick, onDayClick }) => {
   const [isPressed, setIsPressed] = useState(false);
-  const [popoverOpen, setPopoverOpen] = useState(false);
   
-  const maxVisible = 2;
+  const maxVisible = 3; // Show max 3 chips
   const visibleTasks = dayTasks.slice(0, maxVisible);
   const remainingCount = dayTasks.length - maxVisible;
 
-  const handleTaskClick = useCallback((e, taskId) => {
-    e.stopPropagation();
-    onTaskClick(taskId);
-  }, [onTaskClick]);
-
-  const handleMoreClick = useCallback((e) => {
-    e.stopPropagation();
-    setPopoverOpen(true);
-  }, []);
-
-  const handlePopoverTaskClick = useCallback((taskId) => {
-    setPopoverOpen(false);
-    onTaskClick(taskId);
-  }, [onTaskClick]);
+  const handleDayClick = useCallback((e) => {
+    // If clicking on the day cell itself (not a task), open day panel
+    if (dayTasks.length > 0) {
+      onDayClick(day, dayTasks);
+    }
+    onSelectDate(day);
+  }, [day, dayTasks, onDayClick, onSelectDate]);
 
   return (
     <div
       data-testid={`calendar-day-${format(day, 'yyyy-MM-dd')}`}
-      onClick={() => onSelectDate(day)}
+      onClick={handleDayClick}
       onMouseDown={() => setIsPressed(true)}
       onMouseUp={() => setIsPressed(false)}
       onMouseLeave={() => setIsPressed(false)}
-      className={`h-[100px] p-2 border rounded-ministry overflow-hidden cursor-pointer select-none flex flex-col
-        ${!isCurrentMonth ? 'bg-ministry-bg-primary border-ministry-border-default' : 'bg-ministry-bg-secondary border-ministry-border-default'}
+      className={`h-[120px] p-1.5 border rounded-ministry overflow-hidden cursor-pointer select-none flex flex-col
+        ${!isCurrentMonth ? 'bg-ministry-bg-primary/50 border-ministry-border-default/50' : 'bg-ministry-bg-secondary border-ministry-border-default'}
         ${isToday ? 'ring-2 ring-ministry-brand-primary ring-inset' : ''}
         ${isSelected && !isToday ? 'bg-ministry-bg-tertiary' : ''}
-        ${isPressed ? 'bg-ministry-bg-tertiary scale-[0.98]' : 'scale-100'}
-        hover:bg-ministry-bg-tertiary
-        transition-[transform,background-color] duration-[140ms] ease-out
+        ${isPressed ? 'bg-ministry-bg-tertiary scale-[0.99]' : 'scale-100'}
+        hover:bg-ministry-bg-tertiary/50
+        transition-[transform,background-color] duration-100 ease-out
       `}
     >
-      {/* Day number - lighter weight than events, secondary color */}
-      <div className={`text-[13px] font-light leading-none mb-[6px] ${
-        isCurrentMonth ? 'text-ministry-text-secondary' : 'text-ministry-text-muted'
+      {/* Day number header */}
+      <div className={`text-xs font-medium mb-1 px-0.5 ${
+        isToday 
+          ? 'text-ministry-brand-primary' 
+          : isCurrentMonth 
+            ? 'text-ministry-text-secondary' 
+            : 'text-ministry-text-muted'
       }`}>
         {format(day, 'd')}
       </div>
-      {/* Events container - fixed height, 4px gap between events, overflow hidden */}
-      <div className="flex flex-col gap-1 flex-1 overflow-hidden">
+      
+      {/* Events container */}
+      <div className="flex flex-col gap-0.5 flex-1 overflow-hidden">
         {visibleTasks.map((task) => (
-          <div
-            key={task.id}
-            onClick={(e) => handleTaskClick(e, task.id)}
-            data-testid={`calendar-task-${task.id}`}
-            className="flex items-center gap-1 cursor-pointer group h-[18px] min-h-[18px] max-h-[18px]"
-            title={task.title}
-          >
-            {/* Content type accent bar - fixed height matching event */}
-            <div className={`w-0.5 h-[14px] rounded-full flex-shrink-0 ${getContentTypeAccent(task.content_type)}`} />
-            {/* Event text - 11px (smaller than body), medium weight, single line truncate */}
-            <span className={`text-[11px] leading-[18px] font-medium truncate flex-1 px-1 rounded whitespace-nowrap overflow-hidden ${getStatusBadgeClass(task.status)}`}>
-              {task.title}
-            </span>
-          </div>
+          <EventChip 
+            key={task.id} 
+            task={task} 
+            onClick={onTaskClick}
+          />
         ))}
+        
+        {/* +N more indicator */}
         {remainingCount > 0 && (
-          <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-            <PopoverTrigger asChild>
-              {/* "+X more" - same height, line-height, and left offset as events */}
-              <button
-                onClick={handleMoreClick}
-                data-testid={`calendar-more-${format(day, 'yyyy-MM-dd')}`}
-                className="flex items-center h-[18px] min-h-[18px] max-h-[18px] text-[11px] leading-[18px] text-ministry-text-muted text-left cursor-pointer
-                  hover:text-ministry-text-primary hover:underline
-                  focus:outline-none focus:text-ministry-text-primary
-                  transition-colors duration-[120ms] ease-out"
-              >
-                {/* Spacer matching accent bar width + gap */}
-                <span className="w-0.5 mr-1 flex-shrink-0" />
-                <span className="px-1">+{remainingCount} more</span>
-              </button>
-            </PopoverTrigger>
-            <PopoverContent 
-              align="start" 
-              sideOffset={4}
-              className="w-64 p-2 bg-ministry-bg-secondary border-ministry-border-default rounded-ministry shadow-ministry-card max-h-60 overflow-y-auto
-                data-[state=open]:animate-in data-[state=closed]:animate-out
-                data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
-                data-[state=closed]:zoom-out-98 data-[state=open]:zoom-in-98
-                data-[side=bottom]:slide-in-from-top-1 data-[side=top]:slide-in-from-bottom-1
-                duration-[140ms]"
-              data-testid={`calendar-popover-${format(day, 'yyyy-MM-dd')}`}
-            >
-              <div className="text-xs font-semibold text-ministry-text-secondary mb-2 px-2">
-                {format(day, 'MMMM d, yyyy')} — {dayTasks.length} tasks
-              </div>
-              <div className="flex flex-col">
-                {dayTasks.map((task) => (
-                  <TaskPopoverItem
-                    key={task.id}
-                    task={task}
-                    onClick={() => handlePopoverTaskClick(task.id)}
-                  />
-                ))}
-              </div>
-            </PopoverContent>
-          </Popover>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDayClick(day, dayTasks);
+            }}
+            data-testid={`calendar-more-${format(day, 'yyyy-MM-dd')}`}
+            className="flex items-center justify-center h-[22px] text-[10px] font-medium 
+              text-ministry-text-muted hover:text-ministry-brand-primary
+              hover:bg-ministry-brand-light rounded
+              transition-colors duration-100"
+          >
+            +{remainingCount} more
+          </button>
         )}
       </div>
     </div>
