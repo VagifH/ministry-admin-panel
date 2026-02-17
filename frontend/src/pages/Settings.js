@@ -221,23 +221,32 @@ export default function Settings() {
 
   return (
     <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-semibold text-ministry-text-primary">Settings</h1>
-          <p className="text-sm text-ministry-text-secondary mt-1">Manage users and roles</p>
-        </div>
-        <Button
-          onClick={() => setShowCreateDialog(true)}
-          data-testid="create-user-button"
-          className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry flex items-center gap-1.5"
-        >
-          <Plus size={16} />
-          Create User
-        </Button>
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-ministry-text-primary">Settings</h1>
+        <p className="text-sm text-ministry-text-secondary mt-1">Manage users and avatars</p>
       </div>
 
-      <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
-        {renderContent()}
+      <Tabs defaultValue="users" className="space-y-4">
+        <TabsList className="bg-ministry-bg-tertiary rounded-ministry">
+          <TabsTrigger value="users" data-testid="tab-users" className="rounded-ministry">Users</TabsTrigger>
+          <TabsTrigger value="avatars" data-testid="tab-avatars" className="rounded-ministry">Avatars</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="users">
+          <div className="flex items-center justify-between mb-4">
+            <div />
+            <Button
+              onClick={() => setShowCreateDialog(true)}
+              data-testid="create-user-button"
+              className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry flex items-center gap-1.5"
+            >
+              <Plus size={16} />
+              Create User
+            </Button>
+          </div>
+
+          <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
+            {renderContent()}
       </div>
 
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
