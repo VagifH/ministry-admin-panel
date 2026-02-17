@@ -126,7 +126,10 @@ const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectD
               <button
                 onClick={handleMoreClick}
                 data-testid={`calendar-more-${format(day, 'yyyy-MM-dd')}`}
-                className="flex items-center h-[18px] min-h-[18px] max-h-[18px] text-[11px] leading-[18px] text-ministry-text-muted hover:text-ministry-text-primary hover:underline text-left focus:outline-none focus:text-ministry-text-primary"
+                className="flex items-center h-[18px] min-h-[18px] max-h-[18px] text-[11px] leading-[18px] text-ministry-text-muted text-left cursor-pointer
+                  hover:text-ministry-text-primary hover:underline
+                  focus:outline-none focus:text-ministry-text-primary
+                  transition-colors duration-[120ms] ease-out"
               >
                 {/* Spacer matching accent bar width + gap */}
                 <span className="w-0.5 mr-1 flex-shrink-0" />
