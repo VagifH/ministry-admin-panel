@@ -1009,13 +1009,146 @@ async def change_task_status(task_id: str, status_change: StatusChange, request:
         updated['updated_at'] = datetime.fromisoformat(updated['updated_at'])
     if isinstance(updated.get('publish_datetime'), str):
         updated['publish_datetime'] = datetime.fromisoformat(updated['publish_datetime'])
+    if isinstance(updated.get('archived_at'), str):
+        updated['archived_at'] = datetime.fromisoformat(updated['archived_at'])
+    
+    # Ensure archive fields
+    if 'is_archived' not in updated:
+        updated['is_archived'] = False
+    
+    return Task(**updated)
+
+# ==================== ARCHIVE/RESTORE ENDPOINTS ====================
+
+@api_router.patch("/tasks/{task_id}/archive", response_model=Task)
+async def archive_task(task_id: str, request: Request, current_user: User = Depends(require_action("delete_task"))):
+    """Archive a task (soft delete). Requires delete_task permission."""
+    task = await db.tasks.find_one({"id": task_id}, {"_id": 0})
+    if not task:
+        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
+    
+    if task.get("is_archived"):
+        raise ValidationError(message="Task is already archived", code=ErrorCode.TASK_ALREADY_ARCHIVED)
+    
+    now = datetime.now(timezone.utc)
+    update_data = {
+        "is_archived": True,
+        "archived_at": now.isoformat(),
+        "archived_by": current_user.id,
+        "updated_at": now.isoformat()
+    }
+    
+    await db.tasks.update_one({"id": task_id}, {"$set": update_data})
+    
+    # Audit log
+    try:
+        await audit_logger.log(
+            user=current_user,
+            action=AuditAction.ARCHIVE,
+            entity_type=EntityType.TASK,
+            entity_id=task_id,
+            old_value={"is_archived": False},
+            new_value={"is_archived": True},
+            request=request
+        )
+    except Exception as e:
+        logger.error(f"Audit logging failed for task archive: {e}")
+    
+    # Fetch and return updated task
+    updated = await db.tasks.find_one({"id": task_id}, {"_id": 0})
+    if isinstance(updated.get('created_at'), str):
+        updated['created_at'] = datetime.fromisoformat(updated['created_at'])
+    if isinstance(updated.get('updated_at'), str):
+        updated['updated_at'] = datetime.fromisoformat(updated['updated_at'])
+    if isinstance(updated.get('publish_datetime'), str):
+        updated['publish_datetime'] = datetime.fromisoformat(updated['publish_datetime'])
+    if isinstance(updated.get('archived_at'), str):
+        updated['archived_at'] = datetime.fromisoformat(updated['archived_at'])
+    
+    return Task(**updated)
+
+@api_router.patch("/tasks/{task_id}/restore", response_model=Task)
+async def restore_task(task_id: str, request: Request, current_user: User = Depends(require_action("delete_task"))):
+    """Restore an archived task. Requires delete_task permission."""
+    task = await db.tasks.find_one({"id": task_id}, {"_id": 0})
+    if not task:
+        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
+    
+    if not task.get("is_archived"):
+        raise ValidationError(message="Task is not archived", code=ErrorCode.TASK_NOT_ARCHIVED)
+    
+    now = datetime.now(timezone.utc)
+    update_data = {
+        "is_archived": False,
+        "archived_at": None,
+        "archived_by": None,
+        "updated_at": now.isoformat()
+    }
+    
+    await db.tasks.update_one({"id": task_id}, {"$set": update_data})
+    
+    # Audit log
+    try:
+        await audit_logger.log(
+            user=current_user,
+            action=AuditAction.RESTORE,
+            entity_type=EntityType.TASK,
+            entity_id=task_id,
+            old_value={"is_archived": True},
+            new_value={"is_archived": False},
+            request=request
+        )
+    except Exception as e:
+        logger.error(f"Audit logging failed for task restore: {e}")
+    
+    # Fetch and return updated task
+    updated = await db.tasks.find_one({"id": task_id}, {"_id": 0})
+    if isinstance(updated.get('created_at'), str):
+        updated['created_at'] = datetime.fromisoformat(updated['created_at'])
+    if isinstance(updated.get('updated_at'), str):
+        updated['updated_at'] = datetime.fromisoformat(updated['updated_at'])
+    if isinstance(updated.get('publish_datetime'), str):
+        updated['publish_datetime'] = datetime.fromisoformat(updated['publish_datetime'])
+    
+    # Ensure archive fields are set
+    updated['is_archived'] = False
+    updated['archived_at'] = None
+    updated['archived_by'] = None
     
     return Task(**updated)
 
 @api_router.delete("/tasks/{task_id}")
 async def delete_task(task_id: str, request: Request, current_user: User = Depends(require_action("delete_task"))):
-    # Get task title before deletion for audit log
-    task_doc = await db.tasks.find_one({"id": task_id}, {"_id": 0, "title": 1})
+    """
+    Permanently delete a task.
+    
+    Requirements:
+    - Task must be archived first
+    - Task must not have an attached video (delete video first)
+    """
+    task_doc = await db.tasks.find_one({"id": task_id}, {"_id": 0})
+    if not task_doc:
+        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
+    
+    # Require task to be archived first
+    if not task_doc.get("is_archived"):
+        raise ForbiddenError(
+            message="Task must be archived before permanent deletion. Archive the task first.",
+            code=ErrorCode.DELETE_REQUIRES_ARCHIVE
+        )
+    
+    # Check if task has a video attached
+    video = await db.videos.find_one({"task_id": task_id})
+    if video:
+        raise ForbiddenError(
+            message="Cannot delete task with attached video. Delete the video first.",
+            code=ErrorCode.DELETE_REQUIRES_NO_VIDEO
+        )
+    
+    # Perform permanent deletion
+    result = await db.tasks.delete_one({"id": task_id})
+    if result.deleted_count == 0:
+        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
     result = await db.tasks.delete_one({"id": task_id})
     if result.deleted_count == 0:
