@@ -3,41 +3,112 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
+import { ChevronLeft, ChevronRight, User } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth, startOfWeek, endOfWeek, addMonths, subMonths, addWeeks, subWeeks, startOfDay, endOfDay } from 'date-fns';
 import { CardSkeleton } from '../components/ui/loading';
 import { ErrorState } from '../components/ui/empty-state';
 import { showApiError } from '../lib/toast';
-import { getStatusBadgeClass, getStatusLabel } from '../utils/statusUtils';
+import { getStatusBadgeClass, getStatusLabel, getStatusColors } from '../utils/statusUtils';
 import { getContentTypeAccent } from '../config/contentTypeConfig';
+import { useAvatars } from '../context/AvatarContext';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
-// TaskPopoverItem component - renders a single task in the popover
-const TaskPopoverItem = ({ task, onClick }) => (
-  <button
-    onClick={onClick}
-    data-testid={`popover-task-${task.id}`}
-    className="w-full flex items-center gap-2 p-2 rounded text-left cursor-pointer
-      focus:outline-none focus:bg-ministry-bg-tertiary
-      hover:bg-ministry-bg-tertiary
-      transition-colors duration-[120ms] ease-out"
-  >
-    {/* Content type accent bar */}
-    <div className={`w-1 h-5 rounded-full flex-shrink-0 ${getContentTypeAccent(task.content_type)}`} />
-    {/* Task info */}
-    <div className="flex-1 min-w-0">
-      <div className="text-sm font-medium text-ministry-text-primary truncate">
-        {task.title}
-      </div>
+// Small avatar circle component for event chips
+const MiniAvatar = ({ avatarName, size = 18 }) => {
+  const { getAvatarPhoto } = useAvatars();
+  const photoUrl = getAvatarPhoto(avatarName);
+  
+  return (
+    <div
+      className="rounded-full bg-ministry-bg-tertiary border border-ministry-border-default flex items-center justify-center overflow-hidden flex-shrink-0"
+      style={{ width: size, height: size }}
+    >
+      {photoUrl ? (
+        <img src={photoUrl} alt="" className="w-full h-full object-cover" />
+      ) : (
+        <User size={size * 0.6} className="text-ministry-text-muted" />
+      )}
     </div>
-    {/* Status badge */}
-    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded flex-shrink-0 ${getStatusBadgeClass(task.status)}`}>
-      {getStatusLabel(task.status)}
-    </span>
-  </button>
-);
+  );
+};
+
+// Event chip component - Outlook/Fluent style
+const EventChip = ({ task, onClick }) => {
+  const statusColors = getStatusColors(task.status);
+  
+  return (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick(task.id);
+      }}
+      data-testid={`calendar-task-${task.id}`}
+      className="w-full flex items-center gap-1.5 h-[26px] px-1.5 rounded-[4px] cursor-pointer
+        bg-ministry-bg-primary border border-ministry-border-default
+        hover:bg-ministry-bg-tertiary hover:border-ministry-text-muted/30
+        focus:outline-none focus:ring-1 focus:ring-ministry-brand-primary/40
+        transition-all duration-100 group"
+      title={`${task.title} — ${getStatusLabel(task.status)}`}
+    >
+      {/* Avatar */}
+      <MiniAvatar avatarName={task.avatar} size={18} />
+      
+      {/* Title - truncated */}
+      <span className="flex-1 text-[11px] font-medium text-ministry-text-primary truncate text-left leading-none">
+        {task.title}
+      </span>
+      
+      {/* Status dot indicator */}
+      <div 
+        className={`w-2 h-2 rounded-full flex-shrink-0 ${statusColors.bg}`}
+        title={getStatusLabel(task.status)}
+      />
+    </button>
+  );
+};
+
+// Task list item for day panel
+const DayPanelTaskItem = ({ task, onClick }) => {
+  const statusColors = getStatusColors(task.status);
+  
+  return (
+    <button
+      onClick={() => onClick(task.id)}
+      data-testid={`day-panel-task-${task.id}`}
+      className="w-full flex items-center gap-3 p-3 rounded-ministry cursor-pointer text-left
+        bg-ministry-bg-primary border border-ministry-border-default
+        hover:bg-ministry-bg-tertiary hover:shadow-ministry-sm
+        focus:outline-none focus:ring-2 focus:ring-ministry-brand-primary/30
+        transition-all duration-150"
+    >
+      {/* Avatar */}
+      <MiniAvatar avatarName={task.avatar} size={32} />
+      
+      {/* Task info */}
+      <div className="flex-1 min-w-0">
+        <div className="font-medium text-ministry-text-primary truncate">
+          {task.title}
+        </div>
+        <div className="flex items-center gap-2 mt-0.5">
+          <span className="text-xs text-ministry-text-secondary">
+            {task.avatar}
+          </span>
+          <span className="text-ministry-text-muted">•</span>
+          <span className="text-xs text-ministry-text-secondary">
+            {format(new Date(task.publish_datetime), 'h:mm a')}
+          </span>
+        </div>
+      </div>
+      
+      {/* Status badge */}
+      <Badge className={`${getStatusBadgeClass(task.status)} text-[10px] px-2 py-0.5`}>
+        {getStatusLabel(task.status)}
+      </Badge>
+    </button>
+  );
+};
 
 // DayCell component - handles individual day rendering with interactions
 const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectDate, onTaskClick }) => {
