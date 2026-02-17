@@ -13,26 +13,8 @@ import { TASK_STATUS_CONFIG, getStatusBadgeClass, getContentTypeAccent } from '.
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
-// Status colors for task badges
-const statusColors = {
-  Draft: 'bg-ministry-status-draft text-white',
-  Submitted: 'bg-ministry-status-submitted text-white',
-  Producing: 'bg-ministry-status-producing text-white',
-  Review: 'bg-ministry-status-review text-white',
-  Scheduled: 'bg-ministry-status-scheduled text-white',
-  Published: 'bg-ministry-status-published text-white',
-  Rejected: 'bg-ministry-status-rejected text-white',
-};
-
-// Content type accent colors (left bar indicator)
-const contentTypeAccent = {
-  'Announcement': 'bg-gray-400',      // Neutral
-  'Short Lesson': 'bg-blue-500',      // Blue
-  'Full Lesson': 'bg-purple-500',     // Purple
-};
-
 // TaskPopoverItem component - renders a single task in the popover
-const TaskPopoverItem = ({ task, onClick, statusColors, contentTypeAccent }) => (
+const TaskPopoverItem = ({ task, onClick }) => (
   <button
     onClick={onClick}
     data-testid={`popover-task-${task.id}`}
