@@ -55,6 +55,17 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
 ## What's Been Implemented
 
 ### Feb 17, 2026
+- **P0 COMPLETED: ERROR HANDLING LAYER (ENTERPRISE GRADE)**
+  - Created centralized error service: `/app/backend/services/error_service.py`
+    - `AppError` (base), `ValidationError` (400), `AuthError` (401), `ForbiddenError` (403), `NotFoundError` (404), `ConflictError` (409), `ServerError` (500)
+    - `ErrorCode` constants for consistent error codes (INVALID_CREDENTIALS, TASK_NOT_FOUND, etc.)
+  - Unified JSON error response format: `{ "error": { "code": "<CODE>", "message": "<MESSAGE>" } }`
+  - Global exception handlers registered with FastAPI
+  - Middleware for catching unhandled exceptions (logs server-side, returns generic message)
+  - All endpoints updated to use new error classes (no more HTTPException with plain detail strings)
+  - Frontend toast utility updated to read new error format
+  - Stack traces never exposed to clients - only "Something went wrong. Please try again."
+
 - **P0 COMPLETED: AUDIT LOG HARDENING (ENTERPRISE GRADE)**
   - Created centralized audit service: `/app/backend/services/audit_service.py`
     - `AuditLogger` class with convenience methods for all actions
