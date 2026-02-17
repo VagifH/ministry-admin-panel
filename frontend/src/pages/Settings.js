@@ -223,7 +223,7 @@ export default function Settings() {
     <div className="p-8">
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-ministry-text-primary">Settings</h1>
-        <p className="text-sm text-ministry-text-secondary mt-1">Manage users and avatars</p>
+        <p className="text-sm text-ministry-text-secondary mt-1">Manage users and AI agents</p>
       </div>
 
       <Tabs defaultValue="users" className="space-y-4">
