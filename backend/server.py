@@ -34,6 +34,25 @@ VIDEO_MAX_SIZE_MB = 200
 VIDEO_MAX_SIZE_BYTES = VIDEO_MAX_SIZE_MB * 1024 * 1024  # 200MB
 ALLOWED_VIDEO_TYPES = ["video/mp4"]
 
+# Status Configuration
+VALID_STATUSES = ["Draft", "Submitted", "InProgress", "ReadyForReview", "ChangesRequested", "Approved", "Rejected", "Scheduled", "Published"]
+
+# Migration mapping for old statuses
+STATUS_MIGRATION_MAP = {
+    "Producing": "InProgress",
+    "Review": "ReadyForReview"
+}
+
+def migrate_status(status: str) -> str:
+    """Migrate old status values to new ones"""
+    return STATUS_MIGRATION_MAP.get(status, status)
+
+def migrate_task_status(task: dict) -> dict:
+    """Migrate task status if needed"""
+    if task and 'status' in task:
+        task['status'] = migrate_status(task['status'])
+    return task
+
 # Create the main app
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
