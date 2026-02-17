@@ -801,7 +801,7 @@ async def get_task(task_id: str, current_user: User = Depends(get_current_user))
     return Task(**task)
 
 @api_router.post("/tasks", response_model=Task)
-async def create_task(task_data: TaskCreate, current_user: User = Depends(require_action("create_task"))):
+async def create_task(task_data: TaskCreate, request: Request, current_user: User = Depends(require_action("create_task"))):
     import uuid
     task_dict = task_data.model_dump()
     task_dict["id"] = str(uuid.uuid4())
@@ -812,7 +812,7 @@ async def create_task(task_data: TaskCreate, current_user: User = Depends(requir
     task_dict["publish_datetime"] = task_dict["publish_datetime"].isoformat()
     
     await db.tasks.insert_one(task_dict)
-    await log_audit(current_user.id, current_user.name, "CREATE", "Task", task_dict["id"], None, task_data.title)
+    await audit_logger.log_task_create(current_user, task_dict["id"], task_data.title, request)
     
     task_dict['created_at'] = datetime.fromisoformat(task_dict['created_at'])
     task_dict['updated_at'] = datetime.fromisoformat(task_dict['updated_at'])
