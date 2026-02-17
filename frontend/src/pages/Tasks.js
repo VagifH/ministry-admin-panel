@@ -332,11 +332,20 @@ export default function Tasks() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {AVATAR_LIST.map((avatar) => (
-                      <SelectItem key={avatar} value={avatar}>
+                    {getActiveAvatars().map((avatar) => (
+                      <SelectItem key={avatar.id} value={avatar.name}>
                         <div className="flex items-center gap-2">
-                          <AvatarDisplay avatarName={avatar} size={20} />
-                          <span>{avatar}</span>
+                          <AvatarDisplay avatarName={avatar.name} size={20} />
+                          <span>{avatar.display_name || avatar.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                    {/* Show inactive avatars as disabled with tooltip */}
+                    {AVATAR_LIST.filter(name => !getActiveAvatars().find(a => a.name === name)).map((avatarName) => (
+                      <SelectItem key={avatarName} value={avatarName} disabled title="Inactive">
+                        <div className="flex items-center gap-2 opacity-50">
+                          <AvatarDisplay avatarName={avatarName} size={20} />
+                          <span>{getAvatarDisplayName(avatarName)} (Inactive)</span>
                         </div>
                       </SelectItem>
                     ))}
