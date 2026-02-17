@@ -722,7 +722,7 @@ async def create_user(user_data: UserCreate, request: Request, current_user: Use
     
     existing = await db.users.find_one({"email": user_data.email})
     if existing:
-        raise HTTPException(status_code=400, detail="Email already exists")
+        raise ValidationError(message="Email already exists", code=ErrorCode.DUPLICATE_ENTRY)
     
     import uuid
     user_dict = user_data.model_dump()
@@ -747,7 +747,7 @@ async def create_user(user_data: UserCreate, request: Request, current_user: Use
 async def update_user(user_id: str, user_data: UserUpdate, request: Request, current_user: User = Depends(require_action("edit_user"))):
     existing = await db.users.find_one({"id": user_id}, {"_id": 0})
     if not existing:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise NotFoundError(message="User not found", code=ErrorCode.USER_NOT_FOUND)
     
     update_dict = {k: v for k, v in user_data.model_dump().items() if v is not None}
     if update_dict:
@@ -766,14 +766,14 @@ async def update_user(user_id: str, user_data: UserUpdate, request: Request, cur
 @api_router.delete("/users/{user_id}")
 async def delete_user(user_id: str, request: Request, current_user: User = Depends(require_action("delete_user"))):
     if user_id == current_user.id:
-        raise HTTPException(status_code=400, detail="Cannot delete yourself")
+        raise ValidationError(message="Cannot delete yourself", code=ErrorCode.VALIDATION_ERROR)
     
     # Get user email before deletion for audit log
     user_doc = await db.users.find_one({"id": user_id}, {"_id": 0, "email": 1})
     
     result = await db.users.delete_one({"id": user_id})
     if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise NotFoundError(message="User not found", code=ErrorCode.USER_NOT_FOUND)
     
     # Audit log with try/catch safety
     try:
