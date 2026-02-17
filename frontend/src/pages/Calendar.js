@@ -83,7 +83,7 @@ const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectD
       onMouseDown={() => setIsPressed(true)}
       onMouseUp={() => setIsPressed(false)}
       onMouseLeave={() => setIsPressed(false)}
-      className={`h-[100px] p-2 border rounded-ministry overflow-hidden cursor-pointer select-none
+      className={`h-[100px] p-2 border rounded-ministry overflow-hidden cursor-pointer select-none flex flex-col
         ${!isCurrentMonth ? 'bg-ministry-bg-primary border-ministry-border-default' : 'bg-ministry-bg-secondary border-ministry-border-default'}
         ${isToday ? 'ring-2 ring-ministry-brand-primary ring-inset' : ''}
         ${isSelected && !isToday ? 'bg-ministry-bg-tertiary' : ''}
@@ -92,26 +92,26 @@ const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectD
       `}
       style={{ transition: 'transform 50ms ease-out, background-color 100ms ease-out' }}
     >
-      {/* Day number - lighter weight, secondary color */}
-      <div className={`text-sm font-normal mb-1.5 ${
+      {/* Day number - lighter weight than events, secondary color */}
+      <div className={`text-[13px] font-light leading-none mb-[6px] ${
         isCurrentMonth ? 'text-ministry-text-secondary' : 'text-ministry-text-muted'
       }`}>
         {format(day, 'd')}
       </div>
-      {/* Events container - 4px gap between events */}
-      <div className="flex flex-col gap-1">
+      {/* Events container - fixed height, 4px gap between events, overflow hidden */}
+      <div className="flex flex-col gap-1 flex-1 overflow-hidden">
         {visibleTasks.map((task) => (
           <div
             key={task.id}
             onClick={(e) => handleTaskClick(e, task.id)}
             data-testid={`calendar-task-${task.id}`}
-            className="flex items-center gap-1 cursor-pointer group"
+            className="flex items-center gap-1 cursor-pointer group h-[18px] min-h-[18px] max-h-[18px]"
             title={task.title}
           >
-            {/* Content type accent bar */}
-            <div className={`w-0.5 h-4 rounded-full flex-shrink-0 ${contentTypeAccent[task.content_type] || 'bg-gray-400'}`} />
-            {/* Event text - medium weight, primary color, single line */}
-            <span className={`text-xs font-medium text-ministry-text-primary truncate flex-1 px-1 py-0.5 rounded ${statusColors[task.status]}`}>
+            {/* Content type accent bar - fixed height matching event */}
+            <div className={`w-0.5 h-[14px] rounded-full flex-shrink-0 ${contentTypeAccent[task.content_type] || 'bg-gray-400'}`} />
+            {/* Event text - 11px (smaller than body), medium weight, single line truncate */}
+            <span className={`text-[11px] leading-[18px] font-medium truncate flex-1 px-1 rounded whitespace-nowrap overflow-hidden ${statusColors[task.status]}`}>
               {task.title}
             </span>
           </div>
@@ -119,12 +119,15 @@ const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectD
         {remainingCount > 0 && (
           <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
             <PopoverTrigger asChild>
+              {/* "+X more" - same height, line-height, and left offset as events */}
               <button
                 onClick={handleMoreClick}
                 data-testid={`calendar-more-${format(day, 'yyyy-MM-dd')}`}
-                className="text-xs text-ministry-text-muted pl-2 hover:text-ministry-text-primary hover:underline text-left focus:outline-none focus:text-ministry-text-primary"
+                className="flex items-center h-[18px] min-h-[18px] max-h-[18px] text-[11px] leading-[18px] text-ministry-text-muted hover:text-ministry-text-primary hover:underline text-left focus:outline-none focus:text-ministry-text-primary"
               >
-                +{remainingCount} more
+                {/* Spacer matching accent bar width + gap */}
+                <span className="w-0.5 mr-1 flex-shrink-0" />
+                <span className="px-1">+{remainingCount} more</span>
               </button>
             </PopoverTrigger>
             <PopoverContent 
