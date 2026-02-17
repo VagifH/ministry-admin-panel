@@ -201,6 +201,12 @@ def optimize_avatar_image(image_bytes: bytes, original_mime: str) -> tuple[bytes
 
 # Create the main app
 app = FastAPI()
+
+# Register exception handlers for unified error responses
+app.add_exception_handler(AppError, app_error_handler)
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(Exception, generic_exception_handler)
+
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
 
