@@ -19,7 +19,7 @@ Build a web admin panel for a Ministry with a Microsoft/Fluent-inspired UI. The 
 - **Comment:** task_id, author, message, created_at
 - **AuditLog:** actor, action, object_type, object_id, old_value, new_value, created_at
 - **Video:** id, task_id, filename, file_size, mime_type, status, uploaded_by
-- **Avatar:** id, name, has_photo, photo_data (base64)
+- **Avatar:** id, name, display_name, is_active, has_photo, photo_data (base64), created_at, updated_at
 
 ### Task Status Flow
 Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested/Rejected) -> Scheduled -> Published
