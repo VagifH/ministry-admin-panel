@@ -512,9 +512,8 @@ export default function VideoTab({ taskId, taskStatus }) {
             ) : (
               <Trash2 size={16} className="mr-2" />
             )}
-              {deleting ? 'Deleting...' : 'Remove Video'}
-            </Button>
-          </>
+            {deleting ? 'Deleting...' : 'Remove Video'}
+          </Button>
         )}
       </div>
 
