@@ -113,12 +113,13 @@ export default function VideoTab({ taskId, taskStatus }) {
     if (!validation.valid) {
       // Provide user-friendly error messages
       if (validation.error.includes('type')) {
-        showToast.error(`Only MP4 videos are allowed. Please select a valid file.`);
+        showToast.error(`Invalid file type. Only MP4, WebM, MOV videos are allowed.`);
       } else if (validation.error.includes('large')) {
-        showToast.error(`File is too large. Maximum size is ${VIDEO_RULES.hardLimitMB}MB.`);
+        showToast.error(`File is too large. Maximum size is ${VIDEO_RULES.maxSizeMB}MB.`);
       } else {
         showToast.error(validation.error);
       }
+      setError(validation.error);
       return;
     }
 
