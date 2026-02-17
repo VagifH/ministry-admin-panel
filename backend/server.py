@@ -911,7 +911,7 @@ async def list_comments(task_id: str, current_user: User = Depends(get_current_u
     return comments
 
 @api_router.post("/tasks/{task_id}/comments", response_model=Comment)
-async def create_comment(task_id: str, comment_data: CommentCreate, current_user: User = Depends(get_current_user)):
+async def create_comment(task_id: str, comment_data: CommentCreate, request: Request, current_user: User = Depends(get_current_user)):
     task = await db.tasks.find_one({"id": task_id})
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -927,7 +927,12 @@ async def create_comment(task_id: str, comment_data: CommentCreate, current_user
     }
     
     await db.comments.insert_one(comment_dict)
-    await log_audit(current_user.id, current_user.name, "COMMENT", "Task", task_id, None, comment_data.message[:50])
+    
+    # Audit log with try/catch safety
+    try:
+        await audit_logger.log_comment_create(current_user, task_id, comment_data.message[:50], request)
+    except Exception as e:
+        logger.error(f"Audit logging failed for comment creation: {e}")
     
     comment_dict['created_at'] = datetime.fromisoformat(comment_dict['created_at'])
     return Comment(**comment_dict)
@@ -1032,7 +1037,7 @@ async def get_task_video(task_id: str, current_user: User = Depends(get_current_
     return VideoResponse(**video)
 
 @api_router.post("/tasks/{task_id}/video", response_model=VideoResponse, status_code=status.HTTP_201_CREATED)
-async def create_video_record(task_id: str, video_data: VideoCreate, current_user: User = Depends(get_current_user)):
+async def create_video_record(task_id: str, video_data: VideoCreate, request: Request, current_user: User = Depends(get_current_user)):
     """Initialize a video record for a task (preparation for upload)"""
     import uuid
     
@@ -1069,7 +1074,12 @@ async def create_video_record(task_id: str, video_data: VideoCreate, current_use
     }
     
     await db.videos.insert_one(video_dict)
-    await log_audit(current_user.id, current_user.name, "CREATE", "Video", video_dict["id"], None, video_data.original_filename)
+    
+    # Audit log with try/catch safety
+    try:
+        await audit_logger.log_video_create(current_user, video_dict["id"], video_data.original_filename, request)
+    except Exception as e:
+        logger.error(f"Audit logging failed for video record creation: {e}")
     
     video_dict['created_at'] = now
     video_dict['updated_at'] = now
@@ -1077,7 +1087,7 @@ async def create_video_record(task_id: str, video_data: VideoCreate, current_use
     return VideoResponse(**video_dict)
 
 @api_router.patch("/tasks/{task_id}/video", response_model=VideoResponse)
-async def update_video_status(task_id: str, video_update: VideoUpdate, current_user: User = Depends(get_current_user)):
+async def update_video_status(task_id: str, video_update: VideoUpdate, request: Request, current_user: User = Depends(get_current_user)):
     """Update video metadata (status, duration, etc.)"""
     # Find existing video
     video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
@@ -1097,8 +1107,12 @@ async def update_video_status(task_id: str, video_update: VideoUpdate, current_u
     
     await db.videos.update_one({"task_id": task_id}, {"$set": update_data})
     
+    # Audit log with try/catch safety
     if old_status != new_status:
-        await log_audit(current_user.id, current_user.name, "STATUS_CHANGE", "Video", video["id"], old_status, new_status)
+        try:
+            await audit_logger.log_video_status_change(current_user, video["id"], old_status, new_status, request)
+        except Exception as e:
+            logger.error(f"Audit logging failed for video status change: {e}")
     
     # Fetch updated video
     updated_video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
@@ -1110,7 +1124,7 @@ async def update_video_status(task_id: str, video_update: VideoUpdate, current_u
     return VideoResponse(**updated_video)
 
 @api_router.delete("/tasks/{task_id}/video", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_video(task_id: str, current_user: User = Depends(get_current_user)):
+async def delete_video(task_id: str, request: Request, current_user: User = Depends(get_current_user)):
     """Delete video record and file for a task"""
     # Find existing video
     video = await db.videos.find_one({"task_id": task_id}, {"_id": 0})
@@ -1138,7 +1152,12 @@ async def delete_video(task_id: str, current_user: User = Depends(get_current_us
         await storage_service.delete_file(storage_path)
     
     await db.videos.delete_one({"task_id": task_id})
-    await log_audit(current_user.id, current_user.name, "DELETE", "Video", video["id"], video.get("original_filename"), None)
+    
+    # Audit log with try/catch safety
+    try:
+        await audit_logger.log_video_delete(current_user, task_id, video.get("original_filename"), request)
+    except Exception as e:
+        logger.error(f"Audit logging failed for video deletion: {e}")
     
     return None
 
