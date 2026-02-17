@@ -57,6 +57,99 @@ STATUS_MIGRATION_MAP = {
     "Review": "ReadyForReview"
 }
 
+# ==================== RBAC CONFIGURATION ====================
+# Role-Based Access Control for pages and actions
+
+# Valid roles
+VALID_ROLES = ["Admin", "Editor", "Producer", "Approver"]
+
+# Page access permissions: page -> list of allowed roles
+PAGE_PERMISSIONS = {
+    "dashboard": ["Admin", "Editor", "Producer", "Approver"],
+    "tasks": ["Admin", "Editor", "Producer", "Approver"],
+    "task_details": ["Admin", "Editor", "Producer", "Approver"],
+    "calendar": ["Admin", "Editor", "Producer", "Approver"],
+    "activity_log": ["Admin", "Editor"],  # Only Admin and Editor (Ministry) can view
+    "settings": ["Admin"],  # Admin only
+    "avatars": ["Admin"],  # Admin only (part of settings)
+    "users": ["Admin"],  # Admin only (part of settings)
+}
+
+# Action permissions: action -> list of allowed roles
+ACTION_PERMISSIONS = {
+    # Task actions
+    "create_task": ["Admin", "Editor"],
+    "edit_task": ["Admin", "Editor", "Producer"],
+    "delete_task": ["Admin"],
+    "view_task": ["Admin", "Editor", "Producer", "Approver"],
+    
+    # Video actions
+    "upload_video": ["Admin", "Editor"],
+    "delete_video": ["Admin", "Editor"],
+    "download_video": ["Admin", "Editor", "Producer", "Approver"],
+    "stream_video": ["Admin", "Editor", "Producer", "Approver"],
+    
+    # User management
+    "view_users": ["Admin"],
+    "create_user": ["Admin"],
+    "edit_user": ["Admin"],
+    "delete_user": ["Admin"],
+    
+    # Avatar management
+    "manage_avatars": ["Admin"],
+    
+    # Audit/Activity log
+    "view_audit_logs": ["Admin", "Editor"],
+    
+    # Comments
+    "add_comment": ["Admin", "Editor", "Producer", "Approver"],
+    "view_comments": ["Admin", "Editor", "Producer", "Approver"],
+}
+
+def check_page_access(role: str, page: str) -> tuple[bool, str]:
+    """
+    Check if a role has access to a page.
+    Returns (allowed, error_message)
+    """
+    allowed_roles = PAGE_PERMISSIONS.get(page, [])
+    if role in allowed_roles:
+        return True, ""
+    return False, f"Access denied: {role} cannot access {page}"
+
+def check_action_permission(role: str, action: str) -> tuple[bool, str]:
+    """
+    Check if a role can perform an action.
+    Returns (allowed, error_message)
+    """
+    allowed_roles = ACTION_PERMISSIONS.get(action, [])
+    if role in allowed_roles:
+        return True, ""
+    return False, f"Permission denied: {role} cannot perform {action}"
+
+def require_page_access(page: str):
+    """
+    Dependency factory for page access control.
+    Usage: Depends(require_page_access("settings"))
+    """
+    async def check_access(current_user = Depends(get_current_user)):
+        allowed, error = check_page_access(current_user.role, page)
+        if not allowed:
+            raise HTTPException(status_code=403, detail=error)
+        return current_user
+    return check_access
+
+def require_action(action: str):
+    """
+    Dependency factory for action permission control.
+    Usage: Depends(require_action("create_task"))
+    """
+    async def check_permission(current_user = Depends(get_current_user)):
+        allowed, error = check_action_permission(current_user.role, action)
+        if not allowed:
+            raise HTTPException(status_code=403, detail=error)
+        return current_user
+    return check_permission
+
 def migrate_status(status: str) -> str:
     """Migrate old status values to new ones"""
     return STATUS_MIGRATION_MAP.get(status, status)
