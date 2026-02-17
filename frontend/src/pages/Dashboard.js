@@ -3,7 +3,7 @@ import axios from 'axios';
 import { CardSkeleton } from '../components/ui/loading';
 import { ErrorState } from '../components/ui/empty-state';
 import { showApiError } from '../lib/toast';
-import { TASK_STATUS, TASK_STATUS_CONFIG, getStatusTextColor } from '../config/statusConfig';
+import { STATUS, getStatusTextColor, getStatusLabel, getStatusList } from '../utils/statusUtils';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
