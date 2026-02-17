@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { AvatarProvider } from "./context/AvatarContext";
 import Login from "./pages/Login";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
@@ -22,7 +23,9 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <Layout />
+                <AvatarProvider>
+                  <Layout />
+                </AvatarProvider>
               </ProtectedRoute>
             }
           >
