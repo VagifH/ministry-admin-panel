@@ -249,14 +249,19 @@ export default function Tasks() {
               </SelectContent>
             </Select>
             <Select value={filters.avatar || "all"} onValueChange={(value) => setFilters({ ...filters, avatar: value === "all" ? "" : value })}>
-              <SelectTrigger className="w-[150px] border-ministry-border-default rounded-ministry" data-testid="filter-avatar">
+              <SelectTrigger className="w-[180px] border-ministry-border-default rounded-ministry" data-testid="filter-avatar">
                 <SelectValue placeholder="Avatar" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Avatars</SelectItem>
-                <SelectItem value="Avatar 1">Avatar 1</SelectItem>
-                <SelectItem value="Avatar 2">Avatar 2</SelectItem>
-                <SelectItem value="Avatar 3">Avatar 3</SelectItem>
+                {AVATAR_LIST.map((avatar) => (
+                  <SelectItem key={avatar} value={avatar}>
+                    <div className="flex items-center gap-2">
+                      <AvatarDisplay avatarName={avatar} size={20} />
+                      <span>{avatar}</span>
+                    </div>
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             {hasActiveFilters && (
