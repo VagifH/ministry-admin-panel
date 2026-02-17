@@ -17,6 +17,9 @@ import bcrypt
 from jose import JWTError, jwt
 from PIL import Image
 
+# Import storage service
+from services.storage_service import storage_service
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
