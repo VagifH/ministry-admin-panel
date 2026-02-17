@@ -218,8 +218,8 @@ export default function TaskDetails() {
         <div className="p-6 border-b border-ministry-border-default flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h1 className="text-2xl font-semibold text-ministry-text-primary">{task.title}</h1>
-            <Badge className={`${statusColors[task.status]} rounded-md`} data-testid="task-status-badge">
-              {task.status}
+            <Badge className={`${getStatusBadgeClass(task.status)} rounded-md`} data-testid="task-status-badge">
+              {TASK_STATUS_CONFIG[task.status]?.label || task.status}
             </Badge>
           </div>
           <div className="flex gap-2">
@@ -249,7 +249,7 @@ export default function TaskDetails() {
           <TabsContent value="details" className="space-y-4 mt-6">
             {isReadOnly && (
               <div className="bg-ministry-brand-light border border-ministry-status-review text-ministry-text-primary p-3 rounded-ministry text-sm">
-                This task is read-only. {user?.role === 'Approver' ? 'Approvers cannot edit task fields.' : 'Tasks cannot be edited once Scheduled or Published.'}
+                This task is read-only. {user?.role === 'Approver' ? 'Approvers cannot edit task fields.' : `Tasks cannot be edited once ${TASK_STATUS.SCHEDULED} or ${TASK_STATUS.PUBLISHED}.`}
               </div>
             )}
 
@@ -277,7 +277,9 @@ export default function TaskDetails() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Announcement">Announcement</SelectItem>
+                    {CONTENT_TYPE_LIST.map((type) => (
+                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                    ))}
                     <SelectItem value="Short Lesson">Short Lesson</SelectItem>
                     <SelectItem value="Full Lesson">Full Lesson</SelectItem>
                   </SelectContent>
