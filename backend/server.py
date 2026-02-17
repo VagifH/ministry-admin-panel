@@ -1136,13 +1136,14 @@ async def download_video(task_id: str, current_user: User = Depends(get_current_
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Video file not found on server")
     
-    # Get original filename for download
+    # Get original filename and mime type
     original_filename = video.get("original_filename", "video.mp4")
+    mime_type = video.get("mime_type", "video/mp4")
     
     return FileResponse(
         path=str(file_path),
         filename=original_filename,
-        media_type="video/mp4",
+        media_type=mime_type,
         headers={
             "Content-Disposition": f'attachment; filename="{original_filename}"'
         }
