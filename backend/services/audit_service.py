@@ -55,6 +55,9 @@ class AuditAction:
     ROLE_CHANGE = "ROLE_CHANGE"
     DEACTIVATE = "DEACTIVATE"
     ACTIVATE = "ACTIVATE"
+    
+    # Comment action
+    COMMENT = "COMMENT"
 
 
 class EntityType:
