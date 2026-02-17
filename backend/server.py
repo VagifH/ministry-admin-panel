@@ -720,15 +720,18 @@ async def update_user(user_id: str, user_data: UserUpdate, request: Request, cur
     return User(**updated)
 
 @api_router.delete("/users/{user_id}")
-async def delete_user(user_id: str, current_user: User = Depends(require_action("delete_user"))):
+async def delete_user(user_id: str, request: Request, current_user: User = Depends(require_action("delete_user"))):
     if user_id == current_user.id:
         raise HTTPException(status_code=400, detail="Cannot delete yourself")
+    
+    # Get user email before deletion for audit log
+    user_doc = await db.users.find_one({"id": user_id}, {"_id": 0, "email": 1})
     
     result = await db.users.delete_one({"id": user_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
     
-    await log_audit(current_user.id, current_user.name, "DELETE", "User", user_id, None, None)
+    await audit_logger.log_user_delete(current_user, user_id, user_doc.get("email") if user_doc else None, request)
     return {"message": "User deleted"}
 
 # ==================== TASK ENDPOINTS ====================
