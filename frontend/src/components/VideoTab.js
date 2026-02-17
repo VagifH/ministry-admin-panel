@@ -567,13 +567,13 @@ export default function VideoTab({ taskId, taskStatus }) {
               </div>
             </div>
 
-            {/* Duration */}
+            {/* Uploaded At */}
             <div className="flex items-start gap-2">
               <Clock size={16} className="text-ministry-text-muted mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-xs text-ministry-text-muted">Duration</p>
-                <p className="text-sm text-ministry-text-primary" data-testid="video-duration">
-                  {video.duration ? formatDuration(video.duration) : '—'}
+                <p className="text-xs text-ministry-text-muted">Uploaded</p>
+                <p className="text-sm text-ministry-text-primary" data-testid="video-uploaded-at">
+                  {video.created_at ? format(new Date(video.created_at), 'MMM dd, yyyy HH:mm') : '—'}
                 </p>
               </div>
             </div>
@@ -588,44 +588,6 @@ export default function VideoTab({ taskId, taskStatus }) {
                 </p>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Video Preview Player (only show when READY) */}
-      {isReady && video.storage_key && (
-        <div className="bg-ministry-bg-secondary border border-ministry-border-default rounded-ministry overflow-hidden">
-          <div className="relative bg-black aspect-video">
-            <video
-              controls
-              playsInline
-              preload="metadata"
-              className="w-full h-full object-contain"
-              data-testid="video-preview-player"
-            >
-              <source 
-                src={`${process.env.REACT_APP_BACKEND_URL}/api/tasks/${taskId}/video/stream`}
-                type={video.mime_type || 'video/mp4'}
-              />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-          <div className="px-4 py-2 border-t border-ministry-border-default bg-ministry-bg-primary flex items-center justify-between">
-            <p className="text-xs text-ministry-text-muted">
-              Video preview • {video.original_filename}
-            </p>
-            {canDownload && (
-              <Button
-                onClick={handleDownload}
-                disabled={downloading}
-                variant="ghost"
-                size="sm"
-                className="h-7 px-2 text-xs"
-              >
-                <Download size={14} className="mr-1" />
-                Download
-              </Button>
-            )}
           </div>
         </div>
       )}
