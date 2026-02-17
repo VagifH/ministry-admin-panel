@@ -1095,15 +1095,10 @@ async def delete_video(task_id: str, current_user: User = Depends(get_current_us
     if task and task.get("status") == "Published":
         raise HTTPException(status_code=400, detail="Cannot delete video from a published task")
     
-    # Delete the actual file if it exists
-    if video.get("storage_provider") == "local" and video.get("storage_key"):
-        file_path = VIDEO_UPLOAD_DIR / video["storage_key"]
-        if file_path.exists():
-            file_path.unlink()
-        # Also try to remove the task directory if empty
-        task_dir = VIDEO_UPLOAD_DIR / task_id
-        if task_dir.exists() and not any(task_dir.iterdir()):
-            task_dir.rmdir()
+    # Delete the actual file via storage service
+    storage_path = video.get("storage_path") or video.get("storage_key")
+    if storage_path:
+        await storage_service.delete_file(storage_path)
     
     await db.videos.delete_one({"task_id": task_id})
     await log_audit(current_user.id, current_user.name, "DELETE", "Video", video["id"], video.get("original_filename"), None)
