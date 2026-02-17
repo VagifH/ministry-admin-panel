@@ -36,8 +36,11 @@ import {
 } from '../services/videoService';
 import { showToast, showApiError } from '../lib/toast';
 import { isReadOnlyStatus } from '../config/statusConfig';
+import { useAuth } from '../context/AuthContext';
+import { hasPermission, ACTIONS } from '../config/permissionsMatrix';
 
 export default function VideoTab({ taskId, taskStatus }) {
+  const { user } = useAuth();
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -48,6 +51,11 @@ export default function VideoTab({ taskId, taskStatus }) {
   const [deleting, setDeleting] = useState(false);
   const fileInputRef = useRef(null);
 
+  // Permission checks from centralized matrix
+  const canUpload = hasPermission(user?.role, ACTIONS.UPLOAD_VIDEO) && !isReadOnlyStatus(taskStatus);
+  const canDelete = hasPermission(user?.role, ACTIONS.DELETE_VIDEO) && !isReadOnlyStatus(taskStatus);
+  const canDownload = hasPermission(user?.role, ACTIONS.DOWNLOAD_VIDEO);
+  const canStream = hasPermission(user?.role, ACTIONS.STREAM_VIDEO);
   const isReadOnly = isReadOnlyStatus(taskStatus);
   const canModify = !isReadOnly && !uploading && !deleting;
 
