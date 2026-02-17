@@ -136,7 +136,74 @@ export default function Tasks() {
 
   // Editor and Admin can create tasks, Producer and Approver cannot
   const canCreateTask = canPerformAction(user, ACTIONS.CREATE_TASK);
-  const hasActiveFilters = filters.search || filters.status || filters.content_type || filters.avatar;
+  const canDeleteTask = canPerformAction(user, ACTIONS.DELETE_TASK);
+  const hasActiveFilters = filters.search || filters.status || filters.content_type || filters.avatar || filters.archived !== 'false';
+
+  // Archive handler
+  const handleArchive = async () => {
+    if (!archiveDialog.task) return;
+    setActionSubmitting(true);
+    try {
+      await axios.patch(`${API_URL}/tasks/${archiveDialog.task.id}/archive`);
+      showToast.success('Task archived successfully');
+      setArchiveDialog({ open: false, task: null });
+      fetchTasks();
+    } catch (err) {
+      showApiError(err, 'Failed to archive task');
+    } finally {
+      setActionSubmitting(false);
+    }
+  };
+
+  // Restore handler
+  const handleRestore = async () => {
+    if (!restoreDialog.task) return;
+    setActionSubmitting(true);
+    try {
+      await axios.patch(`${API_URL}/tasks/${restoreDialog.task.id}/restore`);
+      showToast.success('Task restored successfully');
+      setRestoreDialog({ open: false, task: null });
+      fetchTasks();
+    } catch (err) {
+      showApiError(err, 'Failed to restore task');
+    } finally {
+      setActionSubmitting(false);
+    }
+  };
+
+  // Permanent delete handler
+  const handlePermanentDelete = async () => {
+    if (!deleteDialog.task) return;
+    setActionSubmitting(true);
+    try {
+      await axios.delete(`${API_URL}/tasks/${deleteDialog.task.id}`);
+      showToast.success('Task permanently deleted');
+      setDeleteDialog({ open: false, task: null });
+      fetchTasks();
+    } catch (err) {
+      showApiError(err, 'Failed to delete task');
+    } finally {
+      setActionSubmitting(false);
+    }
+  };
+
+  // Check if task has video (for delete button visibility)
+  const [taskVideos, setTaskVideos] = useState({});
+  
+  useEffect(() => {
+    // Fetch video status for archived tasks only
+    const archivedTasks = tasks.filter(t => t.is_archived);
+    archivedTasks.forEach(async (task) => {
+      if (taskVideos[task.id] === undefined) {
+        try {
+          const response = await axios.get(`${API_URL}/tasks/${task.id}/video`);
+          setTaskVideos(prev => ({ ...prev, [task.id]: !!response.data }));
+        } catch {
+          setTaskVideos(prev => ({ ...prev, [task.id]: false }));
+        }
+      }
+    });
+  }, [tasks]);
 
   // Determine content state
   const renderContent = () => {
