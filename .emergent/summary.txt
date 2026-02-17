@@ -1,50 +1,57 @@
 <analysis>**original_problem_statement:**
-Build a web admin panel for a Ministry with a Microsoft/Fluent-inspired UI. The application should support three user roles (Admin, Editor, Approver) with specific permissions.
+Build a web admin panel for a Ministry with a Microsoft/Fluent-inspired UI. The application should support three user roles (Admin, Editor, Approver) with specific permissions. A Producer role was added.
 
 PRODUCT REQUIREMENTS:
 - **UI:** Left sidebar, top command bar, table-first pages, light neutral theme, subtle borders, 8px radius, and Segoe UI/system-ui typography.
-- **Data Models:** User, Task, Comment, and AuditLog. A  model has been added. An  model is being implemented.
-- **Task Status Flow:** A strict lifecycle for tasks: Draft, Submitted, InProgress, ReadyForReview, ChangesRequested, Approved, Rejected, Scheduled, Published.
+- **Data Models:** User, Task, Comment, and AuditLog. A  model has been added. An  model is now a full entity with , , etc.
+- **Task Status Flow:** A strict, action-driven workflow engine governs status transitions: Draft → Submitted → InProgress → ReadyForReview → (Approved/ChangesRequested/Rejected) → Scheduled → Published.
 - **Role Permissions:** Defined in a centralized permissions matrix.
-    - **Editor:** Create/edit non-finalized tasks, submit for review, upload/manage videos.
-    - **Approver:** Approve/reject tasks in 'ReadyForReview' state, download videos.
-    - **Admin:** Full access to all data and status transitions.
+    - **Editor:** Creates tasks, submits them. Manages scheduling and publishing.
+    - **Producer:** Moves tasks from Submitted to InProgress and ReadyForReview.
+    - **Approver:** Approves/rejects tasks.
+    - **Admin:** Full access.
 - **Business Rules:**
-    - Task fields become read-only for Editor/Approver once 'Scheduled'.
+    - The UI must only show valid action buttons for the current task status and user role. Status dropdowns are removed.
     - Tasks cannot be 'Published' without a video (rule dependent on content type).
-    - Inline validation errors are required.
 - **Pages:** Dashboard, Tasks, Task Details, Calendar, Activity Log, and Settings (with a new Avatars sub-page).
 - **Authentication:** Simple JWT-based custom authentication.
 - **Initial User:**  / 
-- **Video Module:** Implement video upload (local storage), download, and streaming.
-- **Avatars Feature:** Implement a settings page to manage 3 fixed avatars, and integrate these avatars throughout the UI (Task list, Task details, Create Task modal).
+- **Video Module:** Implement video upload (100MB limit, local storage), preview player, download, and streaming.
+- **Avatars Feature:** Implement a settings page to manage 3 fixed avatars (uploading optimized photos, setting display names, toggling active status). Integrate these avatars (photo or initials fallback) throughout the UI.
 - **Configuration:** All business logic (statuses, content types, permissions, video rules) must be driven by centralized config files.
+- **Image Optimization:** Avatar images are automatically resized to 256x256 and compressed to WebP on upload.
 
 **User's preferred language**: The user communicates in English. The next agent MUST respond in English.
 
 **what currently exists?**
-A stable, full-stack application with a FastAPI backend, MongoDB database, and a React frontend. The application features user authentication, role-based permissions, and CRUD for tasks. It includes a complete video module (local storage) and a highly polished, interactive calendar.
-
-The codebase has undergone significant architectural improvements, centralizing all business logic (statuses, content types, permissions, video rules) into dedicated configuration files in . This Flexibility Pass removed hardcoded values, making the application more maintainable. The task status system was also successfully migrated to a new, more detailed workflow.
+A stable full-stack application with a FastAPI backend, MongoDB, and a React frontend. The application has undergone significant development and now includes:
+- A complete, action-driven workflow engine that replaced all manual status dropdowns with contextual buttons.
+- A centralized status engine foundation (, ) that drives all status logic on the frontend.
+- A feature-rich calendar that displays tasks as event chips inside day cells, with a pop-out panel for daily details.
+- A video module with local upload (up to 100MB), a preview player, download functionality, and improved UX.
+- An avatar system with backend image optimization (resizing/compression via Pillow). The backend models and some API endpoints (, , ) have been extended to support avatar management. The frontend has a context provider and a display component with initial fallback logic.
 
 **Last working item**:
-    - Last item agent was working: FEATURE — SETTINGS → AVATARS. The agent began implementing the backend portion of this feature.
+    - Last item agent was working: **PHASE — AVATAR SYSTEM FINALIZATION**. The agent was implementing the final phase of the avatars feature, which turns them into fully manageable entities. The backend model and APIs were extended. The agent was in the middle of updating the frontend  component to handle showing initials as a fallback when no photo is present.
     - Status: IN PROGRESS
     - Agent Testing Done: N
-    - Which testing method agent to use? After completing the full feature (backend endpoints, frontend page, and UI integration), use the frontend testing agent to verify the new page and the avatar's appearance across the app. Use  to test the new backend endpoints.
+    - Which testing method agent to use? After completing the full feature (backend endpoints, frontend page, and UI integration), use the frontend testing agent to verify the new settings page, management functionality (editing name, toggling active status), and the avatar's appearance (photo or initials) across the app. Use  to test the new  endpoint.
     - User Testing Done: N
 
 **All Pending/In progress Issue list**:
 *   None.
 
 **In progress Task List**:
-*   **Task 1: FEATURE — SETTINGS → AVATARS (Fluent Avatar Library)**
+*   **Task 1: PHASE — AVATAR SYSTEM FINALIZATION**
     *   **Priority:** P0
-    *   **Where to resume:** The agent has created the backend  Pydantic model and a configuration for the three initial avatars in . The next step is to implement the required backend API endpoints:
-        1.  
-        2.   (for file upload)
-        3.  
-    *   **What will be achieved with this?** A complete feature for managing and displaying task avatars, enhancing the UI's visual identity.
+    *   **Where to resume:** The agent was editing . The immediate next step is to complete the logic for rendering initials as a fallback. After that, the following frontend work is required:
+        1.  Update the  page to be a full management UI, allowing users to:
+            *   Edit the  of each avatar.
+            *   Toggle the  status.
+            *   See the initials fallback if no photo is set.
+        2.  Integrate the  and the active status logic globally. Update , , and  to display the avatar's  instead of a static label and use the  component consistently.
+        3.  Ensure inactive avatars cannot be selected when creating a new task.
+    *   **What will be achieved with this?** A complete feature for managing and displaying task avatars, enhancing the UI's visual identity and providing administrative control.
     *   **Status:** IN PROGRESS
     *   **Should Test frontend/backend/both after fix?** Both
     *   **Blocked on something:** Nothing.
@@ -52,20 +59,17 @@ The codebase has undergone significant architectural improvements, centralizing 
 **Upcoming and Future Tasks**
 *   **Future Tasks:**
     *   **P1: Cloud Storage for Videos:** The current video upload functionality uses local backend storage (). A future phase could involve integrating a cloud storage provider like AWS S3 or Google Cloud Storage.
-    *   **P2: Calendar Interactivity Enhancements:**
-        *   Add hover effects to tasks within the calendar for better discoverability (Note: Hover on day cell is done, but not on individual tasks within the cell).
+    *   **P2: Calendar Interactivity Enhancements:** Add hover effects to tasks within the calendar for better discoverability.
 
 **Completed work in this session**
-- **CALENDAR C3 — INTERACTION LAYER:** Implemented hover/active states on calendar day cells and a popover for the +X more indicator to show all tasks for a given day.
-- **UI COLOR FIX:** Refactored hardcoded green color values in  to use semantic tokens from , ensuring Fluent UI compliance.
-- **CALENDAR C4 — DENSITY POLISH:** Optimized calendar cell layout for better information density, adjusting typography, spacing, and ensuring fixed cell heights.
-- **CALENDAR C5 — MICRO POLISH:** Added subtle, performant animations and transitions for calendar interactions (hover, press, month navigation, popover appearance) to improve the UX.
-- **ARCHITECTURE CHECK & FLEXIBILITY PASS:**
-    - Created a centralized configuration directory ().
-    - Implemented , , , and .
-    - Refactored all components (, , , , etc.) to use these centralized configs, eliminating hardcoded status labels, colors, and permission checks.
-- **VIDEO UX POLISH (PHASE VP):** Overhauled  for a production-grade UX, including improved status presentation, action buttons driven by status and permissions, a confirmation dialog for removal, and a refined visual layout.
-- **STATUS SYSTEM MIGRATION:** Successfully migrated the entire application to a new, more detailed set of task statuses. This included updating the backend, frontend configs, all relevant UI components, and adding a data migration layer to handle existing task records.
+- **PHASE — AVATAR SYSTEM FINALIZATION (Partial):** Extended backend  model and added  API endpoint. Started frontend refactor of .
+- **PHASE — VIDEO MVP:** Implemented video upload validation (size/type), an embedded preview player, and download functionality in the .
+- **PHASE — CALENDAR VISIBLE EVENTS:** Enhanced the calendar to show tasks as event chips in day cells, resembling an Outlook/Fluent calendar, with a detailed day-view panel.
+- **PHASE — STATUS ENGINE FOUNDATION:** Architecturally refactored the entire frontend to use a centralized status configuration () and utility functions (), eliminating all hardcoded status strings.
+- **UI REFINEMENT — TASK ACTION BAR:** Refined the task action buttons on the  page to match enterprise UX standards (primary, secondary, danger-outline hierarchy).
+- **PHASE P1 — WORKFLOW ENGINE:** Replaced all manual status dropdowns with a strict, action-driven system using contextual buttons and backend-validated transitions.
+- **UPGRADE — AVATAR IMAGE OPTIMIZATION:** Implemented a backend pipeline using  to automatically resize and compress uploaded avatar images to WebP format.
+- **FEATURE — SETTINGS → AVATARS (Initial MVP):** Implemented the core avatar feature, including backend endpoints for upload/delete (storing images as base64), and integrated avatar thumbnails throughout the UI.
 
 **Earlier issues found/mentioned but not fixed**
 *   None.
@@ -79,58 +83,62 @@ The codebase has undergone significant architectural improvements, centralizing 
 **Key Technical Concepts**
 *   **Frontend:** React, React Router, Tailwind CSS, Shadcn UI
 *   **Backend:** FastAPI, Python, MongoDB (Pymongo), 
+*   **Image Processing:**  for backend image resizing and compression.
 *   **Authentication:** JSON Web Tokens (JWT)
-*   **Architecture:** Centralized configuration for business logic (statuses, permissions, etc.) to promote maintainability and flexibility.
-*   **Design:** Microsoft Fluent-inspired design principles with a focus on micro-interactions and information density.
+*   **Architecture:** Heavily reliant on centralized configuration for business logic (statuses, permissions, workflows) to promote maintainability.
 
 **key DB schema**
 *   **users:** 
 *   **tasks:** 
 *   **videos:** 
-*   **avatars:**  (Collection being implemented)
+*   **avatars:**  (Collection has been extended and is actively being implemented against)
 
 **changes in tech stack**
-*   No new libraries or technologies were added. The primary change was a significant architectural refactoring to centralize business logic into configuration files.
+*   ****: Added to the backend for image processing.
 
 **All files of reference**
-*    (New Directory): Contains , , , .
-*   : Heavily modified for density, interactions, micro-polish, and config-driven rendering.
-*   : Refactored to use centralized configs.
-*   : Refactored to use centralized configs.
-*   : Completely overhauled for UX polish and refactored to use centralized configs.
-*   : Modified for the new status system, migration logic, and initial setup for the Avatars feature.
-*   : Updated with new color tokens for the new status system.
+*   : Heavily modified with new endpoints (), extended models (), image optimization logic, and the workflow validation engine.
+*   : New file, the source of truth for all task status definitions.
+*   : New file with helpers for handling status logic.
+*   : Heavily modified to render event chips and a day details panel.
+*   : Heavily modified to remove status dropdowns, add the action button bar, and use the new status engine.
+*   : Overhauled to include a video preview player and better upload UX.
+*   : Created for avatar management; needs to be updated.
+*   : Being modified to support initials fallback.
+*   : Created to manage global avatar state.
 
 **Areas that need refactoring**:
-*   None. The application just underwent a major refactoring for flexibility and is in a clean state.
+*   None. The agent recently completed a major architectural refactor (Status Engine Foundation).
 
 **key api endpoints**
+*   ,  (includes status transitions via )
 *   , 
-*   , , , 
-*   
-*   ** (To be implemented)**
-*   ** (To be implemented)**
+*   , 
+*   ** () (Newly implemented)**
 
 **Critical Info for New Agent**
-*   You must continue implementing the **Avatars feature**. The backend models are defined in , but you need to create the API endpoints (, , ) and then build the entire frontend portion as per the user's request.
-*   The application's business logic is now almost entirely driven by the files in . When modifying or checking rules for statuses, content types, or permissions, always refer to these files first.
-*   Do not introduce hardcoded strings or values for statuses, colors, or permissions. All such logic must go through the config files.
-*   The application is considered stable and visually polished. Avoid making broad design changes unless specifically requested.
+*   You **MUST** resume the **AVATAR SYSTEM FINALIZATION** task. The backend work is mostly done, but the frontend requires significant updates.
+*   **Frontend priorities:**
+    1.  Finish the fallback logic in  (to show initials).
+    2.  Build out the management UI in  (edit name, toggle active).
+    3.  Globally integrate the  and new fallback logic in , , and .
+*   All status-related logic (colors, transitions, labels) **MUST** now use the centralized system:  and . Do not add hardcoded status strings anywhere.
+*   The application's UI has been refined multiple times. Follow the existing Fluent-inspired design patterns and use Tailwind CSS tokens.
 
 **documents and test reports created in this job**
-*   None.
+*   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User (Msg 366):** Requested FEATURE — SETTINGS → AVATARS, a comprehensive feature including a new settings page, backend endpoints, and UI integration. (In Progress)
-2.  **User (Msg 289):** Requested STATUS SYSTEM MIGRATION to update all task statuses globally. (Completed)
-3.  **User (Msg 266):** Requested PHASE VP — VIDEO UX POLISH to make the  production-grade. (Completed)
-4.  **User (Msg 185):** Requested PHASE — FLEXIBILITY PASS to centralize all business logic into config files. (Completed)
-5.  **User (Msg 118):** Requested ARCHITECTURE CHECK — STATUS CONFIG to verify statuses are driven by a config object. (Completed)
-6.  **User (Msg 80):** Requested CALENDAR C5 — MICRO POLISH to add subtle animations and transitions. (Completed)
-7.  **User (Msg 65):** Requested CALENDAR C4 — DENSITY POLISH to optimize calendar information density. (Completed)
-8.  **User (Msg 44):** Requested UI COLOR FIX to replace a non-compliant green color with a Fluent-inspired one. (Completed)
-9.  **User (Msg 5):** Requested CALENDAR C3 — INTERACTION LAYER to add hover states and a popover. (Completed)
-10. **User (Msg 291 in previous fork):** Kicked off the work for this session by asking for the next steps after the Calendar C2 visual hierarchy was completed.
+1.  **User (Msg 454):** Requested PHASE — AVATAR SYSTEM FINALIZATION, to make avatars full entities with a management UI and global integration. (In Progress)
+2.  **User (Msg 373):** Requested PHASE — VIDEO MVP, to add upload validation, preview, and download. (Completed)
+3.  **User (Msg 346):** Requested PHASE — CALENDAR VISIBLE EVENTS, to show tasks inside calendar cells like Outlook. (Completed)
+4.  **User (Msg 247):** Requested PHASE — STATUS ENGINE FOUNDATION, an architectural refactor to centralize all status logic. (Completed)
+5.  **User (Msg 226):** Requested UI REFINEMENT — TASK ACTION BAR, to style action buttons with a professional enterprise hierarchy. (Completed)
+6.  **User (Msg 155):** Requested PHASE P1 — WORKFLOW ENGINE, to replace status dropdowns with a strict, action-driven state machine. (Completed)
+7.  **User (Msg 90):** Requested UPGRADE — AVATAR IMAGE OPTIMIZATION PIPELINE, to auto-compress uploaded images. (Completed)
+8.  **User (Msg 5):** Provided the detailed requirements for the initial AVATARS feature. (Completed)
+9.  **User (Msg 291 in previous fork):** Initiated work for the session.
+10. **User (Msg 289 in previous fork):** Requested STATUS SYSTEM MIGRATION. (Completed)
 
 **Project Health Check:**
 *   **Broken:** None.
@@ -138,9 +146,10 @@ The codebase has undergone significant architectural improvements, centralizing 
 
 **3rd Party Integrations**
 *   ****: A Python library for handling local asynchronous file operations.
+*   ****: A Python imaging library used for backend avatar optimization.
 
 **Testing status**
-*   **Testing agent used after significant changes:** NO
+*   **Testing agent used after significant changes:** YES (for the initial Avatars feature)
 *   **Troubleshoot agent used after agent stuck in loop:** NO
 *   **Test files created:** None.
 *   **Known regressions:** None.
@@ -150,4 +159,4 @@ The codebase has undergone significant architectural improvements, centralizing 
 *   **Password:** 
 
 **What agent forgot to execute**
-*   The agent was in the middle of implementing the Avatars feature and had not yet completed it. The work needs to be resumed. Nothing was forgotten, but the task is incomplete.</analysis>
+*   The agent was in the middle of implementing the AVATAR SYSTEM FINALIZATION feature when the session ended. The work needs to be resumed. Nothing was forgotten, but the task is incomplete.</analysis>
