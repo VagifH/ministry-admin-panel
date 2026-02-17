@@ -475,7 +475,7 @@ def require_action(action: str):
     async def check_permission(current_user: User = Depends(get_current_user)):
         allowed, error = check_action_permission(current_user.role, action)
         if not allowed:
-            raise HTTPException(status_code=403, detail=error)
+            raise ForbiddenError(message=error, code=ErrorCode.PERMISSION_DENIED)
         return current_user
     return check_permission
 
