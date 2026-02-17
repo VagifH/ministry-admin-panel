@@ -105,7 +105,7 @@ export default function Tasks() {
       setShowCreateDialog(false);
       setNewTask({
         title: '',
-        content_type: 'Announcement',
+        content_type: CONTENT_TYPE.ANNOUNCEMENT,
         avatar: 'Avatar 1',
         script: '',
         notes: '',
