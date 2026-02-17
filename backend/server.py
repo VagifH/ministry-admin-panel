@@ -889,9 +889,15 @@ async def get_task(task_id: str, current_user: User = Depends(get_current_user))
         task['updated_at'] = datetime.fromisoformat(task['updated_at'])
     if isinstance(task.get('publish_datetime'), str):
         task['publish_datetime'] = datetime.fromisoformat(task['publish_datetime'])
+    if isinstance(task.get('archived_at'), str):
+        task['archived_at'] = datetime.fromisoformat(task['archived_at'])
     
     # Migrate old status to new status
     task['status'] = migrate_status(task.get('status', 'Draft'))
+    
+    # Ensure archive fields exist
+    if 'is_archived' not in task:
+        task['is_archived'] = False
     
     return Task(**task)
 
