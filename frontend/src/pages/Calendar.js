@@ -30,6 +30,131 @@ const contentTypeAccent = {
   'Full Lesson': 'bg-purple-500',     // Purple
 };
 
+// TaskPopoverItem component - renders a single task in the popover
+const TaskPopoverItem = ({ task, onClick, statusColors, contentTypeAccent }) => (
+  <button
+    onClick={onClick}
+    data-testid={`popover-task-${task.id}`}
+    className="w-full flex items-center gap-2 p-2 rounded hover:bg-ministry-bg-tertiary text-left focus:outline-none focus:bg-ministry-bg-tertiary"
+  >
+    {/* Content type accent bar */}
+    <div className={`w-1 h-5 rounded-full flex-shrink-0 ${contentTypeAccent[task.content_type] || 'bg-gray-400'}`} />
+    {/* Task info */}
+    <div className="flex-1 min-w-0">
+      <div className="text-sm font-medium text-ministry-text-primary truncate">
+        {task.title}
+      </div>
+    </div>
+    {/* Status badge */}
+    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded flex-shrink-0 ${statusColors[task.status]}`}>
+      {task.status}
+    </span>
+  </button>
+);
+
+// DayCell component - handles individual day rendering with interactions
+const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectDate, onTaskClick, statusColors, contentTypeAccent }) => {
+  const [isPressed, setIsPressed] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  
+  const maxVisible = 2;
+  const visibleTasks = dayTasks.slice(0, maxVisible);
+  const remainingCount = dayTasks.length - maxVisible;
+
+  const handleTaskClick = useCallback((e, taskId) => {
+    e.stopPropagation();
+    onTaskClick(taskId);
+  }, [onTaskClick]);
+
+  const handleMoreClick = useCallback((e) => {
+    e.stopPropagation();
+    setPopoverOpen(true);
+  }, []);
+
+  const handlePopoverTaskClick = useCallback((taskId) => {
+    setPopoverOpen(false);
+    onTaskClick(taskId);
+  }, [onTaskClick]);
+
+  return (
+    <div
+      data-testid={`calendar-day-${format(day, 'yyyy-MM-dd')}`}
+      onClick={() => onSelectDate(day)}
+      onMouseDown={() => setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
+      onMouseLeave={() => setIsPressed(false)}
+      className={`h-[100px] p-2 border rounded-ministry overflow-hidden cursor-pointer select-none
+        ${!isCurrentMonth ? 'bg-ministry-bg-primary border-ministry-border-default' : 'bg-ministry-bg-secondary border-ministry-border-default'}
+        ${isToday ? 'ring-2 ring-ministry-brand-primary ring-inset' : ''}
+        ${isSelected && !isToday ? 'bg-ministry-bg-tertiary' : ''}
+        ${isPressed ? 'bg-ministry-bg-tertiary scale-[0.98]' : ''}
+        hover:bg-ministry-bg-tertiary
+      `}
+      style={{ transition: 'transform 50ms ease-out, background-color 100ms ease-out' }}
+    >
+      {/* Day number - lighter weight, secondary color */}
+      <div className={`text-sm font-normal mb-1.5 ${
+        isCurrentMonth ? 'text-ministry-text-secondary' : 'text-ministry-text-muted'
+      }`}>
+        {format(day, 'd')}
+      </div>
+      {/* Events container - 4px gap between events */}
+      <div className="flex flex-col gap-1">
+        {visibleTasks.map((task) => (
+          <div
+            key={task.id}
+            onClick={(e) => handleTaskClick(e, task.id)}
+            data-testid={`calendar-task-${task.id}`}
+            className="flex items-center gap-1 cursor-pointer group"
+            title={task.title}
+          >
+            {/* Content type accent bar */}
+            <div className={`w-0.5 h-4 rounded-full flex-shrink-0 ${contentTypeAccent[task.content_type] || 'bg-gray-400'}`} />
+            {/* Event text - medium weight, primary color, single line */}
+            <span className={`text-xs font-medium text-ministry-text-primary truncate flex-1 px-1 py-0.5 rounded ${statusColors[task.status]}`}>
+              {task.title}
+            </span>
+          </div>
+        ))}
+        {remainingCount > 0 && (
+          <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+            <PopoverTrigger asChild>
+              <button
+                onClick={handleMoreClick}
+                data-testid={`calendar-more-${format(day, 'yyyy-MM-dd')}`}
+                className="text-xs text-ministry-text-muted pl-2 hover:text-ministry-text-primary hover:underline text-left focus:outline-none focus:text-ministry-text-primary"
+              >
+                +{remainingCount} more
+              </button>
+            </PopoverTrigger>
+            <PopoverContent 
+              align="start" 
+              sideOffset={4}
+              className="w-64 p-2 bg-ministry-bg-secondary border-ministry-border-default rounded-ministry shadow-ministry-card max-h-60 overflow-y-auto"
+              data-testid={`calendar-popover-${format(day, 'yyyy-MM-dd')}`}
+            >
+              <div className="text-xs font-semibold text-ministry-text-secondary mb-2 px-2">
+                {format(day, 'MMMM d, yyyy')} — {dayTasks.length} tasks
+              </div>
+              <div className="flex flex-col">
+                {dayTasks.map((task) => (
+                  <TaskPopoverItem
+                    key={task.id}
+                    task={task}
+                    onClick={() => handlePopoverTaskClick(task.id)}
+                    statusColors={statusColors}
+                    contentTypeAccent={contentTypeAccent}
+                  />
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export default function Calendar() {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
@@ -38,6 +163,10 @@ export default function Calendar() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const handleTaskClick = useCallback((taskId) => {
+    navigate(`/tasks/${taskId}`);
+  }, [navigate]);
 
   useEffect(() => {
     fetchTasks();
