@@ -1150,9 +1150,8 @@ async def delete_task(task_id: str, request: Request, current_user: User = Depen
     if result.deleted_count == 0:
         raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
-    result = await db.tasks.delete_one({"id": task_id})
-    if result.deleted_count == 0:
-        raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
+    # Also delete any comments associated with this task
+    await db.comments.delete_many({"task_id": task_id})
     
     # Audit log with try/catch safety
     try:
