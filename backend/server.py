@@ -654,14 +654,17 @@ async def list_audit_logs(
 async def get_dashboard_stats(current_user: User = Depends(get_current_user)):
     from datetime import timedelta
     
-    # Count by status
+    # Count by status (including migration from old statuses)
     draft = await db.tasks.count_documents({"status": "Draft"})
     submitted = await db.tasks.count_documents({"status": "Submitted"})
-    producing = await db.tasks.count_documents({"status": "Producing"})
-    review = await db.tasks.count_documents({"status": "Review"})
+    # Count both old and new status names
+    in_progress = await db.tasks.count_documents({"status": {"$in": ["InProgress", "Producing"]}})
+    ready_for_review = await db.tasks.count_documents({"status": {"$in": ["ReadyForReview", "Review"]}})
+    changes_requested = await db.tasks.count_documents({"status": "ChangesRequested"})
+    approved = await db.tasks.count_documents({"status": "Approved"})
+    rejected = await db.tasks.count_documents({"status": "Rejected"})
     scheduled = await db.tasks.count_documents({"status": "Scheduled"})
     published = await db.tasks.count_documents({"status": "Published"})
-    rejected = await db.tasks.count_documents({"status": "Rejected"})
     
     # Scheduled this week
     now = datetime.now(timezone.utc)
@@ -679,11 +682,13 @@ async def get_dashboard_stats(current_user: User = Depends(get_current_user)):
     return DashboardStats(
         draft=draft,
         submitted=submitted,
-        producing=producing,
-        review=review,
+        in_progress=in_progress,
+        ready_for_review=ready_for_review,
+        changes_requested=changes_requested,
+        approved=approved,
+        rejected=rejected,
         scheduled=scheduled,
         published=published,
-        rejected=rejected,
         scheduled_this_week=scheduled_this_week
     )
 
