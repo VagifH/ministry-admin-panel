@@ -57,7 +57,7 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
 - **P0 Completed: FEATURE — SETTINGS → AVATARS**
   - Backend API endpoints:
     - `GET /api/avatars` - Returns all 3 fixed avatars
-    - `POST /api/avatars/{id}/photo` - Upload avatar photo (Admin only, max 2MB, JPG/PNG/WebP)
+    - `POST /api/avatars/{id}/photo` - Upload avatar photo (Admin only, max 5MB, JPG/PNG/WebP)
     - `DELETE /api/avatars/{id}/photo` - Remove avatar photo (Admin only)
   - Photos stored as base64 in MongoDB (fast MVP)
   - Frontend implementation:
@@ -70,9 +70,18 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
     - Task Details header shows avatar thumbnail
     - Create Task modal shows thumbnails in avatar dropdown
     - Task Details avatar dropdown shows thumbnails
-  - File validation: max 2MB, formats JPG/PNG/WebP
   - Role-based access: Only Admin can upload/remove photos
   - Testing: 17/17 backend tests passed, frontend verified
+
+- **UPGRADE: Avatar Image Optimization Pipeline**
+  - Increased upload limit from 2MB to 5MB
+  - Backend image processing using **Pillow 12.1.0**:
+    - Center-crop to square
+    - Resize to max 256×256 pixels
+    - Convert to WebP format (quality 80)
+    - Typical output: **~1-10KB** (vs original 200KB-5MB)
+  - Validation: Rejects corrupted images with friendly error messages
+  - Storage: Only optimized image stored (not original)
 
 ### Previous Sessions
 - Full backend implementation with FastAPI
