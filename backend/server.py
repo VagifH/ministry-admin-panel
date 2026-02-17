@@ -1213,11 +1213,14 @@ async def stream_video(
                 remaining -= len(data)
                 yield data
     
+    # Get actual mime type from video record
+    mime_type = video.get("mime_type", "video/mp4")
+    
     headers = {
         "Content-Range": f"bytes {start}-{end}/{file_size}",
         "Accept-Ranges": "bytes",
         "Content-Length": str(content_length),
-        "Content-Type": "video/mp4"
+        "Content-Type": mime_type
     }
     
     status_code = 206 if range else 200
@@ -1226,7 +1229,7 @@ async def stream_video(
         iterfile(),
         status_code=status_code,
         headers=headers,
-        media_type="video/mp4"
+        media_type=mime_type
     )
 
 # ==================== AVATAR ENDPOINTS ====================
