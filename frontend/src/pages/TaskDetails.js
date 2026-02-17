@@ -15,18 +15,16 @@ import { DetailSkeleton } from '../components/ui/loading';
 import { ErrorState } from '../components/ui/empty-state';
 import { showToast, showApiError } from '../lib/toast';
 import VideoTab from '../components/VideoTab';
+import { 
+  TASK_STATUS, 
+  TASK_STATUS_CONFIG, 
+  getStatusBadgeClass, 
+  isReadOnlyStatus,
+  getAvailableTransitions,
+  CONTENT_TYPE_LIST
+} from '../config/statusConfig';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
-
-const statusColors = {
-  Draft: 'bg-ministry-status-draft text-white',
-  Submitted: 'bg-ministry-status-submitted text-white',
-  Producing: 'bg-ministry-status-producing text-white',
-  Review: 'bg-ministry-status-review text-white',
-  Scheduled: 'bg-ministry-status-scheduled text-white',
-  Published: 'bg-ministry-status-published text-white',
-  Rejected: 'bg-ministry-status-rejected text-white',
-};
 
 export default function TaskDetails() {
   const { taskId } = useParams();
