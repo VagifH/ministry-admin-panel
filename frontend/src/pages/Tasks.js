@@ -25,6 +25,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 export default function Tasks() {
   const { user } = useAuth();
+  const { getActiveAvatars, getAvatarDisplayName } = useAvatars();
   const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
