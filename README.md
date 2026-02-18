@@ -1,28 +1,172 @@
 # Ministry Admin Panel
 
-A web-based content management system for ministry video production workflow.
+A web-based content management system for ministry operations with role-based access control, task workflow management, and video content handling.
 
-## Release Readiness - Ministry Pilot (v1.0.0)
+**Version:** 1.0.0  
+**Status:** Production Ready (Pilot)
 
-### Quick Start
+---
+
+## Table of Contents
+
+1. [Quick Start](#quick-start)
+2. [Environment Variables](#environment-variables)
+3. [Running the Application](#running-the-application)
+4. [User Roles & Permissions](#user-roles--permissions)
+5. [Task Status Workflow](#task-status-workflow)
+6. [Seeding Test Users](#seeding-test-users)
+7. [Backup & Restore](#backup--restore)
+8. [Log Retention Policy](#log-retention-policy)
+9. [API Health Check](#api-health-check)
+10. [Smoke Test Checklist](#smoke-test-checklist)
+11. [Troubleshooting](#troubleshooting)
+
+---
+
+## Quick Start
 
 ```bash
-# 1. Ensure MongoDB is running
-# 2. Set environment variables
-cd backend
-cp .env.example .env  # Edit with your settings
+# 1. Clone repository
+git clone <repository-url>
+cd ministry-admin-panel
 
-# 3. Install dependencies
+# 2. Setup backend
+cd backend
+cp .env.example .env  # Configure environment variables
 pip install -r requirements.txt
 
+# 3. Setup frontend
+cd ../frontend
+cp .env.example .env  # Configure environment variables
+yarn install
+
 # 4. Seed test users
+cd ../backend
 python seed_users.py
 
-# 5. Start the server
-uvicorn server:app --host 0.0.0.0 --port 8001
+# 5. Start services
+# Backend: uvicorn server:app --host 0.0.0.0 --port 8001
+# Frontend: yarn start
 ```
 
-### Test Credentials
+---
+
+## Environment Variables
+
+### Backend (`backend/.env`)
+
+```env
+# MongoDB Connection (REQUIRED)
+MONGO_URL=mongodb://localhost:27017
+DB_NAME=ministry_db
+
+# JWT Configuration (REQUIRED for production)
+JWT_SECRET_KEY=your-secure-secret-key-change-in-production
+```
+
+### Frontend (`frontend/.env`)
+
+```env
+# Backend API URL (REQUIRED)
+REACT_APP_BACKEND_URL=https://your-domain.com
+```
+
+---
+
+## Running the Application
+
+### Backend
+
+```bash
+cd backend
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run server
+uvicorn server:app --host 0.0.0.0 --port 8001 --reload
+```
+
+The API will be available at `http://localhost:8001/api`
+
+### Frontend
+
+```bash
+cd frontend
+
+# Install dependencies
+yarn install
+
+# Run development server
+yarn start
+```
+
+The application will be available at `http://localhost:3000`
+
+---
+
+## User Roles & Permissions
+
+| Role | Description | Key Permissions |
+|------|-------------|-----------------|
+| **Admin** | System administrator | Full access to all features, user management, avatar management |
+| **Editor** | Ministry content editor | Create/edit tasks, upload videos, view activity logs |
+| **Producer** | Video production team | Edit tasks in production, upload videos, update status |
+| **Approver** | Content approver | Approve/reject tasks, view all tasks |
+
+### Permission Matrix
+
+| Action | Admin | Editor | Producer | Approver |
+|--------|:-----:|:------:|:--------:|:--------:|
+| View Dashboard | ✓ | ✓ | ✓ | ✓ |
+| View Tasks | ✓ | ✓ | ✓ | ✓ |
+| Create Task | ✓ | ✓ | ✗ | ✗ |
+| Edit Task | ✓ | ✓ | ✓ | ✗ |
+| Delete Task | ✓ | ✗ | ✗ | ✗ |
+| Upload Video | ✓ | ✓ | ✗ | ✗ |
+| View Calendar | ✓ | ✓ | ✓ | ✓ |
+| View Activity Log | ✓ | ✓ | ✗ | ✗ |
+| Manage Users | ✓ | ✗ | ✗ | ✗ |
+| Manage AI Agents | ✓ | ✗ | ✗ | ✗ |
+
+---
+
+## Task Status Workflow
+
+```
+Draft → Submitted → InProgress → ReadyForReview → Approved → Scheduled → Published
+                                      ↓
+                              ChangesRequested
+                                      ↓
+                                  Rejected
+```
+
+### Status Transitions by Role
+
+| From Status | To Status | Allowed Roles |
+|-------------|-----------|---------------|
+| Draft | Submitted | Admin, Editor |
+| Submitted | InProgress | Admin, Producer |
+| InProgress | ReadyForReview | Admin, Producer |
+| ReadyForReview | Approved | Admin, Approver |
+| ReadyForReview | ChangesRequested | Admin, Approver |
+| ReadyForReview | Rejected | Admin, Approver |
+| ChangesRequested | InProgress | Admin, Producer |
+| Approved | Scheduled | Admin, Editor |
+| Scheduled | Published | Admin, Editor |
+
+---
+
+## Seeding Test Users
+
+Create test users for all roles:
+
+```bash
+cd backend
+python seed_users.py
+```
+
+### Default Test Credentials
 
 | Role | Email | Password |
 |------|-------|----------|
@@ -31,251 +175,142 @@ uvicorn server:app --host 0.0.0.0 --port 8001
 | Producer | producer@ministry.local | ChangeMe123! |
 | Approver | approver@ministry.local | ChangeMe123! |
 
-**Note:** Change default passwords before production deployment.
-
----
-
-## Configuration
-
-All application settings are centralized in `/backend/config.py`:
-
-### Upload Limits
-- **Video:** 100MB max, MP4/WebM/MOV only
-- **Avatar Images:** 5MB max, JPEG/PNG/WebP only
-
-### Security Settings
-- **Login Rate Limiting:** 5 attempts per minute per IP
-- **Lockout Duration:** 5 minutes after exceeding limit
-- **JWT Expiry:** 24 hours
-
----
-
-## End-to-End Smoke Test
-
-### Complete Workflow Test
-
-Run this script to verify all features work correctly:
-
-```bash
-#!/bin/bash
-# E2E Smoke Test Script
-
-API_URL="https://your-domain.com"  # Replace with your URL
-
-# 1. Login as Admin
-echo "=== Step 1: Login ==="
-TOKEN=$(curl -s -X POST "$API_URL/api/auth/login" \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@ministry.local","password":"ChangeMe123!"}' \
-  | python3 -c "import sys,json;print(json.load(sys.stdin)['token'])")
-echo "Token: ${TOKEN:0:20}..."
-
-# 2. Create a task (Draft)
-echo ""
-echo "=== Step 2: Create Task (Draft) ==="
-TASK=$(curl -s -X POST "$API_URL/api/tasks" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{
-    "title": "E2E Test Task",
-    "content_type": "Announcement",
-    "avatar": "Avatar 1",
-    "script": "This is an end-to-end test script for the ministry pilot.",
-    "publish_datetime": "2025-12-30T10:00:00Z"
-  }')
-TASK_ID=$(echo $TASK | python3 -c "import sys,json;print(json.load(sys.stdin)['id'])")
-echo "Task ID: $TASK_ID"
-
-# 3. Status transitions: Draft -> Submitted -> InProgress -> ReadyForReview -> Approved -> Scheduled -> Published
-echo ""
-echo "=== Step 3: Status Transitions ==="
-
-for STATUS in "Submitted" "InProgress" "ReadyForReview" "Approved" "Scheduled" "Published"; do
-  curl -s -X PATCH "$API_URL/api/tasks/$TASK_ID/status" \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer $TOKEN" \
-    -d "{\"status\": \"$STATUS\"}" > /dev/null
-  echo "  -> $STATUS"
-done
-
-# 4. Create another task for video/archive testing
-echo ""
-echo "=== Step 4: Create Second Task for Video Test ==="
-TASK2=$(curl -s -X POST "$API_URL/api/tasks" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{
-    "title": "Video Test Task",
-    "content_type": "Short Lesson",
-    "avatar": "Avatar 2",
-    "script": "This task tests video upload and download functionality.",
-    "publish_datetime": "2025-12-31T10:00:00Z"
-  }')
-TASK2_ID=$(echo $TASK2 | python3 -c "import sys,json;print(json.load(sys.stdin)['id'])")
-echo "Task 2 ID: $TASK2_ID"
-
-# 5. Upload video
-echo ""
-echo "=== Step 5: Video Upload ==="
-# Create a minimal test video file
-python3 -c "open('/tmp/test.mp4','wb').write(b'\\x00\\x00\\x00\\x18ftypmp42\\x00\\x00\\x00\\x00mp42isom')"
-curl -s -X POST "$API_URL/api/tasks/$TASK2_ID/video/upload" \
-  -H "Authorization: Bearer $TOKEN" \
-  -F "file=@/tmp/test.mp4;type=video/mp4" > /dev/null
-echo "Video uploaded"
-
-# 6. Download video
-echo ""
-echo "=== Step 6: Video Download ==="
-# First mark video as ready
-curl -s -X PATCH "$API_URL/api/tasks/$TASK2_ID/video" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
-  -d '{"status": "ready"}' > /dev/null
-# Download
-curl -s -o /tmp/downloaded.mp4 "$API_URL/api/tasks/$TASK2_ID/video/download" \
-  -H "Authorization: Bearer $TOKEN"
-echo "Video downloaded to /tmp/downloaded.mp4"
-
-# 7. Archive task
-echo ""
-echo "=== Step 7: Archive Task ==="
-curl -s -X PATCH "$API_URL/api/tasks/$TASK2_ID/archive" \
-  -H "Authorization: Bearer $TOKEN" > /dev/null
-echo "Task archived"
-
-# 8. Restore task
-echo ""
-echo "=== Step 8: Restore Task ==="
-curl -s -X PATCH "$API_URL/api/tasks/$TASK2_ID/restore" \
-  -H "Authorization: Bearer $TOKEN" > /dev/null
-echo "Task restored"
-
-# 9. Verify audit logs
-echo ""
-echo "=== Step 9: Verify Audit Logs ==="
-curl -s "$API_URL/api/audit-logs" \
-  -H "Authorization: Bearer $TOKEN" | python3 -c "
-import sys,json
-logs = json.load(sys.stdin)[:10]
-print('Recent audit logs:')
-for log in logs:
-    action = log.get('action', 'N/A')
-    entity = log.get('entity_type') or log.get('object_type', 'N/A')
-    print(f'  - {action} {entity}')
-"
-
-# Cleanup
-echo ""
-echo "=== Cleanup ==="
-# Archive and delete test tasks
-curl -s -X PATCH "$API_URL/api/tasks/$TASK_ID/archive" -H "Authorization: Bearer $TOKEN" > /dev/null
-curl -s -X PATCH "$API_URL/api/tasks/$TASK2_ID/archive" -H "Authorization: Bearer $TOKEN" > /dev/null
-curl -s -X DELETE "$API_URL/api/tasks/$TASK2_ID/video" -H "Authorization: Bearer $TOKEN" > /dev/null
-curl -s -X DELETE "$API_URL/api/tasks/$TASK_ID" -H "Authorization: Bearer $TOKEN" > /dev/null
-curl -s -X DELETE "$API_URL/api/tasks/$TASK2_ID" -H "Authorization: Bearer $TOKEN" > /dev/null
-echo "Test tasks cleaned up"
-
-echo ""
-echo "=========================================="
-echo "E2E SMOKE TEST COMPLETE"
-echo "=========================================="
-```
+> **Note:** Change passwords immediately in production!
 
 ---
 
 ## Backup & Restore
 
-### MongoDB Backup
+### Creating a Backup
 
 ```bash
-# Full database backup
-mongodump --uri="mongodb://localhost:27017" --db=test_database --out=/backup/$(date +%Y%m%d_%H%M%S)
+cd scripts
 
-# Backup specific collections
-mongodump --uri="mongodb://localhost:27017" --db=test_database \
-  --collection=tasks --out=/backup/tasks_$(date +%Y%m%d)
-mongodump --uri="mongodb://localhost:27017" --db=test_database \
-  --collection=users --out=/backup/users_$(date +%Y%m%d)
-mongodump --uri="mongodb://localhost:27017" --db=test_database \
-  --collection=audit_logs --out=/backup/audit_$(date +%Y%m%d)
+# Set MongoDB connection string
+export MONGO_URL="mongodb://localhost:27017/ministry_db"
+
+# Run backup (creates timestamped archive)
+./backup.sh ./backups
 ```
 
-### MongoDB Restore
+Output: `backups/ministry_backup_YYYYMMDD_HHMMSS.tar.gz`
+
+### Restoring from Backup
 
 ```bash
-# Full database restore
-mongorestore --uri="mongodb://localhost:27017" --db=test_database /backup/20250101_120000/test_database
+cd scripts
 
-# Restore specific collection
-mongorestore --uri="mongodb://localhost:27017" --db=test_database \
-  --collection=tasks /backup/tasks_20250101/test_database/tasks.bson
+# Set MongoDB connection string
+export MONGO_URL="mongodb://localhost:27017/ministry_db"
 
-# Restore with drop (replace existing data)
-mongorestore --uri="mongodb://localhost:27017" --db=test_database --drop /backup/20250101_120000/test_database
+# Run restore (will prompt for confirmation)
+./restore.sh ./backups/ministry_backup_20260218_120000.tar.gz
 ```
 
-### Video Files Backup
+> **Warning:** Restore will overwrite existing data!
 
-```bash
-# Backup uploaded videos
-tar -czvf /backup/videos_$(date +%Y%m%d).tar.gz /app/backend/uploads/videos/
+---
 
-# Restore videos
-tar -xzvf /backup/videos_20250101.tar.gz -C /
-```
+## Log Retention Policy
 
-### Automated Backup Script
+Audit logs are automatically purged after **90 days**.
 
-```bash
-#!/bin/bash
-# /scripts/backup.sh - Run daily via cron
+### Implementation
 
-BACKUP_DIR="/backup"
-DATE=$(date +%Y%m%d_%H%M%S)
-RETENTION_DAYS=30
+- TTL index on `audit_logs.timestamp` field
+- MongoDB automatically removes expired documents
+- No manual cleanup required
 
-# Create backup
-mongodump --uri="mongodb://localhost:27017" --db=test_database --out="$BACKUP_DIR/mongo_$DATE"
-tar -czvf "$BACKUP_DIR/videos_$DATE.tar.gz" /app/backend/uploads/
+### Verification
 
-# Cleanup old backups
-find "$BACKUP_DIR" -type d -name "mongo_*" -mtime +$RETENTION_DAYS -exec rm -rf {} +
-find "$BACKUP_DIR" -name "videos_*.tar.gz" -mtime +$RETENTION_DAYS -delete
+```javascript
+// Check TTL index in MongoDB shell
+db.audit_logs.getIndexes()
 
-echo "Backup complete: $DATE"
+// Expected output includes:
+// { "key": { "timestamp": 1 }, "expireAfterSeconds": 7776000 }
 ```
 
 ---
 
-## Security Checklist
+## API Health Check
 
-Before production deployment:
+Monitor system health:
 
-- [ ] Change default passwords for all test users
-- [ ] Set strong JWT_SECRET_KEY in environment
-- [ ] Configure HTTPS/TLS
-- [ ] Review CORS_ORIGINS setting
-- [ ] Enable MongoDB authentication
-- [ ] Set up firewall rules
-- [ ] Configure log rotation
-- [ ] Test backup/restore procedure
+```bash
+curl https://your-domain.com/api/health
+```
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "version": "1.0.0",
+  "time": "2026-02-18T12:00:00.000Z",
+  "database": "connected"
+}
+```
+
+### Status Values
+
+| Status | Meaning |
+|--------|---------|
+| `ok` | All systems operational |
+| `degraded` | Database connection issues |
 
 ---
 
-## Role Permissions Matrix
+## Smoke Test Checklist
 
-| Action | Admin | Editor | Producer | Approver |
-|--------|-------|--------|----------|----------|
-| Create Task | ✓ | ✓ | ✗ | ✗ |
-| Edit Task | ✓ | ✓ | ✗ | ✗ |
-| Delete Task | ✓ | ✗ | ✗ | ✗ |
-| Upload Video | ✓ | ✓ | ✗ | ✗ |
-| Download Video | ✓ | ✓ | ✓ | ✓ |
-| Approve/Reject | ✓ | ✗ | ✗ | ✓ |
-| Manage Users | ✓ | ✗ | ✗ | ✗ |
-| View Audit Logs | ✓ | ✗ | ✗ | ✗ |
-| View Archived | ✓ | ✓ | ✗ | ✗ |
+See [docs/SMOKE_TEST.md](docs/SMOKE_TEST.md) for complete testing checklist.
+
+### Quick Verification
+
+```bash
+# 1. Health check
+curl https://your-domain.com/api/health
+
+# 2. Login test
+curl -X POST https://your-domain.com/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@ministry.local","password":"ChangeMe123!"}'
+
+# 3. Rate limit test (should return 429 after 5 attempts)
+for i in {1..7}; do
+  curl -s -o /dev/null -w "%{http_code}\n" \
+    -X POST https://your-domain.com/api/auth/login \
+    -H "Content-Type: application/json" \
+    -d '{"email":"test@test.com","password":"wrong"}'
+done
+```
+
+---
+
+## Troubleshooting
+
+### Backend won't start
+
+1. Check MongoDB connection: `mongosh $MONGO_URL`
+2. Verify environment variables are set
+3. Check logs: `tail -f /var/log/supervisor/backend.err.log`
+
+### Frontend won't build
+
+1. Clear node_modules: `rm -rf node_modules && yarn install`
+2. Verify `REACT_APP_BACKEND_URL` is set
+3. Check for TypeScript errors: `yarn build`
+
+### Rate limiting issues
+
+1. Wait 5 minutes for lockout to expire
+2. Or restart the backend service (clears in-memory rate limiter)
+
+### Video upload fails
+
+1. Check file size (max 100MB)
+2. Verify file type (mp4, webm, mov, avi, wmv)
+3. Check disk space on server
 
 ---
 
@@ -283,5 +318,6 @@ Before production deployment:
 
 For issues or questions, contact the development team.
 
-**Version:** 1.0.0-pilot  
-**Last Updated:** February 2026
+---
+
+**Ministry Admin Panel v1.0.0** - Production Ready for Pilot
