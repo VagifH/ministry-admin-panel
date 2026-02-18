@@ -236,13 +236,13 @@ export default function Tasks() {
     return (
       <Table>
         <TableHeader>
-          <TableRow className="border-ministry-border-default">
-            <TableHead className="text-ministry-text-primary font-semibold">Title</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">Content Type</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">AI Agent</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">Status</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">Publish Date</TableHead>
-            {canDeleteTask && <TableHead className="text-ministry-text-primary font-semibold w-[120px]">Actions</TableHead>}
+          <TableRow className="border-ministry-border-subtle hover:bg-transparent">
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">Title</TableHead>
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">Content Type</TableHead>
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">AI Agent</TableHead>
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">Status</TableHead>
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">Publish Date</TableHead>
+            {canDeleteTask && <TableHead className="text-ministry-text-secondary font-medium text-[13px] w-[120px]">Actions</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -251,28 +251,28 @@ export default function Tasks() {
               key={task.id}
               data-testid={`task-row-${task.id}`}
               onClick={() => navigate(`/tasks/${task.id}`)}
-              className={`cursor-pointer hover:bg-ministry-bg-tertiary border-ministry-border-default ${task.is_archived ? 'opacity-70' : ''}`}
+              className={`cursor-pointer border-ministry-border-subtle hover:bg-ministry-bg-hover ${task.is_archived ? 'opacity-60' : ''}`}
             >
-              <TableCell className="font-medium text-ministry-text-primary">
+              <TableCell className="font-medium text-ministry-text-primary text-[13px]">
                 <div className="flex items-center gap-2">
                   {task.title}
                   {task.is_archived && (
-                    <Badge variant="outline" className="text-xs border-ministry-status-warning text-ministry-status-warning bg-ministry-status-warning-bg">
+                    <Badge variant="outline" className="text-[10px] border-ministry-status-warning text-ministry-status-warning bg-ministry-status-warning-bg">
                       Archived
                     </Badge>
                   )}
                 </div>
               </TableCell>
-              <TableCell className="text-ministry-text-secondary">{task.content_type}</TableCell>
+              <TableCell className="text-ministry-text-secondary text-[13px]">{task.content_type}</TableCell>
               <TableCell>
                 <AvatarDisplay avatarName={task.avatar} size={28} showLabel />
               </TableCell>
               <TableCell>
-                <Badge className={`${getStatusBadgeClass(task.status)} rounded-md`}>
+                <Badge className={`${getStatusBadgeClass(task.status)} rounded-md text-[11px]`}>
                   {getStatusLabel(task.status)}
                 </Badge>
               </TableCell>
-              <TableCell className="text-ministry-text-secondary">
+              <TableCell className="text-ministry-text-secondary text-[13px]">
                 {format(new Date(task.publish_datetime), 'MMM dd, yyyy HH:mm')}
               </TableCell>
               {canDeleteTask && (
