@@ -53,24 +53,19 @@ db = client[os.environ['DB_NAME']]
 # JWT Configuration
 SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'ministry-secret-key-change-in-production')
 ALGORITHM = SECURITY_CONFIG.JWT_ALGORITHM
-ACCESS_TOKEN_EXPIRE_MINUTES = 480
+ACCESS_TOKEN_EXPIRE_MINUTES = SECURITY_CONFIG.JWT_EXPIRY_HOURS * 60
 
-# Video Upload Configuration
+# Video Upload Configuration (values from centralized config)
 VIDEO_UPLOAD_DIR = ROOT_DIR / "uploads" / "videos"
-VIDEO_MAX_SIZE_MB = 100  # Maximum upload size: 100MB
-VIDEO_MAX_SIZE_BYTES = VIDEO_MAX_SIZE_MB * 1024 * 1024  # 100MB
-ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm", "video/quicktime"]
-ALLOWED_VIDEO_EXTENSIONS = [".mp4", ".webm", ".mov"]
+# VIDEO_MAX_SIZE_MB, VIDEO_MAX_SIZE_BYTES, ALLOWED_VIDEO_TYPES imported from config
 
-# Avatar Upload Configuration
+# Avatar Upload Configuration (values from centralized config)  
 AVATAR_UPLOAD_DIR = ROOT_DIR / "uploads" / "avatars"
-AVATAR_MAX_SIZE_MB = 5  # Increased to 5MB (will be optimized before storage)
-AVATAR_MAX_SIZE_BYTES = AVATAR_MAX_SIZE_MB * 1024 * 1024  # 5MB
-ALLOWED_AVATAR_TYPES = ["image/png", "image/jpeg", "image/webp"]
+# AVATAR_MAX_SIZE_MB, AVATAR_MAX_SIZE_BYTES, ALLOWED_AVATAR_TYPES imported from config
 
 # Avatar Optimization Configuration
-AVATAR_OUTPUT_SIZE = 256  # Max width/height in pixels
-AVATAR_OUTPUT_QUALITY = 80  # WebP quality (75-85 range)
+AVATAR_OUTPUT_SIZE = UPLOAD_CONFIG.AVATAR_TARGET_SIZE[0]  # Max width/height in pixels
+AVATAR_OUTPUT_QUALITY = UPLOAD_CONFIG.AVATAR_QUALITY  # WebP quality
 AVATAR_TARGET_SIZE_KB = 150  # Target ~100-250KB
 
 # Status Configuration
