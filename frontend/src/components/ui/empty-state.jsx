@@ -54,8 +54,8 @@ export function ErrorState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4" data-testid={testId || 'error-state'}>
-      <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
-        <AlertCircle className="h-6 w-6 text-ministry-status-rejected" />
+      <div className="w-12 h-12 rounded-full bg-ministry-status-error-bg flex items-center justify-center mb-4">
+        <AlertCircle className="h-6 w-6 text-ministry-status-error" />
       </div>
       <h3 className="text-lg font-medium text-ministry-text-primary mb-1">{title}</h3>
       <p className="text-sm text-ministry-text-secondary text-center max-w-sm mb-4">
