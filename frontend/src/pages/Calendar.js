@@ -23,14 +23,14 @@ const MiniAvatar = ({ avatarName, size = 18 }) => {
   
   return (
     <div
-      className="rounded-full bg-ministry-bg-tertiary border border-ministry-border-default flex items-center justify-center overflow-hidden flex-shrink-0"
+      className="rounded-full bg-ministry-bg-tertiary border border-ministry-border-subtle flex items-center justify-center overflow-hidden flex-shrink-0"
       style={{ width: size, height: size }}
     >
       {photoUrl ? (
         <img src={photoUrl} alt="" className="w-full h-full object-cover" />
       ) : (
         <span 
-          className="text-ministry-text-secondary font-medium"
+          className="text-ministry-text-muted font-medium"
           style={{ fontSize: Math.max(size * 0.45, 8) }}
         >
           {initials}
@@ -52,8 +52,8 @@ const EventChip = ({ task, onClick }) => {
       }}
       data-testid={`calendar-task-${task.id}`}
       className="w-full flex items-center gap-1.5 h-[26px] px-1.5 rounded-[4px] cursor-pointer
-        bg-ministry-bg-primary border border-ministry-border-default
-        hover:bg-ministry-bg-tertiary hover:border-ministry-text-muted/30
+        bg-ministry-bg-surface border border-ministry-border-subtle
+        hover:bg-ministry-bg-hover hover:border-ministry-border-default
         focus:outline-none focus:ring-1 focus:ring-ministry-brand-primary/40
         transition-all duration-100 group"
       title={`${task.title} — ${getStatusLabel(task.status)}`}
@@ -85,8 +85,8 @@ const DayPanelTaskItem = ({ task, onClick }) => {
       onClick={() => onClick(task.id)}
       data-testid={`day-panel-task-${task.id}`}
       className="w-full flex items-center gap-3 p-3 rounded-ministry cursor-pointer text-left
-        bg-ministry-bg-primary border border-ministry-border-default
-        hover:bg-ministry-bg-tertiary hover:shadow-ministry-sm
+        bg-ministry-bg-surface border border-ministry-border-subtle
+        hover:bg-ministry-bg-hover hover:border-ministry-border-default
         focus:outline-none focus:ring-2 focus:ring-ministry-brand-primary/30
         transition-all duration-150"
     >
@@ -95,15 +95,15 @@ const DayPanelTaskItem = ({ task, onClick }) => {
       
       {/* Task info */}
       <div className="flex-1 min-w-0">
-        <div className="font-medium text-ministry-text-primary truncate">
+        <div className="font-medium text-ministry-text-primary truncate text-[13px]">
           {task.title}
         </div>
         <div className="flex items-center gap-2 mt-0.5">
-          <span className="text-xs text-ministry-text-secondary">
+          <span className="text-xs text-ministry-text-muted">
             {getAvatarDisplayName(task.avatar)}
           </span>
           <span className="text-ministry-text-muted">•</span>
-          <span className="text-xs text-ministry-text-secondary">
+          <span className="text-xs text-ministry-text-muted">
             {format(new Date(task.publish_datetime), 'h:mm a')}
           </span>
         </div>
