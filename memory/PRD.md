@@ -55,6 +55,47 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
 ## What's Been Implemented
 
 ### Feb 18, 2026
+- **P0 COMPLETED: FLUENT-STYLE DARK MODE (Enterprise/Luxury)**
+  - **3-Tier Surface Layering (Fluent 2 system):**
+    - `bg-app` (#1b1b1b) - deepest, app background
+    - `bg-surface` (#252525) - cards, panels, sidebar
+    - `bg-surface-raised` (#2f2f2f) - modals, popovers, dropdowns
+  - **Premium Desaturated Status Colors:**
+    - Success: `#6fc66f` (soft green) with bg `#1e2e1e`
+    - Warning: `#e6a855` (warm amber) with bg `#332b1a`
+    - Error: `#e86c6c` (softer red) with bg `#331e1e`
+    - Info: `#6eb5ff` (calm blue) with bg `#1e2e3d`
+  - **Typography Contrast (WCAG AA):**
+    - Primary: `#f0f0f0` (~15:1 contrast)
+    - Secondary: `#a8a8a8` (~7:1 contrast)
+    - Muted: `#6e6e6e` (~3:1 for placeholders)
+    - Link: `#6eb5ff` (desaturated blue)
+  - **Interactive States:**
+    - Hover: Brighter surface or border highlight
+    - Active/Selected: Calm brand tint, not neon
+    - Focus ring: 2px `#6eb5ff` with 2px offset
+  - **Calendar Polish:**
+    - Today: Blue ring highlight
+    - Selected: Brand tint background
+    - Task chips: Avatar + title + status dot
+    - "+X more" link-style (Outlook-like)
+  - **Files Modified:**
+    - `/app/frontend/src/index.css` - Complete Fluent token overhaul
+    - `/app/frontend/tailwind.config.js` - New `ministry.calendar.*`, `ministry.focus.*` tokens
+    - `/app/frontend/src/components/Layout.js` - Fluent surface classes
+    - `/app/frontend/src/pages/Dashboard.js` - Surface + typography updates
+    - `/app/frontend/src/pages/Tasks.js` - Table hover, badge styling
+    - `/app/frontend/src/pages/Calendar.js` - Day cell states, chip styling
+    - `/app/frontend/src/pages/Settings.js` - Surface + badge updates
+    - `/app/frontend/src/pages/ActivityLog.js` - Table styling
+    - `/app/frontend/src/pages/Login.js` - Surface + form styling
+  - **QA Verified:**
+    - No token regressions in light mode ✓
+    - No hardcoded colors in components ✓
+    - All pages visually consistent ✓
+    - Hover/focus states on all interactive elements ✓
+    - Preview GREEN ✓
+
 - **P0 COMPLETED: ENTERPRISE DARK MODE SYSTEM**
   - **Theme Architecture (`/app/frontend/src/theme/`):**
     - `themeTokens.js` - Semantic design tokens for Light and Dark modes
