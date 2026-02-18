@@ -479,7 +479,7 @@ export default function TaskDetails() {
                   </Button>
                 </div>
               ) : (
-                <div className="bg-amber-50 border border-amber-200 rounded-ministry p-3 text-sm text-amber-700">
+                <div className="bg-ministry-status-warning-bg border border-ministry-status-warning-border rounded-ministry p-3 text-sm text-ministry-text-primary">
                   Comments are disabled for archived tasks.
                 </div>
               )}
