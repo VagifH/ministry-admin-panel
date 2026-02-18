@@ -269,6 +269,7 @@ __all__ = [
     'ForbiddenError',
     'NotFoundError',
     'ConflictError',
+    'RateLimitError',
     'ServerError',
     'NotImplementedError',
     'ErrorCode',
