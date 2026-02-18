@@ -1186,6 +1186,10 @@ async def create_comment(task_id: str, comment_data: CommentCreate, request: Req
     if not task:
         raise NotFoundError(message="Task not found", code=ErrorCode.TASK_NOT_FOUND)
     
+    # Block comments on archived tasks
+    if task.get("is_archived"):
+        raise ForbiddenError(message="Cannot add comments to archived tasks", code=ErrorCode.TASK_ARCHIVED)
+    
     import uuid
     comment_dict = {
         "id": str(uuid.uuid4()),
