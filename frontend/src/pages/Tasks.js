@@ -552,15 +552,14 @@ export default function Tasks() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="publish_datetime" className="text-ministry-text-primary text-sm font-medium">Publish Date & Time *</Label>
+                <Label htmlFor="publish_datetime" className="text-ministry-text-secondary text-[13px] font-medium">Publish Date & Time *</Label>
                 <Input
                   id="publish_datetime"
                   type="datetime-local"
                   value={newTask.publish_datetime}
                   onChange={(e) => setNewTask({ ...newTask, publish_datetime: e.target.value })}
                   data-testid="task-publish-datetime-input"
-                  className="mt-1.5 h-9 border-ministry-border-default rounded-ministry w-[320px] max-w-[340px] pr-3"
-                  style={{ colorScheme: 'light' }}
+                  className="mt-1.5 h-9 bg-ministry-bg-input border-ministry-border-default text-ministry-text-primary rounded-ministry w-[320px] max-w-[340px] pr-3 hover:border-ministry-border-hover focus:border-ministry-brand-primary"
                 />
                 {errors.publish_datetime && <p className="text-xs text-ministry-status-error mt-1">{errors.publish_datetime}</p>}
               </div>
@@ -568,7 +567,7 @@ export default function Tasks() {
             </div>
           </div>
 
-          <DialogFooter className="px-6 py-4 border-t border-ministry-border-default flex justify-end gap-2">
+          <DialogFooter className="px-6 py-4 border-t border-ministry-border-subtle flex justify-end gap-2">
             <Button
               variant="outline"
               onClick={() => {
@@ -576,7 +575,7 @@ export default function Tasks() {
                 setErrors({});
               }}
               disabled={submitting}
-              className="h-9 border-ministry-border-default rounded-ministry"
+              className="h-9 bg-transparent border-ministry-border-default text-ministry-text-primary rounded-ministry hover:bg-ministry-bg-hover hover:border-ministry-border-hover"
             >
               Cancel
             </Button>
@@ -584,7 +583,7 @@ export default function Tasks() {
               onClick={handleCreateTask}
               disabled={submitting}
               data-testid="submit-create-task-button"
-              className="h-9 bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry disabled:opacity-50"
+              className="h-9 bg-ministry-brand-primary hover:bg-ministry-brand-hover text-ministry-text-inverse rounded-ministry disabled:bg-ministry-disabled-bg disabled:border-ministry-disabled-border disabled:text-ministry-disabled-text"
             >
               {submitting ? 'Creating...' : 'Create Task'}
             </Button>
@@ -594,10 +593,10 @@ export default function Tasks() {
 
       {/* Archive Confirmation Dialog */}
       <Dialog open={archiveDialog.open} onOpenChange={(open) => !open && setArchiveDialog({ open: false, task: null })}>
-        <DialogContent className="bg-ministry-bg-secondary border border-ministry-border-default rounded-ministry max-w-md">
+        <DialogContent className="bg-ministry-bg-surface-raised border border-ministry-border-default rounded-ministry max-w-md">
           <DialogHeader className="px-6 pt-6">
-            <DialogTitle className="text-xl text-ministry-text-primary flex items-center gap-2">
-              <Archive size={20} className="text-amber-500" />
+            <DialogTitle className="text-lg text-ministry-text-primary flex items-center gap-2">
+              <Archive size={20} className="text-ministry-status-warning" />
               Archive Task
             </DialogTitle>
             <DialogDescription className="text-ministry-text-secondary mt-2">
