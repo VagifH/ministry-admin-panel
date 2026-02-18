@@ -56,9 +56,10 @@ module.exports = {
           // =================================================================
           bg: {
             // Primary surfaces
-            app: 'var(--theme-bg-app)',              // Deepest - page background
-            surface: 'var(--theme-bg-surface)',       // Cards, panels
-            'surface-raised': 'var(--theme-bg-surface-raised)', // Modals, popovers
+            app: 'var(--theme-bg-app)',
+            surface: 'var(--theme-bg-surface)',
+            'surface-raised': 'var(--theme-bg-surface-raised)',
+            input: 'var(--theme-bg-input)',
             
             // Legacy aliases
             primary: 'var(--theme-bg-app)',
@@ -76,12 +77,13 @@ module.exports = {
           // TEXT HIERARCHY (WCAG compliant)
           // =================================================================
           text: {
-            primary: 'var(--theme-text-primary)',     // Headings, important
-            secondary: 'var(--theme-text-secondary)', // Body text
-            muted: 'var(--theme-text-muted)',         // Placeholders, hints
-            disabled: 'var(--theme-text-disabled)',   // Disabled state
-            inverse: 'var(--theme-text-inverse)',     // On brand/dark surfaces
-            link: 'var(--theme-text-link)',           // Links
+            primary: 'var(--theme-text-primary)',
+            secondary: 'var(--theme-text-secondary)',
+            muted: 'var(--theme-text-muted)',
+            placeholder: 'var(--theme-text-placeholder)',
+            disabled: 'var(--theme-text-disabled)',
+            inverse: 'var(--theme-text-inverse)',
+            link: 'var(--theme-text-link)',
           },
           
           // =================================================================
@@ -102,8 +104,18 @@ module.exports = {
             subtle: 'var(--theme-border-subtle)',
             default: 'var(--theme-border-default)',
             strong: 'var(--theme-border-strong)',
+            hover: 'var(--theme-border-hover)',
             focus: 'var(--theme-border-focus)',
             divider: 'var(--theme-border-divider)',
+          },
+          
+          // =================================================================
+          // DISABLED STATES
+          // =================================================================
+          disabled: {
+            bg: 'var(--theme-disabled-bg)',
+            border: 'var(--theme-disabled-border)',
+            text: 'var(--theme-disabled-text)',
           },
           
           // =================================================================
