@@ -619,7 +619,7 @@ export default function Tasks() {
               onClick={handleArchive}
               disabled={actionSubmitting}
               data-testid="confirm-archive-button"
-              className="h-9 bg-amber-500 hover:bg-amber-600 text-white rounded-ministry"
+              className="h-9 bg-ministry-status-warning hover:opacity-90 text-ministry-text-inverse rounded-ministry"
             >
               {actionSubmitting ? 'Archiving...' : 'Archive'}
             </Button>
@@ -632,7 +632,7 @@ export default function Tasks() {
         <DialogContent className="bg-ministry-bg-secondary border border-ministry-border-default rounded-ministry max-w-md">
           <DialogHeader className="px-6 pt-6">
             <DialogTitle className="text-xl text-ministry-text-primary flex items-center gap-2">
-              <ArchiveRestore size={20} className="text-green-500" />
+              <ArchiveRestore size={20} className="text-ministry-status-success" />
               Restore Task
             </DialogTitle>
             <DialogDescription className="text-ministry-text-secondary mt-2">
@@ -654,7 +654,7 @@ export default function Tasks() {
               onClick={handleRestore}
               disabled={actionSubmitting}
               data-testid="confirm-restore-button"
-              className="h-9 bg-green-500 hover:bg-green-600 text-white rounded-ministry"
+              className="h-9 bg-ministry-status-success hover:opacity-90 text-ministry-text-inverse rounded-ministry"
             >
               {actionSubmitting ? 'Restoring...' : 'Restore'}
             </Button>
@@ -667,11 +667,11 @@ export default function Tasks() {
         <DialogContent className="bg-ministry-bg-secondary border border-ministry-border-default rounded-ministry max-w-md">
           <DialogHeader className="px-6 pt-6">
             <DialogTitle className="text-xl text-ministry-text-primary flex items-center gap-2">
-              <Trash2 size={20} className="text-red-500" />
+              <Trash2 size={20} className="text-ministry-status-error" />
               Permanently Delete Task
             </DialogTitle>
             <DialogDescription className="text-ministry-text-secondary mt-2">
-              <span className="text-red-600 font-semibold">Warning: This action cannot be undone!</span>
+              <span className="text-ministry-status-error font-semibold">Warning: This action cannot be undone!</span>
               <br /><br />
               Are you sure you want to permanently delete "{deleteDialog.task?.title}"?
               <br /><br />
@@ -691,7 +691,7 @@ export default function Tasks() {
               onClick={handlePermanentDelete}
               disabled={actionSubmitting}
               data-testid="confirm-delete-button"
-              className="h-9 bg-red-600 hover:bg-red-700 text-white rounded-ministry"
+              className="h-9 bg-ministry-status-error hover:opacity-90 text-ministry-text-inverse rounded-ministry"
             >
               {actionSubmitting ? 'Deleting...' : 'Delete Forever'}
             </Button>
