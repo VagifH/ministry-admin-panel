@@ -366,7 +366,7 @@ export default function Tasks() {
                 onClick={() => setFilters({ ...filters, archived: 'true' })}
                 data-testid="filter-archived-tasks"
                 className={filters.archived === 'true' 
-                  ? 'bg-amber-500 text-white hover:bg-amber-600' 
+                  ? 'bg-ministry-status-warning text-ministry-text-inverse hover:opacity-90' 
                   : 'border-ministry-border-default text-ministry-text-secondary'}
               >
                 <Archive size={14} className="mr-1" />
