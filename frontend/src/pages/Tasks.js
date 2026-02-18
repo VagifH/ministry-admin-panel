@@ -471,25 +471,25 @@ export default function Tasks() {
           
           <div className="px-6 pb-4 space-y-4">
             <div>
-              <Label htmlFor="title" className="text-ministry-text-primary text-sm font-medium">Title *</Label>
+              <Label htmlFor="title" className="text-ministry-text-secondary text-[13px] font-medium">Title *</Label>
               <Input
                 id="title"
                 value={newTask.title}
                 onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                 data-testid="task-title-input"
-                className="mt-1.5 h-9 border-ministry-border-default rounded-ministry"
+                className="mt-1.5 h-9 bg-ministry-bg-input border-ministry-border-default text-ministry-text-primary rounded-ministry hover:border-ministry-border-hover focus:border-ministry-brand-primary placeholder:text-ministry-text-placeholder"
               />
               {errors.title && <p className="text-xs text-ministry-status-error mt-1">{errors.title}</p>}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label className="text-ministry-text-primary text-sm font-medium">Content Type *</Label>
+                <Label className="text-ministry-text-secondary text-[13px] font-medium">Content Type *</Label>
                 <Select value={newTask.content_type} onValueChange={(value) => setNewTask({ ...newTask, content_type: value })}>
-                  <SelectTrigger className="mt-1.5 h-9 border-ministry-border-default rounded-ministry">
+                  <SelectTrigger className="mt-1.5 h-9 bg-ministry-bg-input border-ministry-border-default text-ministry-text-primary rounded-ministry hover:border-ministry-border-hover focus:border-ministry-border-focus">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-ministry-bg-surface-raised border-ministry-border-default">
                     <SelectItem value="Announcement">Announcement</SelectItem>
                     <SelectItem value="Short Lesson">Short Lesson</SelectItem>
                     <SelectItem value="Full Lesson">Full Lesson</SelectItem>
@@ -498,12 +498,12 @@ export default function Tasks() {
               </div>
 
               <div>
-                <Label className="text-ministry-text-primary text-sm font-medium">AI Agent *</Label>
+                <Label className="text-ministry-text-secondary text-[13px] font-medium">AI Agent *</Label>
                 <Select value={newTask.avatar} onValueChange={(value) => setNewTask({ ...newTask, avatar: value })}>
-                  <SelectTrigger className="mt-1.5 h-9 border-ministry-border-default rounded-ministry">
+                  <SelectTrigger className="mt-1.5 h-9 bg-ministry-bg-input border-ministry-border-default text-ministry-text-primary rounded-ministry hover:border-ministry-border-hover focus:border-ministry-border-focus">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-ministry-bg-surface-raised border-ministry-border-default">
                     {getActiveAvatars().map((avatar) => (
                       <SelectItem key={avatar.id} value={avatar.name}>
                         <div className="flex items-center gap-2">
@@ -527,26 +527,26 @@ export default function Tasks() {
             </div>
 
             <div>
-              <Label htmlFor="script" className="text-ministry-text-primary text-sm font-medium">Script * (min 20 characters)</Label>
+              <Label htmlFor="script" className="text-ministry-text-secondary text-[13px] font-medium">Script * (min 20 characters)</Label>
               <Textarea
                 id="script"
                 value={newTask.script}
                 onChange={(e) => setNewTask({ ...newTask, script: e.target.value })}
                 data-testid="task-script-input"
                 rows={5}
-                className="mt-1.5 border-ministry-border-default rounded-ministry resize-none"
+                className="mt-1.5 bg-ministry-bg-input border-ministry-border-default text-ministry-text-primary rounded-ministry resize-none hover:border-ministry-border-hover focus:border-ministry-brand-primary placeholder:text-ministry-text-placeholder"
               />
               {errors.script && <p className="text-xs text-ministry-status-error mt-1">{errors.script}</p>}
             </div>
 
             <div>
-              <Label htmlFor="notes" className="text-ministry-text-primary text-sm font-medium">Notes</Label>
+              <Label htmlFor="notes" className="text-ministry-text-secondary text-[13px] font-medium">Notes</Label>
               <Textarea
                 id="notes"
                 value={newTask.notes}
                 onChange={(e) => setNewTask({ ...newTask, notes: e.target.value })}
                 rows={3}
-                className="mt-1.5 border-ministry-border-default rounded-ministry resize-none"
+                className="mt-1.5 bg-ministry-bg-input border-ministry-border-default text-ministry-text-primary rounded-ministry resize-none hover:border-ministry-border-hover focus:border-ministry-brand-primary placeholder:text-ministry-text-placeholder"
               />
             </div>
 
