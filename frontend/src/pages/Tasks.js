@@ -395,15 +395,15 @@ export default function Tasks() {
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                   data-testid="search-tasks-input"
-                  className="pl-10 border-ministry-border-subtle rounded-ministry bg-ministry-bg-surface focus:border-ministry-brand-primary"
+                  className="pl-10 bg-ministry-bg-input border-ministry-border-default text-ministry-text-primary rounded-ministry hover:border-ministry-border-hover focus:border-ministry-brand-primary placeholder:text-ministry-text-placeholder"
                 />
               </div>
             </div>
             <Select value={filters.status || "all"} onValueChange={(value) => setFilters({ ...filters, status: value === "all" ? "" : value })}>
-              <SelectTrigger className="w-[150px] border-ministry-border-subtle rounded-ministry bg-ministry-bg-surface" data-testid="filter-status">
+              <SelectTrigger className="w-[150px] bg-ministry-bg-input border-ministry-border-default text-ministry-text-primary rounded-ministry hover:border-ministry-border-hover focus:border-ministry-border-focus" data-testid="filter-status">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
-              <SelectContent className="bg-ministry-bg-surface-raised border-ministry-border-subtle">
+              <SelectContent className="bg-ministry-bg-surface-raised border-ministry-border-default">
                 <SelectItem value="all">All Statuses</SelectItem>
                 {getStatusList().map((status) => (
                   <SelectItem key={status.value} value={status.value}>
@@ -413,10 +413,10 @@ export default function Tasks() {
               </SelectContent>
             </Select>
             <Select value={filters.content_type || "all"} onValueChange={(value) => setFilters({ ...filters, content_type: value === "all" ? "" : value })}>
-              <SelectTrigger className="w-[180px] border-ministry-border-subtle rounded-ministry bg-ministry-bg-surface" data-testid="filter-content-type">
+              <SelectTrigger className="w-[180px] bg-ministry-bg-input border-ministry-border-default text-ministry-text-primary rounded-ministry hover:border-ministry-border-hover focus:border-ministry-border-focus" data-testid="filter-content-type">
                 <SelectValue placeholder="Content Type" />
               </SelectTrigger>
-              <SelectContent className="bg-ministry-bg-surface-raised border-ministry-border-subtle">
+              <SelectContent className="bg-ministry-bg-surface-raised border-ministry-border-default">
                 <SelectItem value="all">All Types</SelectItem>
                 {CONTENT_TYPE_LIST.map((type) => (
                   <SelectItem key={type} value={type}>{type}</SelectItem>
@@ -424,10 +424,10 @@ export default function Tasks() {
               </SelectContent>
             </Select>
             <Select value={filters.avatar || "all"} onValueChange={(value) => setFilters({ ...filters, avatar: value === "all" ? "" : value })}>
-              <SelectTrigger className="w-[180px] border-ministry-border-subtle rounded-ministry bg-ministry-bg-surface" data-testid="filter-avatar">
+              <SelectTrigger className="w-[180px] bg-ministry-bg-input border-ministry-border-default text-ministry-text-primary rounded-ministry hover:border-ministry-border-hover focus:border-ministry-border-focus" data-testid="filter-avatar">
                 <SelectValue placeholder="AI Agent" />
               </SelectTrigger>
-              <SelectContent className="bg-ministry-bg-surface-raised border-ministry-border-subtle">
+              <SelectContent className="bg-ministry-bg-surface-raised border-ministry-border-default">
                 <SelectItem value="all">All AI Agents</SelectItem>
                 {AVATAR_LIST.map((avatar) => (
                   <SelectItem key={avatar} value={avatar}>
@@ -444,7 +444,7 @@ export default function Tasks() {
                 variant="outline"
                 onClick={clearFilters}
                 data-testid="clear-filters-button"
-                className="border-ministry-border-default rounded-ministry text-ministry-text-secondary hover:bg-ministry-bg-tertiary"
+                className="bg-transparent border-ministry-border-default text-ministry-text-secondary hover:bg-ministry-bg-hover hover:border-ministry-border-hover hover:text-ministry-text-primary rounded-ministry"
                 size="sm"
               >
                 <X size={16} className="mr-2" />
@@ -464,9 +464,9 @@ export default function Tasks() {
       </div>
 
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="max-w-[760px] bg-ministry-bg-secondary rounded-ministry p-0">
+        <DialogContent className="max-w-[760px] bg-ministry-bg-surface-raised border-ministry-border-default rounded-ministry p-0">
           <DialogHeader className="px-6 pt-6 pb-4">
-            <DialogTitle className="text-xl font-semibold text-ministry-text-primary">Create New Task</DialogTitle>
+            <DialogTitle className="text-lg font-semibold text-ministry-text-primary">Create New Task</DialogTitle>
           </DialogHeader>
           
           <div className="px-6 pb-4 space-y-4">
