@@ -54,6 +54,33 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
 
 ## What's Been Implemented
 
+### Feb 18, 2026
+- **P0 COMPLETED: RELEASE READINESS (MINISTRY PILOT v1.0.0)**
+  - **Centralized Configuration (`/app/backend/config.py`):**
+    - All upload limits, security settings, and app constants in one place
+    - VIDEO_MAX_SIZE_MB (100MB), AVATAR_MAX_SIZE_MB (5MB)
+    - LOGIN_MAX_ATTEMPTS (5), LOGIN_WINDOW_SECONDS (60), LOGIN_LOCKOUT_SECONDS (300)
+    - JWT_EXPIRY_HOURS (24)
+  - **Rate Limiting on Login:**
+    - Created `/app/backend/services/rate_limiter.py` - in-memory rate limiting
+    - 5 attempts per minute per IP, 5-minute lockout on exceed
+    - Added `RateLimitError` (429) to error service for proper HTTP status
+    - Login endpoint returns proper 429 Too Many Requests after limit exceeded
+  - **User Seed Script (`/app/backend/seed_users.py`):**
+    - Seeds 4 test users (Admin, Editor, Producer, Approver)
+    - Uses upsert pattern - safe to run multiple times
+    - Seeds 3 default AI Agents (avatars)
+    - Command: `python seed_users.py`
+  - **Documentation (`/app/README.md`):**
+    - Test credentials table
+    - Configuration reference
+    - E2E Smoke Test script (complete workflow testing)
+    - MongoDB backup/restore commands
+    - Video files backup commands
+    - Security checklist for production deployment
+    - Role permissions matrix
+  - **Verified:** Seed script works ✓, Rate limiting returns 429 ✓, E2E smoke test passes ✓
+
 ### Feb 17, 2026
 - **P0 COMPLETED: DATA PROTECTION (SOFT DELETE + ARCHIVE/RESTORE)**
   - **Backend:**
@@ -307,6 +334,10 @@ All 22 test cases passed:
 - [x] AVATAR SYSTEM FINALIZATION - Full entity management with display_name, is_active, initials fallback
 - [x] PERMISSIONS & ROLES ENGINE (RBAC) - Server-side + UI enforcement (25/25 tests PASS)
 - [x] VIDEO MODULE HARDENING - Storage abstraction layer for S3-ready architecture
+- [x] DATA PROTECTION (SOFT DELETE + ARCHIVE/RESTORE)
+- [x] ERROR HANDLING LAYER (ENTERPRISE GRADE)
+- [x] AUDIT LOG HARDENING (ENTERPRISE GRADE)
+- [x] RELEASE READINESS (MINISTRY PILOT v1.0.0) - Rate limiting, seed script, documentation
 
 ### P1 (Important) - Backlog
 - [ ] Cloud Storage for Videos (AWS S3/GCS integration)
