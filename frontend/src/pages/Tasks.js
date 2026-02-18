@@ -329,14 +329,14 @@ export default function Tasks() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-ministry-text-primary">Tasks</h1>
-          <p className="text-sm text-ministry-text-secondary mt-1">Manage content tasks</p>
+          <h1 className="text-xl font-semibold text-ministry-text-primary">Tasks</h1>
+          <p className="text-[13px] text-ministry-text-secondary mt-1">Manage content tasks</p>
         </div>
         {canCreateTask && (
           <Button
             onClick={() => setShowCreateDialog(true)}
             data-testid="create-task-button"
-            className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry flex items-center gap-1.5"
+            className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-ministry-text-inverse rounded-ministry flex items-center gap-1.5"
           >
             <Plus size={16} />
             Create Task
@@ -344,8 +344,8 @@ export default function Tasks() {
         )}
       </div>
 
-      <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
-        <div className="p-4 border-b border-ministry-border-default">
+      <div className="bg-ministry-bg-surface rounded-ministry border border-ministry-border-subtle">
+        <div className="p-4 border-b border-ministry-border-subtle">
           {/* Archive Filter Toggle - Only visible to Admin and Editor */}
           {canViewArchived && (
             <div className="flex gap-2 mb-4">
@@ -355,8 +355,8 @@ export default function Tasks() {
                 onClick={() => setFilters({ ...filters, archived: 'false' })}
                 data-testid="filter-active-tasks"
                 className={filters.archived === 'false' 
-                  ? 'bg-ministry-brand-primary text-white' 
-                  : 'border-ministry-border-default text-ministry-text-secondary'}
+                  ? 'bg-ministry-brand-primary text-ministry-text-inverse hover:bg-ministry-brand-hover' 
+                  : 'border-ministry-border-subtle hover:bg-ministry-bg-hover text-ministry-text-secondary'}
               >
                 Active
               </Button>
@@ -367,7 +367,7 @@ export default function Tasks() {
                 data-testid="filter-archived-tasks"
                 className={filters.archived === 'true' 
                   ? 'bg-ministry-status-warning text-ministry-text-inverse hover:opacity-90' 
-                  : 'border-ministry-border-default text-ministry-text-secondary'}
+                  : 'border-ministry-border-subtle hover:bg-ministry-bg-hover text-ministry-text-secondary'}
               >
                 <Archive size={14} className="mr-1" />
                 Archived
@@ -378,8 +378,8 @@ export default function Tasks() {
                 onClick={() => setFilters({ ...filters, archived: 'all' })}
                 data-testid="filter-all-tasks"
                 className={filters.archived === 'all' 
-                  ? 'bg-ministry-brand-primary text-white' 
-                  : 'border-ministry-border-default text-ministry-text-secondary'}
+                  ? 'bg-ministry-brand-primary text-ministry-text-inverse hover:bg-ministry-brand-hover' 
+                  : 'border-ministry-border-subtle hover:bg-ministry-bg-hover text-ministry-text-secondary'}
               >
                 All
               </Button>
@@ -389,21 +389,21 @@ export default function Tasks() {
           <div className="flex gap-4 flex-wrap items-center">
             <div className="flex-1 min-w-[200px]">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-ministry-text-secondary" size={16} />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-ministry-text-muted" size={16} />
                 <Input
                   placeholder="Search tasks..."
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                   data-testid="search-tasks-input"
-                  className="pl-10 border-ministry-border-default rounded-ministry"
+                  className="pl-10 border-ministry-border-subtle rounded-ministry bg-ministry-bg-surface focus:border-ministry-brand-primary"
                 />
               </div>
             </div>
             <Select value={filters.status || "all"} onValueChange={(value) => setFilters({ ...filters, status: value === "all" ? "" : value })}>
-              <SelectTrigger className="w-[150px] border-ministry-border-default rounded-ministry" data-testid="filter-status">
+              <SelectTrigger className="w-[150px] border-ministry-border-subtle rounded-ministry bg-ministry-bg-surface" data-testid="filter-status">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-ministry-bg-surface-raised border-ministry-border-subtle">
                 <SelectItem value="all">All Statuses</SelectItem>
                 {getStatusList().map((status) => (
                   <SelectItem key={status.value} value={status.value}>
@@ -413,10 +413,10 @@ export default function Tasks() {
               </SelectContent>
             </Select>
             <Select value={filters.content_type || "all"} onValueChange={(value) => setFilters({ ...filters, content_type: value === "all" ? "" : value })}>
-              <SelectTrigger className="w-[180px] border-ministry-border-default rounded-ministry" data-testid="filter-content-type">
+              <SelectTrigger className="w-[180px] border-ministry-border-subtle rounded-ministry bg-ministry-bg-surface" data-testid="filter-content-type">
                 <SelectValue placeholder="Content Type" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-ministry-bg-surface-raised border-ministry-border-subtle">
                 <SelectItem value="all">All Types</SelectItem>
                 {CONTENT_TYPE_LIST.map((type) => (
                   <SelectItem key={type} value={type}>{type}</SelectItem>
@@ -424,10 +424,10 @@ export default function Tasks() {
               </SelectContent>
             </Select>
             <Select value={filters.avatar || "all"} onValueChange={(value) => setFilters({ ...filters, avatar: value === "all" ? "" : value })}>
-              <SelectTrigger className="w-[180px] border-ministry-border-default rounded-ministry" data-testid="filter-avatar">
+              <SelectTrigger className="w-[180px] border-ministry-border-subtle rounded-ministry bg-ministry-bg-surface" data-testid="filter-avatar">
                 <SelectValue placeholder="AI Agent" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-ministry-bg-surface-raised border-ministry-border-subtle">
                 <SelectItem value="all">All AI Agents</SelectItem>
                 {AVATAR_LIST.map((avatar) => (
                   <SelectItem key={avatar} value={avatar}>
