@@ -3,36 +3,43 @@
 @tailwind utilities;
 
 /* =============================================================================
-   ENTERPRISE THEME SYSTEM - CSS Variables
+   MINISTRY FLUENT DESIGN SYSTEM - Enterprise Dark Mode
    
-   All colors flow through CSS variables for seamless theme switching.
-   Components use Tailwind utility classes that reference these variables.
+   Microsoft Fluent 2 / Outlook / Teams inspired design tokens.
+   Three-tier surface layering, premium desaturated status colors,
+   consistent hover/focus states, WCAG-friendly contrast.
    ============================================================================= */
 
 @layer base {
   /* =========================================================================
-     LIGHT THEME (Default)
+     LIGHT THEME (Default) - Clean Professional
      ========================================================================= */
   :root {
-    /* Background hierarchy */
-    --theme-bg-base: #fafafa;
-    --theme-bg-surface: #ffffff;
-    --theme-bg-elevated: #ffffff;
+    /* Surface Layering (3-tier system) */
+    --theme-bg-app: #f5f5f5;           /* App background / page level */
+    --theme-bg-surface: #ffffff;        /* Cards, panels */
+    --theme-bg-surface-raised: #ffffff; /* Modals, popovers, dropdowns */
+    
+    /* Legacy aliases (mapped to new system) */
+    --theme-bg-base: var(--theme-bg-app);
+    --theme-bg-secondary: var(--theme-bg-surface);
+    --theme-bg-elevated: var(--theme-bg-surface-raised);
     --theme-bg-tertiary: #f3f2f1;
     --theme-bg-hover: #f5f5f5;
     --theme-bg-active: #ebebeb;
-    --theme-bg-muted: #f8f8f8;
+    --theme-bg-muted: #fafafa;
     
-    /* Text hierarchy */
-    --theme-text-primary: #1a1a1a;
-    --theme-text-secondary: #5c5c5c;
-    --theme-text-muted: #8a8886;
-    --theme-text-disabled: #bdbdbd;
-    --theme-text-inverse: #ffffff;
+    /* Text hierarchy (WCAG compliant) */
+    --theme-text-primary: #242424;     /* High contrast - headings */
+    --theme-text-secondary: #616161;   /* Body text */
+    --theme-text-muted: #8a8886;       /* Placeholders, hints */
+    --theme-text-disabled: #c4c4c4;    /* Disabled state */
+    --theme-text-inverse: #ffffff;     /* Text on dark backgrounds */
+    --theme-text-link: #0078d4;        /* Links */
     
     /* Border tokens */
-    --theme-border-subtle: #e5e5e5;
-    --theme-border-default: #d4d4d4;
+    --theme-border-subtle: #e0e0e0;
+    --theme-border-default: #d1d1d1;
     --theme-border-strong: #a3a3a3;
     --theme-border-focus: #0078d4;
     --theme-border-divider: #edebe9;
@@ -44,186 +51,223 @@
     --theme-brand-light: #deecf9;
     --theme-brand-muted: #f0f6fc;
     
-    /* Status colors */
-    --theme-status-success: #107c10;
+    /* Semantic Status (light mode) */
+    --theme-status-success: #0e7a0d;
     --theme-status-success-bg: #dff6dd;
     --theme-status-success-border: #9fd89f;
-    --theme-status-warning: #d29200;
+    --theme-status-warning: #c4820e;
     --theme-status-warning-bg: #fff4ce;
     --theme-status-warning-border: #ffe7a3;
-    --theme-status-error: #d13438;
+    --theme-status-error: #c4314b;
     --theme-status-error-bg: #fde7e9;
     --theme-status-error-border: #f5c2c4;
     --theme-status-info: #0078d4;
     --theme-status-info-bg: #deecf9;
     --theme-status-info-border: #a9d3f2;
     
-    /* Workflow status colors */
-    --theme-workflow-draft: #8a8886;
+    /* Workflow status colors (light) */
+    --theme-workflow-draft: #707070;
     --theme-workflow-draft-bg: #f3f2f1;
     --theme-workflow-submitted: #0078d4;
     --theme-workflow-submitted-bg: #deecf9;
-    --theme-workflow-inprogress: #8764b8;
+    --theme-workflow-inprogress: #7c4dbd;
     --theme-workflow-inprogress-bg: #f0e6fa;
-    --theme-workflow-readyforreview: #d29200;
+    --theme-workflow-readyforreview: #c4820e;
     --theme-workflow-readyforreview-bg: #fff4ce;
-    --theme-workflow-changesrequested: #ca5010;
+    --theme-workflow-changesrequested: #c4500e;
     --theme-workflow-changesrequested-bg: #fef0e5;
-    --theme-workflow-approved: #107c10;
+    --theme-workflow-approved: #0e7a0d;
     --theme-workflow-approved-bg: #dff6dd;
-    --theme-workflow-rejected: #d13438;
+    --theme-workflow-rejected: #c4314b;
     --theme-workflow-rejected-bg: #fde7e9;
-    --theme-workflow-scheduled: #107c10;
+    --theme-workflow-scheduled: #0e7a0d;
     --theme-workflow-scheduled-bg: #dff6dd;
-    --theme-workflow-published: #107c10;
+    --theme-workflow-published: #0e7a0d;
     --theme-workflow-published-bg: #dff6dd;
     
-    /* Shadows */
-    --theme-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --theme-shadow-card: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.11);
-    --theme-shadow-elevated: 0 3.2px 7.2px 0 rgba(0, 0, 0, 0.13);
-    --theme-shadow-dialog: 0 6.4px 14.4px 0 rgba(0, 0, 0, 0.18);
+    /* Shadows (light - subtle elevation) */
+    --theme-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+    --theme-shadow-card: 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+    --theme-shadow-elevated: 0 4px 8px 0 rgba(0, 0, 0, 0.08);
+    --theme-shadow-dialog: 0 8px 16px 0 rgba(0, 0, 0, 0.14);
     
     /* Interactive states */
     --theme-interactive-hover: rgba(0, 0, 0, 0.04);
     --theme-interactive-active: rgba(0, 0, 0, 0.08);
-    --theme-interactive-selected: rgba(0, 120, 212, 0.08);
-    --theme-interactive-selected-hover: rgba(0, 120, 212, 0.12);
+    --theme-interactive-selected: rgba(0, 120, 212, 0.1);
+    --theme-interactive-selected-hover: rgba(0, 120, 212, 0.15);
+    
+    /* Calendar specific */
+    --theme-calendar-today-ring: #0078d4;
+    --theme-calendar-selected-bg: #deecf9;
+    --theme-calendar-has-tasks-dot: #0078d4;
     
     /* Scrollbar */
     --theme-scrollbar-track: #f5f5f5;
     --theme-scrollbar-thumb: #c1c1c1;
     --theme-scrollbar-thumb-hover: #a8a8a8;
     
+    /* Focus ring */
+    --theme-focus-ring: rgba(0, 120, 212, 0.6);
+    --theme-focus-ring-offset: 2px;
+    
     /* Shadcn compatibility */
-    --background: 0 0% 98%;
-    --foreground: 0 0% 10%;
+    --background: 0 0% 96%;
+    --foreground: 0 0% 14%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card-foreground: 0 0% 14%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover-foreground: 0 0% 14%;
     --primary: 207 90% 42%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 10%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 36%;
+    --secondary-foreground: 0 0% 14%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 38%;
     --accent: 207 90% 42%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
+    --destructive: 350 65% 49%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
     --ring: 207 90% 54%;
-    --radius: 8px;
+    --radius: 6px;
   }
 
   /* =========================================================================
-     DARK THEME
-     Deep neutral graphite aesthetic - Linear.app / Notion Dark inspired
+     DARK THEME - Fluent Enterprise Quality
+     
+     Design Language: Microsoft Fluent 2 / Outlook Dark / Teams Dark
+     - Deep neutral graphite (not pure black, not blue-tinted)
+     - Clear 3-tier surface layering
+     - Desaturated, premium status colors
+     - Calm accent colors with excellent contrast
      ========================================================================= */
   .dark {
-    /* Background hierarchy - Deep graphite */
-    --theme-bg-base: #1a1a1a;
-    --theme-bg-surface: #242424;
-    --theme-bg-elevated: #2d2d2d;
-    --theme-bg-tertiary: #333333;
-    --theme-bg-hover: #383838;
-    --theme-bg-active: #404040;
-    --theme-bg-muted: #2a2a2a;
+    /* Surface Layering (3-tier Fluent system)
+       Layer 0: App background (deepest)
+       Layer 1: Surface (cards, panels)
+       Layer 2: Raised (modals, popovers, dropdowns) */
+    --theme-bg-app: #1b1b1b;           /* App background */
+    --theme-bg-surface: #252525;        /* Cards, panels, sidebar */
+    --theme-bg-surface-raised: #2f2f2f; /* Modals, popovers, menus */
     
-    /* Text hierarchy */
-    --theme-text-primary: #f5f5f5;
-    --theme-text-secondary: #b3b3b3;
-    --theme-text-muted: #808080;
-    --theme-text-disabled: #5c5c5c;
-    --theme-text-inverse: #1a1a1a;
+    /* Legacy aliases */
+    --theme-bg-base: var(--theme-bg-app);
+    --theme-bg-secondary: var(--theme-bg-surface);
+    --theme-bg-elevated: var(--theme-bg-surface-raised);
+    --theme-bg-tertiary: #323232;       /* Subtle fills, hover bg */
+    --theme-bg-hover: #3a3a3a;          /* Hover state - brighter than surface */
+    --theme-bg-active: #444444;         /* Active/pressed state */
+    --theme-bg-muted: #282828;          /* Disabled backgrounds */
     
-    /* Border tokens */
-    --theme-border-subtle: #3d3d3d;
-    --theme-border-default: #4a4a4a;
-    --theme-border-strong: #666666;
-    --theme-border-focus: #4da6ff;
-    --theme-border-divider: #333333;
+    /* Text hierarchy (WCAG AA compliant on dark) */
+    --theme-text-primary: #f0f0f0;     /* ~15:1 contrast - headings */
+    --theme-text-secondary: #a8a8a8;   /* ~7:1 contrast - body */
+    --theme-text-muted: #6e6e6e;       /* ~3:1 - placeholders (WCAG for large text) */
+    --theme-text-disabled: #505050;    /* Disabled state */
+    --theme-text-inverse: #1b1b1b;     /* Text on light/brand backgrounds */
+    --theme-text-link: #6eb5ff;        /* Links - desaturated blue */
     
-    /* Brand colors */
-    --theme-brand-primary: #4da6ff;
-    --theme-brand-hover: #66b3ff;
-    --theme-brand-active: #3399ff;
-    --theme-brand-light: #1a3a52;
-    --theme-brand-muted: #1f2d3d;
+    /* Border tokens (subtle but visible) */
+    --theme-border-subtle: #3a3a3a;    /* Subtle dividers */
+    --theme-border-default: #454545;   /* Default borders */
+    --theme-border-strong: #5a5a5a;    /* High emphasis borders */
+    --theme-border-focus: #6eb5ff;     /* Focus rings */
+    --theme-border-divider: #333333;   /* Section dividers */
     
-    /* Status colors */
-    --theme-status-success: #4caf50;
-    --theme-status-success-bg: #1a2e1a;
-    --theme-status-success-border: #2e5a2e;
-    --theme-status-warning: #ffb74d;
-    --theme-status-warning-bg: #3d3019;
-    --theme-status-warning-border: #5c4a1f;
-    --theme-status-error: #f44336;
-    --theme-status-error-bg: #3d1a1a;
-    --theme-status-error-border: #5c2424;
-    --theme-status-info: #4da6ff;
-    --theme-status-info-bg: #1a3a52;
-    --theme-status-info-border: #2a5a7a;
+    /* Brand colors (desaturated for dark mode luxury) */
+    --theme-brand-primary: #6eb5ff;    /* Softer blue */
+    --theme-brand-hover: #8ac4ff;      /* Lighter on hover */
+    --theme-brand-active: #5aa3f0;     /* Darker when active */
+    --theme-brand-light: #1e3a5f;      /* Brand tint background */
+    --theme-brand-muted: #252d38;      /* Very subtle brand tint */
     
-    /* Workflow status colors */
-    --theme-workflow-draft: #9e9e9e;
-    --theme-workflow-draft-bg: #2d2d2d;
-    --theme-workflow-submitted: #4da6ff;
-    --theme-workflow-submitted-bg: #1a3a52;
-    --theme-workflow-inprogress: #b388ff;
-    --theme-workflow-inprogress-bg: #2d2345;
-    --theme-workflow-readyforreview: #ffb74d;
-    --theme-workflow-readyforreview-bg: #3d3019;
-    --theme-workflow-changesrequested: #ff8a50;
-    --theme-workflow-changesrequested-bg: #3d2519;
-    --theme-workflow-approved: #4caf50;
-    --theme-workflow-approved-bg: #1a2e1a;
-    --theme-workflow-rejected: #f44336;
-    --theme-workflow-rejected-bg: #3d1a1a;
-    --theme-workflow-scheduled: #4caf50;
-    --theme-workflow-scheduled-bg: #1a2e1a;
-    --theme-workflow-published: #4caf50;
-    --theme-workflow-published-bg: #1a2e1a;
+    /* Semantic Status (desaturated premium dark mode palette)
+       - Less saturated than light mode
+       - Background tints are subtle
+       - Text colors are readable but calm */
+    --theme-status-success: #6fc66f;   /* Desaturated green */
+    --theme-status-success-bg: #1e2e1e;
+    --theme-status-success-border: #3a5c3a;
+    --theme-status-warning: #e6a855;   /* Warm amber, not neon */
+    --theme-status-warning-bg: #332b1a;
+    --theme-status-warning-border: #5c4a2a;
+    --theme-status-error: #e86c6c;     /* Softer red */
+    --theme-status-error-bg: #331e1e;
+    --theme-status-error-border: #5c3030;
+    --theme-status-info: #6eb5ff;      /* Matches brand */
+    --theme-status-info-bg: #1e2e3d;
+    --theme-status-info-border: #2a4a6a;
     
-    /* Shadows */
-    --theme-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --theme-shadow-card: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.35);
-    --theme-shadow-elevated: 0 3.2px 7.2px 0 rgba(0, 0, 0, 0.4);
-    --theme-shadow-dialog: 0 6.4px 14.4px 0 rgba(0, 0, 0, 0.5);
+    /* Workflow status colors (premium desaturated palette)
+       Optimized for dark backgrounds - readable but not harsh */
+    --theme-workflow-draft: #8a8a8a;
+    --theme-workflow-draft-bg: #2a2a2a;
+    --theme-workflow-submitted: #6eb5ff;
+    --theme-workflow-submitted-bg: #1e2e3d;
+    --theme-workflow-inprogress: #b094d4;  /* Soft purple */
+    --theme-workflow-inprogress-bg: #2a2535;
+    --theme-workflow-readyforreview: #e6a855;
+    --theme-workflow-readyforreview-bg: #332b1a;
+    --theme-workflow-changesrequested: #e08050;
+    --theme-workflow-changesrequested-bg: #33261a;
+    --theme-workflow-approved: #6fc66f;
+    --theme-workflow-approved-bg: #1e2e1e;
+    --theme-workflow-rejected: #e86c6c;
+    --theme-workflow-rejected-bg: #331e1e;
+    --theme-workflow-scheduled: #6fc66f;
+    --theme-workflow-scheduled-bg: #1e2e1e;
+    --theme-workflow-published: #6fc66f;
+    --theme-workflow-published-bg: #1e2e1e;
     
-    /* Interactive states */
-    --theme-interactive-hover: rgba(255, 255, 255, 0.06);
-    --theme-interactive-active: rgba(255, 255, 255, 0.1);
-    --theme-interactive-selected: rgba(77, 166, 255, 0.15);
-    --theme-interactive-selected-hover: rgba(77, 166, 255, 0.22);
+    /* Shadows (dark mode - border-based depth, not shadow-based)
+       In dark UI, shadows are less visible, so we use very subtle ones */
+    --theme-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+    --theme-shadow-card: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+    --theme-shadow-elevated: 0 4px 8px 0 rgba(0, 0, 0, 0.35);
+    --theme-shadow-dialog: 0 8px 24px 0 rgba(0, 0, 0, 0.5);
     
-    /* Scrollbar */
-    --theme-scrollbar-track: #2d2d2d;
-    --theme-scrollbar-thumb: #4a4a4a;
-    --theme-scrollbar-thumb-hover: #5c5c5c;
+    /* Interactive states (Fluent-style: subtle but clear) */
+    --theme-interactive-hover: rgba(255, 255, 255, 0.05);
+    --theme-interactive-active: rgba(255, 255, 255, 0.08);
+    --theme-interactive-selected: rgba(110, 181, 255, 0.12);
+    --theme-interactive-selected-hover: rgba(110, 181, 255, 0.18);
     
-    /* Shadcn compatibility */
-    --background: 0 0% 10%;
-    --foreground: 0 0% 96%;
-    --card: 0 0% 14%;
-    --card-foreground: 0 0% 96%;
+    /* Calendar specific (dark mode) */
+    --theme-calendar-today-ring: #6eb5ff;
+    --theme-calendar-selected-bg: #1e3a5f;
+    --theme-calendar-has-tasks-dot: #6eb5ff;
+    
+    /* Scrollbar (subtle) */
+    --theme-scrollbar-track: #252525;
+    --theme-scrollbar-thumb: #454545;
+    --theme-scrollbar-thumb-hover: #555555;
+    
+    /* Focus ring (high visibility on dark) */
+    --theme-focus-ring: rgba(110, 181, 255, 0.5);
+    --theme-focus-ring-offset: 2px;
+    
+    /* Shadcn dark mode compatibility */
+    --background: 0 0% 11%;
+    --foreground: 0 0% 94%;
+    --card: 0 0% 15%;
+    --card-foreground: 0 0% 94%;
     --popover: 0 0% 18%;
-    --popover-foreground: 0 0% 96%;
-    --primary: 207 100% 65%;
-    --primary-foreground: 0 0% 10%;
+    --popover-foreground: 0 0% 94%;
+    --primary: 210 80% 72%;
+    --primary-foreground: 0 0% 11%;
     --secondary: 0 0% 20%;
-    --secondary-foreground: 0 0% 96%;
+    --secondary-foreground: 0 0% 94%;
     --muted: 0 0% 18%;
-    --muted-foreground: 0 0% 50%;
-    --accent: 207 100% 65%;
-    --accent-foreground: 0 0% 10%;
-    --destructive: 0 84% 60%;
+    --muted-foreground: 0 0% 54%;
+    --accent: 210 80% 72%;
+    --accent-foreground: 0 0% 11%;
+    --destructive: 0 60% 66%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 24%;
-    --input: 0 0% 24%;
-    --ring: 207 100% 65%;
+    --border: 0 0% 27%;
+    --input: 0 0% 27%;
+    --ring: 210 80% 72%;
   }
 }
 
@@ -243,19 +287,16 @@
     font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--theme-bg-base);
+    background-color: var(--theme-bg-app);
     color: var(--theme-text-primary);
-    transition: background-color 0.2s ease, color 0.2s ease;
   }
   
-  /* Smooth theme transitions */
+  /* Smooth theme transitions - only on color properties */
   *, *::before, *::after {
-    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
-    transition-duration: 0.15s;
-    transition-timing-function: ease-out;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   }
   
-  /* Disable transitions for elements that shouldn't animate */
+  /* Disable transitions for transforms and other properties */
   .no-transition,
   .no-transition * {
     transition: none !important;
@@ -263,10 +304,9 @@
 }
 
 /* =============================================================================
-   SCROLLBAR STYLING
+   SCROLLBAR STYLING (Fluent style - thin, subtle)
    ============================================================================= */
 @layer base {
-  /* Webkit browsers */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -274,7 +314,6 @@
   
   ::-webkit-scrollbar-track {
     background: var(--theme-scrollbar-track);
-    border-radius: 4px;
   }
   
   ::-webkit-scrollbar-thumb {
@@ -286,7 +325,6 @@
     background: var(--theme-scrollbar-thumb-hover);
   }
   
-  /* Firefox */
   * {
     scrollbar-width: thin;
     scrollbar-color: var(--theme-scrollbar-thumb) var(--theme-scrollbar-track);
@@ -294,18 +332,23 @@
 }
 
 /* =============================================================================
-   FOCUS STATES
+   FOCUS STATES (Fluent-style visible focus rings)
    ============================================================================= */
 @layer base {
-  /* Ensure focus rings are always visible */
   :focus-visible {
     outline: 2px solid var(--theme-border-focus);
-    outline-offset: 2px;
+    outline-offset: var(--theme-focus-ring-offset);
   }
   
-  /* Remove default focus for mouse users */
   :focus:not(:focus-visible) {
     outline: none;
+  }
+  
+  /* Custom focus ring utility */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+    --tw-ring-color: var(--theme-focus-ring);
+    --tw-ring-offset-color: var(--theme-bg-surface);
   }
 }
 
@@ -321,5 +364,73 @@
   .dark ::selection {
     background-color: var(--theme-brand-light);
     color: var(--theme-text-primary);
+  }
+}
+
+/* =============================================================================
+   FLUENT COMPONENT UTILITIES
+   ============================================================================= */
+@layer components {
+  /* Surface card with proper layering */
+  .fluent-surface {
+    background-color: var(--theme-bg-surface);
+    border: 1px solid var(--theme-border-subtle);
+    border-radius: 6px;
+  }
+  
+  /* Raised surface (modals, dropdowns) */
+  .fluent-surface-raised {
+    background-color: var(--theme-bg-surface-raised);
+    border: 1px solid var(--theme-border-default);
+    border-radius: 6px;
+    box-shadow: var(--theme-shadow-elevated);
+  }
+  
+  /* Fluent row hover - consistent interactive state */
+  .fluent-row-hover {
+    transition: background-color 0.1s ease;
+  }
+  .fluent-row-hover:hover {
+    background-color: var(--theme-bg-hover);
+  }
+  
+  /* Fluent button base */
+  .fluent-btn {
+    transition: background-color 0.1s ease, border-color 0.1s ease;
+  }
+  .fluent-btn:hover {
+    background-color: var(--theme-bg-hover);
+  }
+  .fluent-btn:active {
+    background-color: var(--theme-bg-active);
+  }
+  
+  /* Calendar day cell states */
+  .calendar-day-today {
+    box-shadow: inset 0 0 0 2px var(--theme-calendar-today-ring);
+  }
+  .calendar-day-selected {
+    background-color: var(--theme-calendar-selected-bg);
+  }
+  .calendar-day-has-tasks::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--theme-calendar-has-tasks-dot);
+  }
+}
+
+/* =============================================================================
+   STATUS BADGE UTILITIES (Fluent-style consistent badges)
+   ============================================================================= */
+@layer utilities {
+  /* Ensure consistent badge styling across light/dark */
+  .badge-status {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
   }
 }
