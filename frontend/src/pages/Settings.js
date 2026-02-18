@@ -159,22 +159,22 @@ export default function Settings() {
     return (
       <Table>
         <TableHeader>
-          <TableRow className="border-ministry-border-default">
-            <TableHead className="text-ministry-text-primary font-semibold">Name</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">Email</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">Role</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">Status</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">Actions</TableHead>
+          <TableRow className="border-ministry-border-subtle hover:bg-transparent">
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">Name</TableHead>
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">Email</TableHead>
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">Role</TableHead>
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">Status</TableHead>
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {users.map((user) => (
-            <TableRow key={user.id} data-testid={`user-row-${user.id}`} className="border-ministry-border-default">
-              <TableCell className="font-medium text-ministry-text-primary">{user.name}</TableCell>
-              <TableCell className="text-ministry-text-secondary">{user.email}</TableCell>
-              <TableCell className="text-ministry-text-secondary">{user.role}</TableCell>
+            <TableRow key={user.id} data-testid={`user-row-${user.id}`} className="border-ministry-border-subtle hover:bg-ministry-bg-hover">
+              <TableCell className="font-medium text-ministry-text-primary text-[13px]">{user.name}</TableCell>
+              <TableCell className="text-ministry-text-secondary text-[13px]">{user.email}</TableCell>
+              <TableCell className="text-ministry-text-secondary text-[13px]">{user.role}</TableCell>
               <TableCell>
-                <Badge className={user.is_active ? 'bg-ministry-status-scheduled text-white rounded-md' : 'bg-ministry-status-draft text-white rounded-md'}>
+                <Badge className={user.is_active ? 'bg-ministry-status-success-bg text-ministry-status-success border border-ministry-status-success-border rounded-md text-[11px]' : 'bg-ministry-bg-tertiary text-ministry-text-muted rounded-md text-[11px]'}>
                   {user.is_active ? 'Active' : 'Inactive'}
                 </Badge>
               </TableCell>
