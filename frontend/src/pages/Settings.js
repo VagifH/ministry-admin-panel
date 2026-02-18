@@ -222,14 +222,14 @@ export default function Settings() {
   return (
     <div className="p-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-ministry-text-primary">Settings</h1>
-        <p className="text-sm text-ministry-text-secondary mt-1">Manage users and AI agents</p>
+        <h1 className="text-xl font-semibold text-ministry-text-primary">Settings</h1>
+        <p className="text-[13px] text-ministry-text-secondary mt-1">Manage users and AI agents</p>
       </div>
 
       <Tabs defaultValue="users" className="space-y-4">
         <TabsList className="bg-ministry-bg-tertiary rounded-ministry">
-          <TabsTrigger value="users" data-testid="tab-users" className="rounded-ministry">Users</TabsTrigger>
-          <TabsTrigger value="avatars" data-testid="tab-avatars" className="rounded-ministry">AI Agents</TabsTrigger>
+          <TabsTrigger value="users" data-testid="tab-users" className="rounded-ministry data-[state=active]:bg-ministry-bg-surface">Users</TabsTrigger>
+          <TabsTrigger value="avatars" data-testid="tab-avatars" className="rounded-ministry data-[state=active]:bg-ministry-bg-surface">AI Agents</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users">
@@ -238,22 +238,22 @@ export default function Settings() {
             <Button
               onClick={() => setShowCreateDialog(true)}
               data-testid="create-user-button"
-              className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry flex items-center gap-1.5"
+              className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-ministry-text-inverse rounded-ministry flex items-center gap-1.5"
             >
               <Plus size={16} />
               Create User
             </Button>
           </div>
 
-          <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
+          <div className="bg-ministry-bg-surface rounded-ministry border border-ministry-border-subtle">
             {renderContent()}
           </div>
         </TabsContent>
 
         <TabsContent value="avatars">
-          <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card p-6">
-            <h2 className="text-lg font-semibold text-ministry-text-primary mb-4">AI Agents</h2>
-            <p className="text-sm text-ministry-text-secondary mb-6">
+          <div className="bg-ministry-bg-surface rounded-ministry border border-ministry-border-subtle p-6">
+            <h2 className="text-base font-semibold text-ministry-text-primary mb-4">AI Agents</h2>
+            <p className="text-[13px] text-ministry-text-secondary mb-6">
               Manage photos for each AI agent. These will appear throughout the application when a task uses that agent.
             </p>
             <AvatarsSettings />
@@ -262,9 +262,9 @@ export default function Settings() {
       </Tabs>
 
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="max-w-[560px] bg-ministry-bg-secondary rounded-ministry p-0">
+        <DialogContent className="max-w-[560px] bg-ministry-bg-surface-raised rounded-ministry border border-ministry-border-subtle p-0">
           <DialogHeader className="px-6 pt-6 pb-4">
-            <DialogTitle className="text-xl font-semibold text-ministry-text-primary">Create New User</DialogTitle>
+            <DialogTitle className="text-lg font-semibold text-ministry-text-primary">Create New User</DialogTitle>
           </DialogHeader>
           
           <div className="px-6 pb-4 space-y-4">
