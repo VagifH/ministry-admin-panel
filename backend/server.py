@@ -37,7 +37,7 @@ from services.rate_limiter import login_rate_limiter
 # Import error handling
 from services.error_service import (
     AppError, ValidationError, AuthError, ForbiddenError, 
-    NotFoundError, ConflictError, ServerError, ErrorCode,
+    NotFoundError, ConflictError, ServerError, RateLimitError, ErrorCode,
     app_error_handler, generic_exception_handler, validation_exception_handler,
     raise_not_found, raise_forbidden, raise_validation
 )
