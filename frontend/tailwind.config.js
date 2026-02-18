@@ -8,8 +8,8 @@ module.exports = {
   theme: {
     extend: {
       // =========================================================================
-      // ENTERPRISE THEME COLORS (CSS Variable Based)
-      // All colors reference CSS variables for seamless theme switching
+      // MINISTRY FLUENT DESIGN SYSTEM
+      // Enterprise-grade tokens for Microsoft Fluent 2 / Outlook / Teams styling
       // =========================================================================
       colors: {
         // Shadcn UI compatibility
@@ -48,30 +48,45 @@ module.exports = {
         ring: 'hsl(var(--ring))',
         
         // =========================================================================
-        // MINISTRY DESIGN TOKENS (Theme-Aware)
+        // MINISTRY DESIGN TOKENS (Fluent-Inspired)
         // =========================================================================
         ministry: {
-          // Background hierarchy
+          // =================================================================
+          // SURFACE LAYERING (3-tier Fluent system)
+          // =================================================================
           bg: {
-            primary: 'var(--theme-bg-base)',
+            // Primary surfaces
+            app: 'var(--theme-bg-app)',              // Deepest - page background
+            surface: 'var(--theme-bg-surface)',       // Cards, panels
+            'surface-raised': 'var(--theme-bg-surface-raised)', // Modals, popovers
+            
+            // Legacy aliases
+            primary: 'var(--theme-bg-app)',
             secondary: 'var(--theme-bg-surface)',
             tertiary: 'var(--theme-bg-tertiary)',
-            elevated: 'var(--theme-bg-elevated)',
+            elevated: 'var(--theme-bg-surface-raised)',
+            
+            // Interactive states
             hover: 'var(--theme-bg-hover)',
             active: 'var(--theme-bg-active)',
             muted: 'var(--theme-bg-muted)',
           },
           
-          // Text hierarchy
+          // =================================================================
+          // TEXT HIERARCHY (WCAG compliant)
+          // =================================================================
           text: {
-            primary: 'var(--theme-text-primary)',
-            secondary: 'var(--theme-text-secondary)',
-            muted: 'var(--theme-text-muted)',
-            disabled: 'var(--theme-text-disabled)',
-            inverse: 'var(--theme-text-inverse)',
+            primary: 'var(--theme-text-primary)',     // Headings, important
+            secondary: 'var(--theme-text-secondary)', // Body text
+            muted: 'var(--theme-text-muted)',         // Placeholders, hints
+            disabled: 'var(--theme-text-disabled)',   // Disabled state
+            inverse: 'var(--theme-text-inverse)',     // On brand/dark surfaces
+            link: 'var(--theme-text-link)',           // Links
           },
           
-          // Brand colors
+          // =================================================================
+          // BRAND COLORS
+          // =================================================================
           brand: {
             primary: 'var(--theme-brand-primary)',
             hover: 'var(--theme-brand-hover)',
@@ -80,31 +95,42 @@ module.exports = {
             muted: 'var(--theme-brand-muted)',
           },
           
-          // Border tokens
+          // =================================================================
+          // BORDER TOKENS
+          // =================================================================
           border: {
             subtle: 'var(--theme-border-subtle)',
-            default: 'var(--theme-border-subtle)',
+            default: 'var(--theme-border-default)',
             strong: 'var(--theme-border-strong)',
             focus: 'var(--theme-border-focus)',
             divider: 'var(--theme-border-divider)',
           },
           
-          // Status colors (semantic)
+          // =================================================================
+          // SEMANTIC STATUS COLORS
+          // =================================================================
           status: {
+            // Success (green)
             success: 'var(--theme-status-success)',
             'success-bg': 'var(--theme-status-success-bg)',
             'success-border': 'var(--theme-status-success-border)',
+            
+            // Warning (amber)
             warning: 'var(--theme-status-warning)',
             'warning-bg': 'var(--theme-status-warning-bg)',
             'warning-border': 'var(--theme-status-warning-border)',
+            
+            // Error (red)
             error: 'var(--theme-status-error)',
             'error-bg': 'var(--theme-status-error-bg)',
             'error-border': 'var(--theme-status-error-border)',
+            
+            // Info (blue)
             info: 'var(--theme-status-info)',
             'info-bg': 'var(--theme-status-info-bg)',
             'info-border': 'var(--theme-status-info-border)',
             
-            // Workflow status
+            // Workflow status colors
             draft: 'var(--theme-workflow-draft)',
             'draft-bg': 'var(--theme-workflow-draft-bg)',
             submitted: 'var(--theme-workflow-submitted)',
@@ -129,32 +155,52 @@ module.exports = {
             review: 'var(--theme-workflow-readyforreview)',
           },
           
-          // Interactive states
+          // =================================================================
+          // INTERACTIVE STATES
+          // =================================================================
           interactive: {
             hover: 'var(--theme-interactive-hover)',
             active: 'var(--theme-interactive-active)',
             selected: 'var(--theme-interactive-selected)',
             'selected-hover': 'var(--theme-interactive-selected-hover)',
           },
+          
+          // =================================================================
+          // CALENDAR TOKENS
+          // =================================================================
+          calendar: {
+            'today-ring': 'var(--theme-calendar-today-ring)',
+            'selected-bg': 'var(--theme-calendar-selected-bg)',
+            'tasks-dot': 'var(--theme-calendar-has-tasks-dot)',
+          },
+          
+          // =================================================================
+          // FOCUS RING
+          // =================================================================
+          focus: {
+            ring: 'var(--theme-focus-ring)',
+          },
         },
       },
       
       // =========================================================================
-      // TYPOGRAPHY
+      // TYPOGRAPHY (Fluent 2)
       // =========================================================================
       fontFamily: {
         fluent: ["'Segoe UI'", 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       fontSize: {
-        'ministry-xs': '12px',
-        'ministry-sm': '14px',
-        'ministry-base': '16px',
-        'ministry-lg': '18px',
-        'ministry-xl': '20px',
+        'ministry-xs': ['12px', { lineHeight: '16px' }],
+        'ministry-sm': ['13px', { lineHeight: '18px' }],
+        'ministry-base': ['14px', { lineHeight: '20px' }],
+        'ministry-lg': ['16px', { lineHeight: '22px' }],
+        'ministry-xl': ['18px', { lineHeight: '24px' }],
+        'ministry-2xl': ['20px', { lineHeight: '28px' }],
+        'ministry-title': ['24px', { lineHeight: '32px', fontWeight: '600' }],
       },
       
       // =========================================================================
-      // SPACING
+      // SPACING (Fluent 2 spacing scale)
       // =========================================================================
       spacing: {
         'ministry-xs': '4px',
@@ -166,19 +212,19 @@ module.exports = {
       },
       
       // =========================================================================
-      // BORDER RADIUS
+      // BORDER RADIUS (Fluent 2 - slightly smaller)
       // =========================================================================
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
-        'ministry': '8px',
+        'ministry': '6px',
         'ministry-sm': '4px',
-        'ministry-lg': '12px',
+        'ministry-lg': '8px',
       },
       
       // =========================================================================
-      // SHADOWS (Theme-Aware)
+      // SHADOWS (Fluent elevation)
       // =========================================================================
       boxShadow: {
         'ministry-sm': 'var(--theme-shadow-sm)',
@@ -203,26 +249,16 @@ module.exports = {
           from: { opacity: '0' },
           to: { opacity: '1' }
         },
-        'fade-out': {
-          from: { opacity: '1' },
-          to: { opacity: '0' }
-        },
-        'slide-in-from-top': {
-          from: { transform: 'translateY(-10px)', opacity: '0' },
-          to: { transform: 'translateY(0)', opacity: '1' }
-        },
-        'slide-in-from-bottom': {
-          from: { transform: 'translateY(10px)', opacity: '0' },
-          to: { transform: 'translateY(0)', opacity: '1' }
+        'scale-in': {
+          from: { opacity: '0', transform: 'scale(0.98)' },
+          to: { opacity: '1', transform: 'scale(1)' }
         },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in': 'fade-in 0.15s ease-out',
-        'fade-out': 'fade-out 0.15s ease-out',
-        'slide-in-from-top': 'slide-in-from-top 0.2s ease-out',
-        'slide-in-from-bottom': 'slide-in-from-bottom 0.2s ease-out',
+        'scale-in': 'scale-in 0.15s ease-out',
       },
     }
   },
