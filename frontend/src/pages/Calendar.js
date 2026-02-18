@@ -141,18 +141,20 @@ const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectD
       onMouseUp={() => setIsPressed(false)}
       onMouseLeave={() => setIsPressed(false)}
       className={`h-[120px] p-1.5 border rounded-ministry overflow-hidden cursor-pointer select-none flex flex-col
-        ${!isCurrentMonth ? 'bg-ministry-bg-primary/50 border-ministry-border-default/50' : 'bg-ministry-bg-secondary border-ministry-border-default'}
-        ${isToday ? 'ring-2 ring-ministry-brand-primary ring-inset' : ''}
-        ${isSelected && !isToday ? 'bg-ministry-bg-tertiary' : ''}
-        ${isPressed ? 'bg-ministry-bg-tertiary scale-[0.99]' : 'scale-100'}
-        hover:bg-ministry-bg-tertiary/50
-        transition-[transform,background-color] duration-100 ease-out
+        ${!isCurrentMonth 
+          ? 'bg-ministry-bg-app/60 border-ministry-border-subtle/50 opacity-60' 
+          : 'bg-ministry-bg-surface border-ministry-border-subtle'}
+        ${isToday ? 'ring-2 ring-ministry-calendar-today-ring ring-inset border-ministry-calendar-today-ring' : ''}
+        ${isSelected && !isToday ? 'bg-ministry-calendar-selected-bg border-ministry-brand-primary/40' : ''}
+        ${isPressed ? 'bg-ministry-bg-hover scale-[0.99]' : 'scale-100'}
+        hover:bg-ministry-bg-hover hover:border-ministry-border-default
+        transition-all duration-100 ease-out
       `}
     >
       {/* Day number header */}
       <div className={`text-xs font-medium mb-1 px-0.5 ${
         isToday 
-          ? 'text-ministry-brand-primary' 
+          ? 'text-ministry-brand-primary font-semibold' 
           : isCurrentMonth 
             ? 'text-ministry-text-secondary' 
             : 'text-ministry-text-muted'
@@ -170,7 +172,7 @@ const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectD
           />
         ))}
         
-        {/* +N more indicator */}
+        {/* +N more indicator - Outlook style */}
         {remainingCount > 0 && (
           <button
             onClick={(e) => {
@@ -179,8 +181,8 @@ const DayCell = ({ day, dayTasks, isCurrentMonth, isToday, isSelected, onSelectD
             }}
             data-testid={`calendar-more-${format(day, 'yyyy-MM-dd')}`}
             className="flex items-center justify-center h-[22px] text-[10px] font-medium 
-              text-ministry-text-muted hover:text-ministry-brand-primary
-              hover:bg-ministry-brand-light rounded
+              text-ministry-text-link hover:text-ministry-brand-hover
+              hover:bg-ministry-interactive-hover rounded
               transition-colors duration-100"
           >
             +{remainingCount} more
