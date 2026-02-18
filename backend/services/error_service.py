@@ -61,6 +61,9 @@ class ErrorCode:
     CONFLICT = "CONFLICT"
     RESOURCE_CONFLICT = "RESOURCE_CONFLICT"
     
+    # Rate limit errors (429)
+    RATE_LIMIT_EXCEEDED = "RATE_LIMIT_EXCEEDED"
+    
     # Server errors (500)
     INTERNAL_ERROR = "INTERNAL_ERROR"
     SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE"
@@ -130,6 +133,24 @@ class ConflictError(AppError):
     
     def __init__(self, message: str = "Resource conflict", code: str = ErrorCode.CONFLICT):
         super().__init__(message=message, code=code, status_code=409)
+
+
+class RateLimitError(AppError):
+    """429 Too Many Requests - Rate limit exceeded"""
+    
+    def __init__(self, message: str = "Too many requests. Please try again later.", code: str = ErrorCode.RATE_LIMIT_EXCEEDED, retry_after: int = 60):
+        super().__init__(message=message, code=code, status_code=429)
+        self.retry_after = retry_after
+    
+    def to_response(self) -> dict:
+        """Convert error to JSON response format with retry info"""
+        return {
+            "error": {
+                "code": self.code,
+                "message": self.message,
+                "retry_after": self.retry_after
+            }
+        }
 
 
 class ServerError(AppError):
