@@ -45,8 +45,8 @@ export default function Dashboard() {
   return (
     <div className="p-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-ministry-text-primary">Dashboard</h1>
-        <p className="text-sm text-ministry-text-secondary mt-1">Overview of task statuses</p>
+        <h1 className="text-xl font-semibold text-ministry-text-primary">Dashboard</h1>
+        <p className="text-[13px] text-ministry-text-secondary mt-1">Overview of task statuses</p>
       </div>
 
       {loading ? (
@@ -64,22 +64,22 @@ export default function Dashboard() {
               <div
                 key={stat.label}
                 data-testid={`stat-card-${stat.label.toLowerCase()}`}
-                className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default p-6 shadow-ministry-card"
+                className="bg-ministry-bg-surface rounded-ministry border border-ministry-border-subtle p-5 hover:border-ministry-border-default transition-colors"
               >
-                <div className="text-sm text-ministry-text-secondary mb-1">{stat.label}</div>
-                <div className={`text-3xl font-semibold ${stat.color}`}>
+                <div className="text-[13px] text-ministry-text-secondary mb-1">{stat.label}</div>
+                <div className={`text-2xl font-semibold ${stat.color}`}>
                   {stat.value}
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default p-6 shadow-ministry-card">
-            <h2 className="text-lg font-semibold text-ministry-text-primary mb-2">Scheduled This Week</h2>
-            <div className="text-3xl font-semibold text-ministry-status-scheduled">
+          <div className="bg-ministry-bg-surface rounded-ministry border border-ministry-border-subtle p-5">
+            <h2 className="text-base font-semibold text-ministry-text-primary mb-2">Scheduled This Week</h2>
+            <div className="text-2xl font-semibold text-ministry-status-scheduled">
               {stats?.scheduled_this_week || 0}
             </div>
-            <p className="text-sm text-ministry-text-secondary mt-2">Tasks scheduled for publication this week</p>
+            <p className="text-[13px] text-ministry-text-secondary mt-2">Tasks scheduled for publication this week</p>
           </div>
         </>
       )}
