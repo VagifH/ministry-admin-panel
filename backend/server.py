@@ -691,7 +691,7 @@ async def login(request: LoginRequest, http_request: Request):
             await audit_logger.log_login_failed(request.email, f"Rate limited: {message}", http_request)
         except Exception:
             pass
-        raise ForbiddenError(message=message, code=ErrorCode.FORBIDDEN)
+        raise RateLimitError(message=message, retry_after=retry_after)
     
     user_doc = await db.users.find_one({"email": request.email}, {"_id": 0})
     
