@@ -2,6 +2,7 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { canAccessPage } from '../config/permissionsMatrix';
 import { LayoutGrid, CheckSquare, Calendar, Activity, Settings, LogOut } from 'lucide-react';
+import { ThemeToggle } from './ThemeToggle';
 
 const NAV_ITEMS = [
   { path: '/dashboard', icon: LayoutGrid, label: 'Dashboard', page: 'dashboard' },
@@ -30,8 +31,9 @@ export default function Layout() {
     <div className="flex h-screen bg-ministry-bg-primary">
       {/* Sidebar */}
       <aside className="w-[180px] border-r border-ministry-border-default bg-ministry-bg-secondary flex flex-col">
-        <div className="p-4 border-b border-ministry-border-default">
+        <div className="p-4 border-b border-ministry-border-default flex items-center justify-between">
           <h1 className="text-lg font-semibold text-ministry-text-primary">Ministry Panel</h1>
+          <ThemeToggle />
         </div>
         
         <nav className="flex-1 p-2">
