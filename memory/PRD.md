@@ -55,6 +55,39 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
 ## What's Been Implemented
 
 ### Feb 18, 2026
+- **P0 COMPLETED: ENTERPRISE DARK MODE SYSTEM**
+  - **Theme Architecture (`/app/frontend/src/theme/`):**
+    - `themeTokens.js` - Semantic design tokens for Light and Dark modes
+    - `themeProvider.js` - React context with localStorage persistence
+  - **CSS Variable System:**
+    - All colors flow through CSS variables for seamless theme switching
+    - Light theme: Clean professional neutrals (#fafafa base)
+    - Dark theme: Deep graphite (#1a1a1a base) - Linear.app/Notion inspired
+  - **Theme Toggle:**
+    - Sun/Moon toggle in sidebar header
+    - Persists preference to localStorage
+    - Respects system preference on first visit
+  - **Component Migration:**
+    - All hardcoded colors replaced with theme tokens
+    - Status badges, buttons, backgrounds all theme-aware
+    - Tables, forms, modals, calendar cells adapted
+  - **QA Verified:**
+    - No elements disappear in dark mode
+    - No pure black or white backgrounds
+    - All text readable with proper contrast
+    - All status colors visible and distinct
+    - Focus rings visible in both themes
+  - **Files Created:**
+    - `/app/frontend/src/theme/themeTokens.js`
+    - `/app/frontend/src/theme/themeProvider.js`
+    - `/app/frontend/src/components/ThemeToggle.js`
+  - **Files Modified:**
+    - `/app/frontend/src/index.css` - CSS variables for both themes
+    - `/app/frontend/tailwind.config.js` - Theme-aware color utilities
+    - `/app/frontend/src/App.js` - ThemeProvider wrapper
+    - `/app/frontend/src/components/Layout.js` - Theme toggle in header
+    - Multiple component files - Replaced hardcoded colors
+
 - **P0 COMPLETED: RELEASE READINESS (MINISTRY PILOT v1.0.0)**
   - **Centralized Configuration (`/app/backend/config.py`):**
     - All upload limits, security settings, and app constants in one place
