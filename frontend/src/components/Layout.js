@@ -28,11 +28,11 @@ export default function Layout() {
   );
 
   return (
-    <div className="flex h-screen bg-ministry-bg-primary">
+    <div className="flex h-screen bg-ministry-bg-app">
       {/* Sidebar */}
-      <aside className="w-[180px] border-r border-ministry-border-default bg-ministry-bg-secondary flex flex-col">
-        <div className="p-4 border-b border-ministry-border-default flex items-center justify-between">
-          <h1 className="text-lg font-semibold text-ministry-text-primary">Ministry Panel</h1>
+      <aside className="w-[180px] border-r border-ministry-border-subtle bg-ministry-bg-surface flex flex-col">
+        <div className="p-4 border-b border-ministry-border-subtle flex items-center justify-between">
+          <h1 className="text-base font-semibold text-ministry-text-primary">Ministry Panel</h1>
           <ThemeToggle />
         </div>
         
@@ -47,10 +47,10 @@ export default function Layout() {
                 key={item.path}
                 onClick={() => navigate(item.path)}
                 data-testid={`nav-${item.label.toLowerCase().replace(/\s/g, '-')}`}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-ministry text-sm mb-1 transition-colors ${
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-ministry text-[13px] mb-0.5 transition-colors ${
                   isActive
-                    ? 'bg-ministry-brand-light text-ministry-brand-primary font-medium'
-                    : 'text-ministry-text-secondary hover:bg-ministry-bg-tertiary hover:text-ministry-text-primary'
+                    ? 'bg-ministry-interactive-selected text-ministry-brand-primary font-medium'
+                    : 'text-ministry-text-secondary hover:bg-ministry-bg-hover hover:text-ministry-text-primary'
                 }`}
               >
                 <Icon size={18} />
@@ -61,15 +61,15 @@ export default function Layout() {
         </nav>
 
         {/* User section */}
-        <div className="p-3 border-t border-ministry-border-default">
+        <div className="p-3 border-t border-ministry-border-subtle">
           <div className="mb-2">
-            <p className="text-sm font-medium text-ministry-text-primary truncate">{user?.name}</p>
-            <p className="text-xs text-ministry-text-secondary">{user?.role}</p>
+            <p className="text-[13px] font-medium text-ministry-text-primary truncate">{user?.name}</p>
+            <p className="text-xs text-ministry-text-muted">{user?.role}</p>
           </div>
           <button
             onClick={handleLogout}
             data-testid="logout-button"
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-ministry text-ministry-text-secondary hover:bg-ministry-bg-tertiary text-sm"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-ministry text-ministry-text-secondary hover:bg-ministry-bg-hover hover:text-ministry-text-primary text-[13px] transition-colors"
           >
             <LogOut size={16} />
             Sign out
@@ -78,7 +78,7 @@ export default function Layout() {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto bg-ministry-bg-app">
         <Outlet />
       </main>
     </div>
