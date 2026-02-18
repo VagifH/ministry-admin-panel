@@ -725,6 +725,9 @@ async def login(request: LoginRequest, http_request: Request):
     
     token = create_access_token({"sub": user_doc["id"]})
     
+    # Record successful login for rate limiting (resets counter)
+    login_rate_limiter.record_attempt(client_ip, request.email, success=True)
+    
     if isinstance(user_doc.get('created_at'), str):
         user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
     
