@@ -93,21 +93,21 @@ export default function ActivityLog() {
     return (
       <Table>
         <TableHeader>
-          <TableRow className="border-ministry-border-default">
-            <TableHead className="text-ministry-text-primary font-semibold">User</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">Action</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">Object Type</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">Details</TableHead>
-            <TableHead className="text-ministry-text-primary font-semibold">Timestamp</TableHead>
+          <TableRow className="border-ministry-border-subtle hover:bg-transparent">
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">User</TableHead>
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">Action</TableHead>
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">Object Type</TableHead>
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">Details</TableHead>
+            <TableHead className="text-ministry-text-secondary font-medium text-[13px]">Timestamp</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {logs.map((log) => (
-            <TableRow key={log.id} data-testid={`activity-log-${log.id}`} className="border-ministry-border-default">
-              <TableCell className="font-medium text-ministry-text-primary">{log.actor_name}</TableCell>
-              <TableCell className="text-ministry-text-secondary">{log.action}</TableCell>
-              <TableCell className="text-ministry-text-secondary">{log.object_type}</TableCell>
-              <TableCell className="text-ministry-text-secondary max-w-xs truncate">
+            <TableRow key={log.id} data-testid={`activity-log-${log.id}`} className="border-ministry-border-subtle hover:bg-ministry-bg-hover">
+              <TableCell className="font-medium text-ministry-text-primary text-[13px]">{log.actor_name}</TableCell>
+              <TableCell className="text-ministry-text-secondary text-[13px]">{log.action}</TableCell>
+              <TableCell className="text-ministry-text-secondary text-[13px]">{log.object_type}</TableCell>
+              <TableCell className="text-ministry-text-secondary text-[13px] max-w-xs truncate">
                 {log.old_value && log.new_value ? (
                   <span>{log.old_value} → {log.new_value}</span>
                 ) : log.new_value ? (
@@ -116,7 +116,7 @@ export default function ActivityLog() {
                   '-'
                 )}
               </TableCell>
-              <TableCell className="text-ministry-text-secondary">
+              <TableCell className="text-ministry-text-muted text-[13px]">
                 {format(new Date(log.created_at), 'MMM dd, yyyy HH:mm')}
               </TableCell>
             </TableRow>
@@ -129,12 +129,12 @@ export default function ActivityLog() {
   return (
     <div className="p-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-ministry-text-primary">Activity Log</h1>
-        <p className="text-sm text-ministry-text-secondary mt-1">Audit trail of all actions</p>
+        <h1 className="text-xl font-semibold text-ministry-text-primary">Activity Log</h1>
+        <p className="text-[13px] text-ministry-text-secondary mt-1">Audit trail of all actions</p>
       </div>
 
-      <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
-        <div className="p-4 border-b border-ministry-border-default">
+      <div className="bg-ministry-bg-surface rounded-ministry border border-ministry-border-subtle">
+        <div className="p-4 border-b border-ministry-border-subtle">
           <div className="flex gap-4 items-center flex-wrap">
             {users.length > 0 && (
               <Select value={filters.actor_id || "all"} onValueChange={(value) => setFilters({ ...filters, actor_id: value === "all" ? "" : value })}>
