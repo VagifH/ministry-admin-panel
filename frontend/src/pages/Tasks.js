@@ -257,7 +257,7 @@ export default function Tasks() {
                 <div className="flex items-center gap-2">
                   {task.title}
                   {task.is_archived && (
-                    <Badge variant="outline" className="text-xs border-amber-500 text-amber-600 bg-amber-50">
+                    <Badge variant="outline" className="text-xs border-ministry-status-warning text-ministry-status-warning bg-ministry-status-warning-bg">
                       Archived
                     </Badge>
                   )}
