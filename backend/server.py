@@ -1150,8 +1150,8 @@ async def delete_task(task_id: str, request: Request, current_user: User = Depen
     video = await db.videos.find_one({"task_id": task_id})
     if video:
         raise ForbiddenError(
-            message="Cannot delete task with attached video. Delete the video first.",
-            code=ErrorCode.DELETE_REQUIRES_NO_VIDEO
+            message="Delete video first",
+            code=ErrorCode.TASK_HAS_VIDEO
         )
     
     # Perform permanent deletion
