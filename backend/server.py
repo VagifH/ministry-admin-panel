@@ -679,6 +679,27 @@ def get_client_ip(request: Request) -> str:
         return real_ip
     return request.client.host if request.client else "unknown"
 
+# ==================== HEALTH ENDPOINT ====================
+@api_router.get("/health")
+async def health_check():
+    """
+    Health check endpoint for monitoring and load balancers.
+    Returns system status without exposing secrets.
+    """
+    try:
+        # Test MongoDB connection
+        await db.command("ping")
+        db_status = "connected"
+    except Exception:
+        db_status = "disconnected"
+    
+    return {
+        "status": "ok" if db_status == "connected" else "degraded",
+        "version": "1.0.0",
+        "time": datetime.now(timezone.utc).isoformat(),
+        "database": db_status
+    }
+
 @api_router.post("/auth/login", response_model=LoginResponse)
 async def login(request: LoginRequest, http_request: Request):
     # Rate limiting check
