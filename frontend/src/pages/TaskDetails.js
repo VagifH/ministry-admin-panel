@@ -460,22 +460,29 @@ export default function TaskDetails() {
 
           <TabsContent value="comments" className="mt-6">
             <div className="space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Add a comment..."
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  data-testid="add-comment-input"
-                  className="border-ministry-border-default rounded-ministry"
-                />
-                <Button
-                  onClick={handleAddComment}
-                  data-testid="submit-comment-button"
-                  className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry"
-                >
-                  <Send size={16} />
-                </Button>
-              </div>
+              {/* Comment input - disabled for archived tasks */}
+              {!isArchived ? (
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Add a comment..."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    data-testid="add-comment-input"
+                    className="border-ministry-border-default rounded-ministry"
+                  />
+                  <Button
+                    onClick={handleAddComment}
+                    data-testid="submit-comment-button"
+                    className="bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry"
+                  >
+                    <Send size={16} />
+                  </Button>
+                </div>
+              ) : (
+                <div className="bg-amber-50 border border-amber-200 rounded-ministry p-3 text-sm text-amber-700">
+                  Comments are disabled for archived tasks.
+                </div>
+              )}
 
               {comments.length === 0 ? (
                 <div className="text-center text-ministry-text-secondary py-8">No comments yet</div>
