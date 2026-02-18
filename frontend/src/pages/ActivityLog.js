@@ -138,10 +138,10 @@ export default function ActivityLog() {
           <div className="flex gap-4 items-center flex-wrap">
             {users.length > 0 && (
               <Select value={filters.actor_id || "all"} onValueChange={(value) => setFilters({ ...filters, actor_id: value === "all" ? "" : value })}>
-                <SelectTrigger className="w-[200px] border-ministry-border-default rounded-ministry" data-testid="filter-user">
+                <SelectTrigger className="w-[200px] bg-ministry-bg-input border-ministry-border-default text-ministry-text-primary rounded-ministry hover:border-ministry-border-hover focus:border-ministry-border-focus" data-testid="filter-user">
                   <SelectValue placeholder="Filter by user" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-ministry-bg-surface-raised border-ministry-border-default">
                   <SelectItem value="all">All Users</SelectItem>
                   {users.map((user) => (
                     <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
@@ -150,10 +150,10 @@ export default function ActivityLog() {
               </Select>
             )}
             <Select value={filters.action || "all"} onValueChange={(value) => setFilters({ ...filters, action: value === "all" ? "" : value })}>
-              <SelectTrigger className="w-[200px] border-ministry-border-default rounded-ministry" data-testid="filter-action">
+              <SelectTrigger className="w-[200px] bg-ministry-bg-input border-ministry-border-default text-ministry-text-primary rounded-ministry hover:border-ministry-border-hover focus:border-ministry-border-focus" data-testid="filter-action">
                 <SelectValue placeholder="Filter by action" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-ministry-bg-surface-raised border-ministry-border-default">
                 <SelectItem value="all">All Actions</SelectItem>
                 <SelectItem value="CREATE">CREATE</SelectItem>
                 <SelectItem value="UPDATE">UPDATE</SelectItem>
@@ -167,7 +167,7 @@ export default function ActivityLog() {
                 variant="outline"
                 onClick={clearFilters}
                 data-testid="clear-filters-button"
-                className="border-ministry-border-default rounded-ministry text-ministry-text-secondary hover:bg-ministry-bg-tertiary"
+                className="bg-transparent border-ministry-border-default text-ministry-text-secondary hover:bg-ministry-bg-hover hover:border-ministry-border-hover hover:text-ministry-text-primary rounded-ministry"
                 size="sm"
               >
                 <X size={16} className="mr-2" />
