@@ -669,11 +669,35 @@ async def seed_default_avatars():
 
 # ==================== AUTH ENDPOINTS ====================
 
+def get_client_ip(request: Request) -> str:
+    """Extract client IP from request headers"""
+    forwarded = request.headers.get("X-Forwarded-For")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    real_ip = request.headers.get("X-Real-IP")
+    if real_ip:
+        return real_ip
+    return request.client.host if request.client else "unknown"
+
 @api_router.post("/auth/login", response_model=LoginResponse)
 async def login(request: LoginRequest, http_request: Request):
+    # Rate limiting check
+    client_ip = get_client_ip(http_request)
+    allowed, message, retry_after = login_rate_limiter.check_rate_limit(client_ip, request.email)
+    
+    if not allowed:
+        # Log rate limit hit
+        try:
+            await audit_logger.log_login_failed(request.email, f"Rate limited: {message}", http_request)
+        except Exception:
+            pass
+        raise ForbiddenError(message=message, code=ErrorCode.FORBIDDEN)
+    
     user_doc = await db.users.find_one({"email": request.email}, {"_id": 0})
     
     if not user_doc:
+        # Record failed attempt for rate limiting
+        login_rate_limiter.record_attempt(client_ip, request.email, success=False)
         # Log failed login attempt (safe)
         try:
             await audit_logger.log_login_failed(request.email, "User not found", http_request)
@@ -682,6 +706,8 @@ async def login(request: LoginRequest, http_request: Request):
         raise AuthError(message="Invalid credentials", code=ErrorCode.INVALID_CREDENTIALS)
     
     if not verify_password(request.password, user_doc["hashed_password"]):
+        # Record failed attempt for rate limiting
+        login_rate_limiter.record_attempt(client_ip, request.email, success=False)
         # Log failed login attempt (safe)
         try:
             await audit_logger.log_login_failed(request.email, "Invalid password", http_request)
