@@ -260,7 +260,7 @@ export default function TaskDetails() {
                   {getStatusLabel(task.status)}
                 </Badge>
                 {isArchived && (
-                  <Badge variant="outline" className="border-amber-500 text-amber-600 bg-amber-50 rounded-md px-2.5 py-0.5 text-xs font-medium">
+                  <Badge variant="outline" className="border-ministry-status-warning text-ministry-status-warning bg-ministry-status-warning-bg rounded-md px-2.5 py-0.5 text-xs font-medium">
                     Archived
                   </Badge>
                 )}
