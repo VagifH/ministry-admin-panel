@@ -432,7 +432,7 @@ export default function VideoTab({ taskId, taskStatus, isArchived = false }) {
             </Button>
             <Button
               onClick={handleDeleteConfirm}
-              className={`bg-ministry-status-rejected hover:bg-red-700 text-white rounded-ministry ${BUTTON_HEIGHT}`}
+              className={`bg-ministry-status-error hover:opacity-90 text-ministry-text-inverse rounded-ministry ${BUTTON_HEIGHT}`}
             >
               <Trash2 size={16} className="mr-2" />
               Remove Video
