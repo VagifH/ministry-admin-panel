@@ -14,13 +14,14 @@ export const CONTENT_TYPE = {
 
 /**
  * Content type display and rule configuration
+ * Uses semantic CSS variable-based colors for theme compatibility
  */
 export const CONTENT_TYPE_CONFIG = {
   [CONTENT_TYPE.ANNOUNCEMENT]: {
     label: 'Announcement',
-    // Calendar/list marker color (token-based)
-    accentColor: 'bg-gray-400',
-    markerColor: 'bg-gray-400',
+    // Calendar/list marker color (theme-aware)
+    accentColor: 'bg-ministry-status-draft',
+    markerColor: 'bg-ministry-status-draft',
     // Business rules
     videoRequired: false,
     maxScriptLength: 500,
@@ -29,8 +30,8 @@ export const CONTENT_TYPE_CONFIG = {
   },
   [CONTENT_TYPE.SHORT_LESSON]: {
     label: 'Short Lesson',
-    accentColor: 'bg-blue-500',
-    markerColor: 'bg-blue-500',
+    accentColor: 'bg-ministry-status-submitted',
+    markerColor: 'bg-ministry-status-submitted',
     videoRequired: true,
     maxScriptLength: 2000,
     order: 2,
@@ -38,8 +39,8 @@ export const CONTENT_TYPE_CONFIG = {
   },
   [CONTENT_TYPE.FULL_LESSON]: {
     label: 'Full Lesson',
-    accentColor: 'bg-purple-500',
-    markerColor: 'bg-purple-500',
+    accentColor: 'bg-ministry-status-inprogress',
+    markerColor: 'bg-ministry-status-inprogress',
     videoRequired: true,
     maxScriptLength: 5000,
     order: 3,
@@ -53,7 +54,7 @@ export const CONTENT_TYPE_CONFIG = {
  * @returns {string} Tailwind class for accent color
  */
 export const getContentTypeAccent = (contentType) => {
-  return CONTENT_TYPE_CONFIG[contentType]?.accentColor || 'bg-gray-400';
+  return CONTENT_TYPE_CONFIG[contentType]?.accentColor || 'bg-ministry-status-draft';
 };
 
 /**
