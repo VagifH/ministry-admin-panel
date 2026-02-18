@@ -628,7 +628,7 @@ export default function VideoTab({ taskId, taskStatus, isArchived = false }) {
                 onClick={() => setShowDeleteDialog(true)}
                 disabled={actionsDisabled}
                 variant="outline"
-                className={`border-ministry-status-rejected text-ministry-status-rejected hover:bg-red-50 rounded-ministry ${BUTTON_HEIGHT}`}
+                className={`border-ministry-status-error text-ministry-status-error hover:bg-ministry-status-error-bg rounded-ministry ${BUTTON_HEIGHT}`}
                 data-testid="delete-video-button"
               >
                 <Trash2 size={16} className="mr-2" />
