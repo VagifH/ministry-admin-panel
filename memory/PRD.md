@@ -9,7 +9,7 @@ Build a web admin panel for a Ministry with a Microsoft/Fluent-inspired UI. The 
 - Left sidebar navigation
 - Top command bar
 - Table-first pages
-- Light neutral theme with subtle borders
+- **Enterprise Theme System with Light/Dark mode** (NEW)
 - 8px radius on cards/elements
 - Segoe UI/system-ui typography
 
