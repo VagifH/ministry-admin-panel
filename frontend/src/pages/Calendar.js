@@ -292,15 +292,17 @@ export default function Calendar() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-ministry-text-primary">Calendar</h1>
-          <p className="text-sm text-ministry-text-secondary mt-1">View tasks by publish date</p>
+          <h1 className="text-xl font-semibold text-ministry-text-primary">Calendar</h1>
+          <p className="text-[13px] text-ministry-text-secondary mt-1">View tasks by publish date</p>
         </div>
         <div className="flex gap-2">
           <Button
             variant={view === 'month' ? 'default' : 'outline'}
             onClick={() => setView('month')}
             data-testid="calendar-month-view-button"
-            className={view === 'month' ? 'bg-ministry-brand-primary text-white rounded-ministry' : 'border-ministry-border-default rounded-ministry'}
+            className={view === 'month' 
+              ? 'bg-ministry-brand-primary text-ministry-text-inverse hover:bg-ministry-brand-hover rounded-ministry' 
+              : 'border-ministry-border-subtle hover:bg-ministry-bg-hover rounded-ministry'}
             size="sm"
           >
             Month
@@ -309,7 +311,9 @@ export default function Calendar() {
             variant={view === 'week' ? 'default' : 'outline'}
             onClick={() => setView('week')}
             data-testid="calendar-week-view-button"
-            className={view === 'week' ? 'bg-ministry-brand-primary text-white rounded-ministry' : 'border-ministry-border-default rounded-ministry'}
+            className={view === 'week' 
+              ? 'bg-ministry-brand-primary text-ministry-text-inverse hover:bg-ministry-brand-hover rounded-ministry' 
+              : 'border-ministry-border-subtle hover:bg-ministry-bg-hover rounded-ministry'}
             size="sm"
           >
             Week
@@ -317,9 +321,9 @@ export default function Calendar() {
         </div>
       </div>
 
-      <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card">
-        <div className="p-4 border-b border-ministry-border-default flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-ministry-text-primary cursor-default select-none">
+      <div className="bg-ministry-bg-surface rounded-ministry border border-ministry-border-subtle">
+        <div className="p-4 border-b border-ministry-border-subtle flex items-center justify-between">
+          <h2 className="text-base font-semibold text-ministry-text-primary cursor-default select-none">
             {format(currentDate, 'MMMM yyyy')}
           </h2>
           <div className="flex gap-2">
@@ -327,7 +331,7 @@ export default function Calendar() {
               variant="outline"
               onClick={handleToday}
               data-testid="calendar-today-button"
-              className="border-ministry-border-default rounded-ministry"
+              className="border-ministry-border-subtle hover:bg-ministry-bg-hover rounded-ministry"
               size="sm"
             >
               Today
@@ -336,7 +340,7 @@ export default function Calendar() {
               variant="outline"
               onClick={handlePrevious}
               data-testid="calendar-previous-button"
-              className="border-ministry-border-default rounded-ministry"
+              className="border-ministry-border-subtle hover:bg-ministry-bg-hover rounded-ministry"
               size="sm"
             >
               <ChevronLeft size={16} />
@@ -345,7 +349,7 @@ export default function Calendar() {
               variant="outline"
               onClick={handleNext}
               data-testid="calendar-next-button"
-              className="border-ministry-border-default rounded-ministry"
+              className="border-ministry-border-subtle hover:bg-ministry-bg-hover rounded-ministry"
               size="sm"
             >
               <ChevronRight size={16} />
