@@ -29,14 +29,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-ministry-bg-primary">
+    <div className="min-h-screen flex items-center justify-center bg-ministry-bg-app">
       <div className="w-full max-w-md">
-        <div className="bg-ministry-bg-secondary rounded-ministry border border-ministry-border-default shadow-ministry-card p-8">
-          <h1 className="text-2xl font-semibold text-ministry-text-primary mb-6">Ministry Admin Panel</h1>
+        <div className="bg-ministry-bg-surface rounded-ministry border border-ministry-border-subtle p-8">
+          <h1 className="text-xl font-semibold text-ministry-text-primary mb-6">Ministry Admin Panel</h1>
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="email" className="text-ministry-text-primary">Email</Label>
+              <Label htmlFor="email" className="text-ministry-text-secondary text-[13px]">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -44,12 +44,12 @@ export default function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 data-testid="login-email-input"
-                className="mt-1 border-ministry-border-default rounded-ministry"
+                className="mt-1.5 border-ministry-border-subtle rounded-ministry bg-ministry-bg-surface focus:border-ministry-brand-primary"
               />
             </div>
             
             <div>
-              <Label htmlFor="password" className="text-ministry-text-primary">Password</Label>
+              <Label htmlFor="password" className="text-ministry-text-secondary text-[13px]">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -57,7 +57,7 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 data-testid="login-password-input"
-                className="mt-1 border-ministry-border-default rounded-ministry"
+                className="mt-1.5 border-ministry-border-subtle rounded-ministry bg-ministry-bg-surface focus:border-ministry-brand-primary"
               />
             </div>
             
@@ -65,15 +65,15 @@ export default function Login() {
               type="submit"
               disabled={loading}
               data-testid="login-submit-button"
-              className="w-full bg-ministry-brand-primary hover:bg-ministry-brand-hover text-white rounded-ministry"
+              className="w-full bg-ministry-brand-primary hover:bg-ministry-brand-hover text-ministry-text-inverse rounded-ministry mt-2"
             >
               {loading ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
           
-          <div className="mt-6 text-sm text-ministry-text-secondary">
+          <div className="mt-6 text-[13px] text-ministry-text-muted">
             <p>Default credentials:</p>
-            <p className="font-mono text-xs mt-1">admin@ministry.local / ChangeMe123!</p>
+            <p className="font-mono text-xs mt-1 text-ministry-text-secondary">admin@ministry.local / ChangeMe123!</p>
           </div>
         </div>
       </div>
