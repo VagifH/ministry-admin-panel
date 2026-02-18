@@ -2,43 +2,324 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* =============================================================================
+   ENTERPRISE THEME SYSTEM - CSS Variables
+   
+   All colors flow through CSS variables for seamless theme switching.
+   Components use Tailwind utility classes that reference these variables.
+   ============================================================================= */
 
 @layer base {
+  /* =========================================================================
+     LIGHT THEME (Default)
+     ========================================================================= */
   :root {
+    /* Background hierarchy */
+    --theme-bg-base: #fafafa;
+    --theme-bg-surface: #ffffff;
+    --theme-bg-elevated: #ffffff;
+    --theme-bg-tertiary: #f3f2f1;
+    --theme-bg-hover: #f5f5f5;
+    --theme-bg-active: #ebebeb;
+    --theme-bg-muted: #f8f8f8;
+    
+    /* Text hierarchy */
+    --theme-text-primary: #1a1a1a;
+    --theme-text-secondary: #5c5c5c;
+    --theme-text-muted: #8a8886;
+    --theme-text-disabled: #bdbdbd;
+    --theme-text-inverse: #ffffff;
+    
+    /* Border tokens */
+    --theme-border-subtle: #e5e5e5;
+    --theme-border-default: #d4d4d4;
+    --theme-border-strong: #a3a3a3;
+    --theme-border-focus: #0078d4;
+    --theme-border-divider: #edebe9;
+    
+    /* Brand colors */
+    --theme-brand-primary: #0078d4;
+    --theme-brand-hover: #106ebe;
+    --theme-brand-active: #005a9e;
+    --theme-brand-light: #deecf9;
+    --theme-brand-muted: #f0f6fc;
+    
+    /* Status colors */
+    --theme-status-success: #107c10;
+    --theme-status-success-bg: #dff6dd;
+    --theme-status-success-border: #9fd89f;
+    --theme-status-warning: #d29200;
+    --theme-status-warning-bg: #fff4ce;
+    --theme-status-warning-border: #ffe7a3;
+    --theme-status-error: #d13438;
+    --theme-status-error-bg: #fde7e9;
+    --theme-status-error-border: #f5c2c4;
+    --theme-status-info: #0078d4;
+    --theme-status-info-bg: #deecf9;
+    --theme-status-info-border: #a9d3f2;
+    
+    /* Workflow status colors */
+    --theme-workflow-draft: #8a8886;
+    --theme-workflow-draft-bg: #f3f2f1;
+    --theme-workflow-submitted: #0078d4;
+    --theme-workflow-submitted-bg: #deecf9;
+    --theme-workflow-inprogress: #8764b8;
+    --theme-workflow-inprogress-bg: #f0e6fa;
+    --theme-workflow-readyforreview: #d29200;
+    --theme-workflow-readyforreview-bg: #fff4ce;
+    --theme-workflow-changesrequested: #ca5010;
+    --theme-workflow-changesrequested-bg: #fef0e5;
+    --theme-workflow-approved: #107c10;
+    --theme-workflow-approved-bg: #dff6dd;
+    --theme-workflow-rejected: #d13438;
+    --theme-workflow-rejected-bg: #fde7e9;
+    --theme-workflow-scheduled: #107c10;
+    --theme-workflow-scheduled-bg: #dff6dd;
+    --theme-workflow-published: #107c10;
+    --theme-workflow-published-bg: #dff6dd;
+    
+    /* Shadows */
+    --theme-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --theme-shadow-card: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.11);
+    --theme-shadow-elevated: 0 3.2px 7.2px 0 rgba(0, 0, 0, 0.13);
+    --theme-shadow-dialog: 0 6.4px 14.4px 0 rgba(0, 0, 0, 0.18);
+    
+    /* Interactive states */
+    --theme-interactive-hover: rgba(0, 0, 0, 0.04);
+    --theme-interactive-active: rgba(0, 0, 0, 0.08);
+    --theme-interactive-selected: rgba(0, 120, 212, 0.08);
+    --theme-interactive-selected-hover: rgba(0, 120, 212, 0.12);
+    
+    /* Scrollbar */
+    --theme-scrollbar-track: #f5f5f5;
+    --theme-scrollbar-thumb: #c1c1c1;
+    --theme-scrollbar-thumb-hover: #a8a8a8;
+    
+    /* Shadcn compatibility */
     --background: 0 0% 98%;
-    --foreground: 0 0% 20%;
+    --foreground: 0 0% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 20%;
+    --card-foreground: 0 0% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 20%;
-    --primary: 0 0% 13%;
-    --primary-foreground: 0 0% 98%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 207 90% 42%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 13%;
+    --secondary-foreground: 0 0% 10%;
     --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 210 100% 48%;
-    --accent-foreground: 0 0% 98%;
+    --muted-foreground: 0 0% 36%;
+    --accent: 207 90% 42%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89%;
-    --input: 0 0% 89%;
-    --ring: 210 100% 48%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 207 90% 54%;
     --radius: 8px;
+  }
+
+  /* =========================================================================
+     DARK THEME
+     Deep neutral graphite aesthetic - Linear.app / Notion Dark inspired
+     ========================================================================= */
+  .dark {
+    /* Background hierarchy - Deep graphite */
+    --theme-bg-base: #1a1a1a;
+    --theme-bg-surface: #242424;
+    --theme-bg-elevated: #2d2d2d;
+    --theme-bg-tertiary: #333333;
+    --theme-bg-hover: #383838;
+    --theme-bg-active: #404040;
+    --theme-bg-muted: #2a2a2a;
+    
+    /* Text hierarchy */
+    --theme-text-primary: #f5f5f5;
+    --theme-text-secondary: #b3b3b3;
+    --theme-text-muted: #808080;
+    --theme-text-disabled: #5c5c5c;
+    --theme-text-inverse: #1a1a1a;
+    
+    /* Border tokens */
+    --theme-border-subtle: #3d3d3d;
+    --theme-border-default: #4a4a4a;
+    --theme-border-strong: #666666;
+    --theme-border-focus: #4da6ff;
+    --theme-border-divider: #333333;
+    
+    /* Brand colors */
+    --theme-brand-primary: #4da6ff;
+    --theme-brand-hover: #66b3ff;
+    --theme-brand-active: #3399ff;
+    --theme-brand-light: #1a3a52;
+    --theme-brand-muted: #1f2d3d;
+    
+    /* Status colors */
+    --theme-status-success: #4caf50;
+    --theme-status-success-bg: #1a2e1a;
+    --theme-status-success-border: #2e5a2e;
+    --theme-status-warning: #ffb74d;
+    --theme-status-warning-bg: #3d3019;
+    --theme-status-warning-border: #5c4a1f;
+    --theme-status-error: #f44336;
+    --theme-status-error-bg: #3d1a1a;
+    --theme-status-error-border: #5c2424;
+    --theme-status-info: #4da6ff;
+    --theme-status-info-bg: #1a3a52;
+    --theme-status-info-border: #2a5a7a;
+    
+    /* Workflow status colors */
+    --theme-workflow-draft: #9e9e9e;
+    --theme-workflow-draft-bg: #2d2d2d;
+    --theme-workflow-submitted: #4da6ff;
+    --theme-workflow-submitted-bg: #1a3a52;
+    --theme-workflow-inprogress: #b388ff;
+    --theme-workflow-inprogress-bg: #2d2345;
+    --theme-workflow-readyforreview: #ffb74d;
+    --theme-workflow-readyforreview-bg: #3d3019;
+    --theme-workflow-changesrequested: #ff8a50;
+    --theme-workflow-changesrequested-bg: #3d2519;
+    --theme-workflow-approved: #4caf50;
+    --theme-workflow-approved-bg: #1a2e1a;
+    --theme-workflow-rejected: #f44336;
+    --theme-workflow-rejected-bg: #3d1a1a;
+    --theme-workflow-scheduled: #4caf50;
+    --theme-workflow-scheduled-bg: #1a2e1a;
+    --theme-workflow-published: #4caf50;
+    --theme-workflow-published-bg: #1a2e1a;
+    
+    /* Shadows */
+    --theme-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --theme-shadow-card: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.35);
+    --theme-shadow-elevated: 0 3.2px 7.2px 0 rgba(0, 0, 0, 0.4);
+    --theme-shadow-dialog: 0 6.4px 14.4px 0 rgba(0, 0, 0, 0.5);
+    
+    /* Interactive states */
+    --theme-interactive-hover: rgba(255, 255, 255, 0.06);
+    --theme-interactive-active: rgba(255, 255, 255, 0.1);
+    --theme-interactive-selected: rgba(77, 166, 255, 0.15);
+    --theme-interactive-selected-hover: rgba(77, 166, 255, 0.22);
+    
+    /* Scrollbar */
+    --theme-scrollbar-track: #2d2d2d;
+    --theme-scrollbar-thumb: #4a4a4a;
+    --theme-scrollbar-thumb-hover: #5c5c5c;
+    
+    /* Shadcn compatibility */
+    --background: 0 0% 10%;
+    --foreground: 0 0% 96%;
+    --card: 0 0% 14%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 18%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 207 100% 65%;
+    --primary-foreground: 0 0% 10%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 50%;
+    --accent: 207 100% 65%;
+    --accent-foreground: 0 0% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 24%;
+    --input: 0 0% 24%;
+    --ring: 207 100% 65%;
   }
 }
 
+/* =============================================================================
+   BASE STYLES
+   ============================================================================= */
 @layer base {
   * {
     @apply border-border;
   }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
   body {
-    @apply bg-background text-foreground;
+    font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--theme-bg-base);
+    color: var(--theme-text-primary);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  
+  /* Smooth theme transitions */
+  *, *::before, *::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-duration: 0.15s;
+    transition-timing-function: ease-out;
+  }
+  
+  /* Disable transitions for elements that shouldn't animate */
+  .no-transition,
+  .no-transition * {
+    transition: none !important;
+  }
+}
+
+/* =============================================================================
+   SCROLLBAR STYLING
+   ============================================================================= */
+@layer base {
+  /* Webkit browsers */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--theme-scrollbar-track);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--theme-scrollbar-thumb);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-scrollbar-thumb-hover);
+  }
+  
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--theme-scrollbar-thumb) var(--theme-scrollbar-track);
+  }
+}
+
+/* =============================================================================
+   FOCUS STATES
+   ============================================================================= */
+@layer base {
+  /* Ensure focus rings are always visible */
+  :focus-visible {
+    outline: 2px solid var(--theme-border-focus);
+    outline-offset: 2px;
+  }
+  
+  /* Remove default focus for mouse users */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+/* =============================================================================
+   SELECTION STYLING
+   ============================================================================= */
+@layer base {
+  ::selection {
+    background-color: var(--theme-brand-primary);
+    color: var(--theme-text-inverse);
+  }
+  
+  .dark ::selection {
+    background-color: var(--theme-brand-light);
+    color: var(--theme-text-primary);
   }
 }
