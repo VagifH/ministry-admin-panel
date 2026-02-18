@@ -55,6 +55,22 @@ Draft -> Submitted -> InProgress -> ReadyForReview -> (Approved/ChangesRequested
 ## What's Been Implemented
 
 ### Feb 18, 2026
+- **P0 COMPLETED: PRODUCTION READINESS CLOSURE (MINISTRY PILOT)**
+  - **Health Endpoint:** `GET /api/health` returning status, version, time, database connection
+  - **TTL Index:** Audit logs auto-expire after 90 days (7,776,000 seconds)
+  - **Backup/Restore Scripts:** `/app/scripts/backup.sh`, `/app/scripts/restore.sh`
+  - **Documentation:** Complete README.md with setup, roles, workflow, operations
+  - **Smoke Test Checklist:** `/app/docs/SMOKE_TEST.md`
+  - **System Validation:** All backend/frontend tests passing
+  - **STATUS: PILOT READY**
+
+- **P0 COMPLETED: PREMIUM DARK MODE POLISH (Outlook/Fluent Quality)**
+  - Increased border contrast (#555555 default, #777777 hover)
+  - Added `bg-input`, `text-placeholder`, `disabled.*` tokens
+  - Fixed Calendar Month/Week/Today buttons
+  - Fixed Activity Log filter dropdowns
+  - Fixed Create Task modal inputs
+
 - **P0 COMPLETED: FLUENT-STYLE DARK MODE (Enterprise/Luxury)**
   - **3-Tier Surface Layering (Fluent 2 system):**
     - `bg-app` (#1b1b1b) - deepest, app background
