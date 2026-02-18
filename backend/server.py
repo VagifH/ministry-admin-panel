@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter, Depends, status, UploadFile, File, Request, Header
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse, JSONResponse
 from fastapi.exceptions import RequestValidationError
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -18,11 +18,21 @@ import bcrypt
 from jose import JWTError, jwt
 from PIL import Image
 
+# Import centralized config
+from config import (
+    UPLOAD_CONFIG, SECURITY_CONFIG, APP_CONFIG,
+    VIDEO_MAX_SIZE_MB, VIDEO_MAX_SIZE_BYTES, ALLOWED_VIDEO_TYPES,
+    AVATAR_MAX_SIZE_MB, AVATAR_MAX_SIZE_BYTES, ALLOWED_AVATAR_TYPES
+)
+
 # Import storage service
 from services.storage_service import storage_service
 
 # Import audit logger
 from services.audit_service import audit_logger, AuditAction, EntityType
+
+# Import rate limiter
+from services.rate_limiter import login_rate_limiter
 
 # Import error handling
 from services.error_service import (
@@ -42,7 +52,7 @@ db = client[os.environ['DB_NAME']]
 
 # JWT Configuration
 SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'ministry-secret-key-change-in-production')
-ALGORITHM = "HS256"
+ALGORITHM = SECURITY_CONFIG.JWT_ALGORITHM
 ACCESS_TOKEN_EXPIRE_MINUTES = 480
 
 # Video Upload Configuration
