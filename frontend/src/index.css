@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 /* =============================================================================
-   MINISTRY FLUENT DESIGN SYSTEM - Enterprise Dark Mode
+   MINISTRY FLUENT DESIGN SYSTEM - Premium Dark Mode
    
    Microsoft Fluent 2 / Outlook / Teams inspired design tokens.
-   Three-tier surface layering, premium desaturated status colors,
-   consistent hover/focus states, WCAG-friendly contrast.
+   GOAL: Every control must be clearly enabled vs disabled, with visible
+   borders, readable placeholders, and obvious hover/focus states.
    ============================================================================= */
 
 @layer base {
@@ -16,33 +16,41 @@
      ========================================================================= */
   :root {
     /* Surface Layering (3-tier system) */
-    --theme-bg-app: #f5f5f5;           /* App background / page level */
-    --theme-bg-surface: #ffffff;        /* Cards, panels */
-    --theme-bg-surface-raised: #ffffff; /* Modals, popovers, dropdowns */
+    --theme-bg-app: #f5f5f5;
+    --theme-bg-surface: #ffffff;
+    --theme-bg-surface-raised: #ffffff;
+    --theme-bg-input: #ffffff;
     
-    /* Legacy aliases (mapped to new system) */
+    /* Legacy aliases */
     --theme-bg-base: var(--theme-bg-app);
     --theme-bg-secondary: var(--theme-bg-surface);
     --theme-bg-elevated: var(--theme-bg-surface-raised);
     --theme-bg-tertiary: #f3f2f1;
-    --theme-bg-hover: #f5f5f5;
-    --theme-bg-active: #ebebeb;
+    --theme-bg-hover: #f0f0f0;
+    --theme-bg-active: #e5e5e5;
     --theme-bg-muted: #fafafa;
     
-    /* Text hierarchy (WCAG compliant) */
-    --theme-text-primary: #242424;     /* High contrast - headings */
-    --theme-text-secondary: #616161;   /* Body text */
-    --theme-text-muted: #8a8886;       /* Placeholders, hints */
-    --theme-text-disabled: #c4c4c4;    /* Disabled state */
-    --theme-text-inverse: #ffffff;     /* Text on dark backgrounds */
-    --theme-text-link: #0078d4;        /* Links */
+    /* Text hierarchy */
+    --theme-text-primary: #242424;
+    --theme-text-secondary: #616161;
+    --theme-text-muted: #8a8886;
+    --theme-text-placeholder: #a0a0a0;
+    --theme-text-disabled: #c4c4c4;
+    --theme-text-inverse: #ffffff;
+    --theme-text-link: #0078d4;
     
     /* Border tokens */
     --theme-border-subtle: #e0e0e0;
     --theme-border-default: #d1d1d1;
     --theme-border-strong: #a3a3a3;
+    --theme-border-hover: #b3b3b3;
     --theme-border-focus: #0078d4;
     --theme-border-divider: #edebe9;
+    
+    /* Disabled states */
+    --theme-disabled-bg: #f5f5f5;
+    --theme-disabled-border: #e5e5e5;
+    --theme-disabled-text: #bdbdbd;
     
     /* Brand colors */
     --theme-brand-primary: #0078d4;
@@ -51,7 +59,7 @@
     --theme-brand-light: #deecf9;
     --theme-brand-muted: #f0f6fc;
     
-    /* Semantic Status (light mode) */
+    /* Semantic Status */
     --theme-status-success: #0e7a0d;
     --theme-status-success-bg: #dff6dd;
     --theme-status-success-border: #9fd89f;
@@ -65,7 +73,7 @@
     --theme-status-info-bg: #deecf9;
     --theme-status-info-border: #a9d3f2;
     
-    /* Workflow status colors (light) */
+    /* Workflow status colors */
     --theme-workflow-draft: #707070;
     --theme-workflow-draft-bg: #f3f2f1;
     --theme-workflow-submitted: #0078d4;
@@ -85,7 +93,7 @@
     --theme-workflow-published: #0e7a0d;
     --theme-workflow-published-bg: #dff6dd;
     
-    /* Shadows (light - subtle elevation) */
+    /* Shadows */
     --theme-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
     --theme-shadow-card: 0 2px 4px 0 rgba(0, 0, 0, 0.06);
     --theme-shadow-elevated: 0 4px 8px 0 rgba(0, 0, 0, 0.08);
@@ -97,7 +105,7 @@
     --theme-interactive-selected: rgba(0, 120, 212, 0.1);
     --theme-interactive-selected-hover: rgba(0, 120, 212, 0.15);
     
-    /* Calendar specific */
+    /* Calendar */
     --theme-calendar-today-ring: #0078d4;
     --theme-calendar-selected-bg: #deecf9;
     --theme-calendar-has-tasks-dot: #0078d4;
@@ -108,7 +116,7 @@
     --theme-scrollbar-thumb-hover: #a8a8a8;
     
     /* Focus ring */
-    --theme-focus-ring: rgba(0, 120, 212, 0.6);
+    --theme-focus-ring: 0 0 0 2px rgba(0, 120, 212, 0.35);
     --theme-focus-ring-offset: 2px;
     
     /* Shadcn compatibility */
@@ -123,151 +131,151 @@
     --secondary: 0 0% 96%;
     --secondary-foreground: 0 0% 14%;
     --muted: 0 0% 95%;
-    --muted-foreground: 0 0% 38%;
-    --accent: 207 90% 42%;
-    --accent-foreground: 0 0% 100%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 14%;
     --destructive: 350 65% 49%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 88%;
-    --input: 0 0% 88%;
+    --border: 0 0% 82%;
+    --input: 0 0% 82%;
     --ring: 207 90% 54%;
     --radius: 6px;
   }
 
   /* =========================================================================
-     DARK THEME - Fluent Enterprise Quality
+     DARK THEME - Premium Outlook/Fluent Quality
      
-     Design Language: Microsoft Fluent 2 / Outlook Dark / Teams Dark
-     - Deep neutral graphite (not pure black, not blue-tinted)
-     - Clear 3-tier surface layering
-     - Desaturated, premium status colors
-     - Calm accent colors with excellent contrast
+     KEY FIXES:
+     - Higher contrast borders (visible but not harsh)
+     - Clear enabled vs disabled states
+     - Readable placeholder text
+     - Obvious hover/focus states
      ========================================================================= */
   .dark {
-    /* Surface Layering (3-tier Fluent system)
-       Layer 0: App background (deepest)
-       Layer 1: Surface (cards, panels)
-       Layer 2: Raised (modals, popovers, dropdowns) */
-    --theme-bg-app: #1b1b1b;           /* App background */
-    --theme-bg-surface: #252525;        /* Cards, panels, sidebar */
-    --theme-bg-surface-raised: #2f2f2f; /* Modals, popovers, menus */
+    /* Surface Layering - Slightly adjusted for better contrast */
+    --theme-bg-app: #1a1a1a;
+    --theme-bg-surface: #262626;
+    --theme-bg-surface-raised: #303030;
+    --theme-bg-input: #1e1e1e;          /* Input fields - slightly darker than surface */
     
     /* Legacy aliases */
     --theme-bg-base: var(--theme-bg-app);
     --theme-bg-secondary: var(--theme-bg-surface);
     --theme-bg-elevated: var(--theme-bg-surface-raised);
-    --theme-bg-tertiary: #323232;       /* Subtle fills, hover bg */
-    --theme-bg-hover: #3a3a3a;          /* Hover state - brighter than surface */
-    --theme-bg-active: #444444;         /* Active/pressed state */
-    --theme-bg-muted: #282828;          /* Disabled backgrounds */
+    --theme-bg-tertiary: #333333;
+    --theme-bg-hover: #3d3d3d;          /* Clear hover - visible lift */
+    --theme-bg-active: #474747;         /* Active/pressed */
+    --theme-bg-muted: #2a2a2a;
     
-    /* Text hierarchy (WCAG AA compliant on dark) */
-    --theme-text-primary: #f0f0f0;     /* ~15:1 contrast - headings */
-    --theme-text-secondary: #a8a8a8;   /* ~7:1 contrast - body */
-    --theme-text-muted: #6e6e6e;       /* ~3:1 - placeholders (WCAG for large text) */
-    --theme-text-disabled: #505050;    /* Disabled state */
-    --theme-text-inverse: #1b1b1b;     /* Text on light/brand backgrounds */
-    --theme-text-link: #6eb5ff;        /* Links - desaturated blue */
+    /* Text hierarchy - HIGH CONTRAST for readability */
+    --theme-text-primary: #f5f5f5;      /* Main text - very bright */
+    --theme-text-secondary: #c0c0c0;    /* Body text - clearly readable */
+    --theme-text-muted: #888888;        /* Less important - still visible */
+    --theme-text-placeholder: #707070;  /* Placeholder - visible but subdued */
+    --theme-text-disabled: #4a4a4a;     /* Disabled - clearly different */
+    --theme-text-inverse: #1a1a1a;
+    --theme-text-link: #6cb8ff;
     
-    /* Border tokens (subtle but visible) */
-    --theme-border-subtle: #3a3a3a;    /* Subtle dividers */
-    --theme-border-default: #454545;   /* Default borders */
-    --theme-border-strong: #5a5a5a;    /* High emphasis borders */
-    --theme-border-focus: #6eb5ff;     /* Focus rings */
-    --theme-border-divider: #333333;   /* Section dividers */
+    /* Border tokens - KEY FIX: More visible borders */
+    --theme-border-subtle: #444444;     /* Subtle but visible */
+    --theme-border-default: #555555;    /* Default - clearly visible */
+    --theme-border-strong: #707070;     /* Strong emphasis */
+    --theme-border-hover: #777777;      /* Hover - brighter */
+    --theme-border-focus: #6cb8ff;      /* Focus - brand blue */
+    --theme-border-divider: #3a3a3a;
     
-    /* Brand colors (desaturated for dark mode luxury) */
-    --theme-brand-primary: #6eb5ff;    /* Softer blue */
-    --theme-brand-hover: #8ac4ff;      /* Lighter on hover */
-    --theme-brand-active: #5aa3f0;     /* Darker when active */
-    --theme-brand-light: #1e3a5f;      /* Brand tint background */
-    --theme-brand-muted: #252d38;      /* Very subtle brand tint */
+    /* Disabled states - CLEARLY DIFFERENT from enabled */
+    --theme-disabled-bg: #242424;
+    --theme-disabled-border: #333333;
+    --theme-disabled-text: #4a4a4a;
     
-    /* Semantic Status (desaturated premium dark mode palette)
-       - Less saturated than light mode
-       - Background tints are subtle
-       - Text colors are readable but calm */
-    --theme-status-success: #6fc66f;   /* Desaturated green */
+    /* Brand colors */
+    --theme-brand-primary: #6cb8ff;
+    --theme-brand-hover: #85c5ff;
+    --theme-brand-active: #54a8f5;
+    --theme-brand-light: #1e3a52;
+    --theme-brand-muted: #252d38;
+    
+    /* Semantic Status - Premium desaturated */
+    --theme-status-success: #70c870;
     --theme-status-success-bg: #1e2e1e;
     --theme-status-success-border: #3a5c3a;
-    --theme-status-warning: #e6a855;   /* Warm amber, not neon */
+    --theme-status-warning: #e8aa55;
     --theme-status-warning-bg: #332b1a;
     --theme-status-warning-border: #5c4a2a;
-    --theme-status-error: #e86c6c;     /* Softer red */
+    --theme-status-error: #ea7070;
     --theme-status-error-bg: #331e1e;
     --theme-status-error-border: #5c3030;
-    --theme-status-info: #6eb5ff;      /* Matches brand */
+    --theme-status-info: #6cb8ff;
     --theme-status-info-bg: #1e2e3d;
     --theme-status-info-border: #2a4a6a;
     
-    /* Workflow status colors (premium desaturated palette)
-       Optimized for dark backgrounds - readable but not harsh */
-    --theme-workflow-draft: #8a8a8a;
+    /* Workflow status - Premium palette */
+    --theme-workflow-draft: #909090;
     --theme-workflow-draft-bg: #2a2a2a;
-    --theme-workflow-submitted: #6eb5ff;
+    --theme-workflow-submitted: #6cb8ff;
     --theme-workflow-submitted-bg: #1e2e3d;
-    --theme-workflow-inprogress: #b094d4;  /* Soft purple */
+    --theme-workflow-inprogress: #b598d8;
     --theme-workflow-inprogress-bg: #2a2535;
-    --theme-workflow-readyforreview: #e6a855;
+    --theme-workflow-readyforreview: #e8aa55;
     --theme-workflow-readyforreview-bg: #332b1a;
-    --theme-workflow-changesrequested: #e08050;
+    --theme-workflow-changesrequested: #e28555;
     --theme-workflow-changesrequested-bg: #33261a;
-    --theme-workflow-approved: #6fc66f;
+    --theme-workflow-approved: #70c870;
     --theme-workflow-approved-bg: #1e2e1e;
-    --theme-workflow-rejected: #e86c6c;
+    --theme-workflow-rejected: #ea7070;
     --theme-workflow-rejected-bg: #331e1e;
-    --theme-workflow-scheduled: #6fc66f;
+    --theme-workflow-scheduled: #70c870;
     --theme-workflow-scheduled-bg: #1e2e1e;
-    --theme-workflow-published: #6fc66f;
+    --theme-workflow-published: #70c870;
     --theme-workflow-published-bg: #1e2e1e;
     
-    /* Shadows (dark mode - border-based depth, not shadow-based)
-       In dark UI, shadows are less visible, so we use very subtle ones */
-    --theme-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-    --theme-shadow-card: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
-    --theme-shadow-elevated: 0 4px 8px 0 rgba(0, 0, 0, 0.35);
-    --theme-shadow-dialog: 0 8px 24px 0 rgba(0, 0, 0, 0.5);
+    /* Shadows - subtle depth in dark mode */
+    --theme-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+    --theme-shadow-card: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+    --theme-shadow-elevated: 0 4px 8px 0 rgba(0, 0, 0, 0.45);
+    --theme-shadow-dialog: 0 8px 24px 0 rgba(0, 0, 0, 0.6);
     
-    /* Interactive states (Fluent-style: subtle but clear) */
-    --theme-interactive-hover: rgba(255, 255, 255, 0.05);
-    --theme-interactive-active: rgba(255, 255, 255, 0.08);
-    --theme-interactive-selected: rgba(110, 181, 255, 0.12);
-    --theme-interactive-selected-hover: rgba(110, 181, 255, 0.18);
+    /* Interactive states */
+    --theme-interactive-hover: rgba(255, 255, 255, 0.06);
+    --theme-interactive-active: rgba(255, 255, 255, 0.1);
+    --theme-interactive-selected: rgba(108, 184, 255, 0.15);
+    --theme-interactive-selected-hover: rgba(108, 184, 255, 0.22);
     
-    /* Calendar specific (dark mode) */
-    --theme-calendar-today-ring: #6eb5ff;
-    --theme-calendar-selected-bg: #1e3a5f;
-    --theme-calendar-has-tasks-dot: #6eb5ff;
+    /* Calendar */
+    --theme-calendar-today-ring: #6cb8ff;
+    --theme-calendar-selected-bg: #1e3a52;
+    --theme-calendar-has-tasks-dot: #6cb8ff;
     
-    /* Scrollbar (subtle) */
-    --theme-scrollbar-track: #252525;
-    --theme-scrollbar-thumb: #454545;
-    --theme-scrollbar-thumb-hover: #555555;
+    /* Scrollbar */
+    --theme-scrollbar-track: #262626;
+    --theme-scrollbar-thumb: #4a4a4a;
+    --theme-scrollbar-thumb-hover: #5a5a5a;
     
-    /* Focus ring (high visibility on dark) */
-    --theme-focus-ring: rgba(110, 181, 255, 0.5);
+    /* Focus ring - visible but not aggressive */
+    --theme-focus-ring: 0 0 0 2px rgba(108, 184, 255, 0.4);
     --theme-focus-ring-offset: 2px;
     
-    /* Shadcn dark mode compatibility */
-    --background: 0 0% 11%;
-    --foreground: 0 0% 94%;
+    /* Shadcn dark mode - CRITICAL for components */
+    --background: 0 0% 10%;
+    --foreground: 0 0% 96%;
     --card: 0 0% 15%;
-    --card-foreground: 0 0% 94%;
-    --popover: 0 0% 18%;
-    --popover-foreground: 0 0% 94%;
-    --primary: 210 80% 72%;
-    --primary-foreground: 0 0% 11%;
-    --secondary: 0 0% 20%;
-    --secondary-foreground: 0 0% 94%;
-    --muted: 0 0% 18%;
-    --muted-foreground: 0 0% 54%;
-    --accent: 210 80% 72%;
-    --accent-foreground: 0 0% 11%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 19%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 210 85% 72%;
+    --primary-foreground: 0 0% 10%;
+    --secondary: 0 0% 22%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 55%;
+    --accent: 0 0% 25%;
+    --accent-foreground: 0 0% 96%;
     --destructive: 0 60% 66%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 27%;
-    --input: 0 0% 27%;
-    --ring: 210 80% 72%;
+    --border: 0 0% 33%;
+    --input: 0 0% 33%;
+    --ring: 210 85% 72%;
   }
 }
 
@@ -291,20 +299,14 @@
     color: var(--theme-text-primary);
   }
   
-  /* Smooth theme transitions - only on color properties */
+  /* Theme transitions - smooth but fast */
   *, *::before, *::after {
-    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-  }
-  
-  /* Disable transitions for transforms and other properties */
-  .no-transition,
-  .no-transition * {
-    transition: none !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
   }
 }
 
 /* =============================================================================
-   SCROLLBAR STYLING (Fluent style - thin, subtle)
+   SCROLLBAR (Fluent-style)
    ============================================================================= */
 @layer base {
   ::-webkit-scrollbar {
@@ -332,28 +334,21 @@
 }
 
 /* =============================================================================
-   FOCUS STATES (Fluent-style visible focus rings)
+   FOCUS STATES
    ============================================================================= */
 @layer base {
   :focus-visible {
-    outline: 2px solid var(--theme-border-focus);
-    outline-offset: var(--theme-focus-ring-offset);
+    outline: none;
+    box-shadow: var(--theme-focus-ring);
   }
   
   :focus:not(:focus-visible) {
     outline: none;
   }
-  
-  /* Custom focus ring utility */
-  .focus-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
-    --tw-ring-color: var(--theme-focus-ring);
-    --tw-ring-offset-color: var(--theme-bg-surface);
-  }
 }
 
 /* =============================================================================
-   SELECTION STYLING
+   SELECTION
    ============================================================================= */
 @layer base {
   ::selection {
@@ -368,69 +363,182 @@
 }
 
 /* =============================================================================
-   FLUENT COMPONENT UTILITIES
+   FLUENT DARK MODE COMPONENT OVERRIDES
+   These ensure controls look enabled (not disabled) with proper contrast
    ============================================================================= */
 @layer components {
-  /* Surface card with proper layering */
-  .fluent-surface {
-    background-color: var(--theme-bg-surface);
-    border: 1px solid var(--theme-border-subtle);
-    border-radius: 6px;
+  /* --- BUTTONS: Outline variant must look enabled in dark mode --- */
+  .dark .btn-outline-dark,
+  .dark button[class*="border-ministry-border"] {
+    border-color: var(--theme-border-default);
+    color: var(--theme-text-primary);
   }
   
-  /* Raised surface (modals, dropdowns) */
-  .fluent-surface-raised {
+  .dark .btn-outline-dark:hover,
+  .dark button[class*="border-ministry-border"]:hover {
+    border-color: var(--theme-border-hover);
+    background-color: var(--theme-bg-hover);
+  }
+  
+  /* --- INPUTS: Visible borders, readable placeholders --- */
+  .dark input,
+  .dark textarea,
+  .dark select,
+  .dark [data-radix-select-trigger] {
+    background-color: var(--theme-bg-input);
+    border-color: var(--theme-border-default);
+    color: var(--theme-text-primary);
+  }
+  
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: var(--theme-text-placeholder);
+  }
+  
+  .dark input:hover,
+  .dark textarea:hover,
+  .dark select:hover,
+  .dark [data-radix-select-trigger]:hover {
+    border-color: var(--theme-border-hover);
+  }
+  
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus,
+  .dark [data-radix-select-trigger]:focus,
+  .dark [data-radix-select-trigger][data-state="open"] {
+    border-color: var(--theme-border-focus);
+    box-shadow: var(--theme-focus-ring);
+  }
+  
+  /* --- DISABLED STATES: Clearly different --- */
+  .dark input:disabled,
+  .dark textarea:disabled,
+  .dark select:disabled,
+  .dark button:disabled,
+  .dark [data-disabled] {
+    background-color: var(--theme-disabled-bg) !important;
+    border-color: var(--theme-disabled-border) !important;
+    color: var(--theme-disabled-text) !important;
+    cursor: not-allowed;
+    opacity: 1; /* Don't use opacity - use colors instead */
+  }
+  
+  /* --- SELECT DROPDOWN CONTENT --- */
+  .dark [data-radix-select-content],
+  .dark [data-radix-popper-content-wrapper] [role="listbox"] {
     background-color: var(--theme-bg-surface-raised);
-    border: 1px solid var(--theme-border-default);
-    border-radius: 6px;
-    box-shadow: var(--theme-shadow-elevated);
+    border-color: var(--theme-border-default);
   }
   
-  /* Fluent row hover - consistent interactive state */
-  .fluent-row-hover {
-    transition: background-color 0.1s ease;
-  }
-  .fluent-row-hover:hover {
+  .dark [data-radix-select-item]:hover,
+  .dark [data-radix-select-item][data-highlighted] {
     background-color: var(--theme-bg-hover);
   }
   
-  /* Fluent button base */
-  .fluent-btn {
-    transition: background-color 0.1s ease, border-color 0.1s ease;
-  }
-  .fluent-btn:hover {
-    background-color: var(--theme-bg-hover);
-  }
-  .fluent-btn:active {
-    background-color: var(--theme-bg-active);
+  /* --- CHEVRON ICON in selects - make visible --- */
+  .dark [data-radix-select-trigger] svg,
+  .dark select + svg {
+    color: var(--theme-text-secondary);
+    opacity: 1;
   }
   
-  /* Calendar day cell states */
-  .calendar-day-today {
-    box-shadow: inset 0 0 0 2px var(--theme-calendar-today-ring);
+  /* --- CALENDAR CONTROLS FIX --- */
+  .dark .calendar-btn {
+    border-color: var(--theme-border-default);
+    color: var(--theme-text-primary);
+    background-color: transparent;
   }
-  .calendar-day-selected {
-    background-color: var(--theme-calendar-selected-bg);
+  
+  .dark .calendar-btn:hover {
+    border-color: var(--theme-border-hover);
+    background-color: var(--theme-bg-hover);
   }
-  .calendar-day-has-tasks::after {
-    content: '';
-    position: absolute;
-    bottom: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background-color: var(--theme-calendar-has-tasks-dot);
+  
+  .dark .calendar-btn-active {
+    background-color: var(--theme-brand-primary);
+    color: var(--theme-text-inverse);
+    border-color: var(--theme-brand-primary);
+  }
+  
+  /* --- TABS/SEGMENTED CONTROL --- */
+  .dark [role="tablist"] {
+    background-color: var(--theme-bg-tertiary);
+  }
+  
+  .dark [role="tab"] {
+    color: var(--theme-text-secondary);
+  }
+  
+  .dark [role="tab"]:hover {
+    color: var(--theme-text-primary);
+  }
+  
+  .dark [role="tab"][data-state="active"] {
+    background-color: var(--theme-bg-surface);
+    color: var(--theme-text-primary);
+  }
+  
+  /* --- DIALOG/MODAL LAYERING --- */
+  .dark [role="dialog"] {
+    background-color: var(--theme-bg-surface-raised);
+    border-color: var(--theme-border-default);
+  }
+  
+  /* --- TABLE ROWS --- */
+  .dark table tbody tr:hover {
+    background-color: var(--theme-bg-hover);
+  }
+  
+  /* --- BADGES --- */
+  .dark .badge-enabled {
+    background-color: var(--theme-status-success-bg);
+    color: var(--theme-status-success);
+    border-color: var(--theme-status-success-border);
   }
 }
 
 /* =============================================================================
-   STATUS BADGE UTILITIES (Fluent-style consistent badges)
+   UTILITY CLASSES FOR DARK MODE CONTROLS
+   Use these for consistent styling across components
    ============================================================================= */
 @layer utilities {
-  /* Ensure consistent badge styling across light/dark */
-  .badge-status {
-    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+  /* Input styling utility */
+  .input-dark {
+    @apply bg-ministry-bg-input border-ministry-border-default text-ministry-text-primary;
+  }
+  
+  .input-dark:hover {
+    @apply border-ministry-border-hover;
+  }
+  
+  .input-dark:focus {
+    @apply border-ministry-border-focus;
+  }
+  
+  .input-dark::placeholder {
+    color: var(--theme-text-placeholder);
+  }
+  
+  /* Button utilities */
+  .btn-secondary-dark {
+    @apply bg-transparent border border-ministry-border-default text-ministry-text-primary;
+  }
+  
+  .btn-secondary-dark:hover {
+    @apply bg-ministry-bg-hover border-ministry-border-hover;
+  }
+  
+  /* Segmented control utilities */
+  .segment-inactive {
+    @apply bg-transparent border border-ministry-border-default text-ministry-text-secondary;
+  }
+  
+  .segment-inactive:hover {
+    @apply border-ministry-border-hover text-ministry-text-primary bg-ministry-bg-hover;
+  }
+  
+  .segment-active {
+    @apply bg-ministry-brand-primary text-ministry-text-inverse border-ministry-brand-primary;
   }
 }
