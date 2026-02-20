@@ -70,19 +70,21 @@ Build a web admin panel for a Ministry with a Microsoft/Fluent-inspired UI, supp
 
 ## Future Backlog
 
-### P1 - Cloud Storage Integration
-- Integrate AWS S3 into storage_service.py abstraction layer
-
-### P2 - Calendar Enhancements
+### P1 - Calendar Enhancements
 - Hover effects on calendar tasks
 - "+X more" popover implementation
 
-### P3 - Video Streaming
+### P2 - Video Streaming
 - Re-implement video player in VideoTab.js for streaming previews
+
+### P3 - AWS S3 Storage Option
+- Add S3 as additional storage provider option
 
 ## Key Files
 - `/app/frontend/src/index.css` - Theme color tokens
 - `/app/frontend/tailwind.config.js` - Tailwind theme config
 - `/app/backend/server.py` - Main API with health endpoint
+- `/app/backend/services/storage_service.py` - Pluggable storage (Local/GCS)
 - `/app/scripts/backup.sh` & `restore.sh` - Operational scripts
 - `/app/docs/SMOKE_TEST.md` - Manual testing checklist
+- `/app/docs/STORAGE.md` - Storage configuration guide
