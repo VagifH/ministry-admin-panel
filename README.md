@@ -62,6 +62,14 @@ DB_NAME=ministry_db
 
 # JWT Configuration (REQUIRED for production)
 JWT_SECRET_KEY=your-secure-secret-key-change-in-production
+
+# Storage Provider (optional, default: local)
+STORAGE_PROVIDER=local
+
+# GCS Configuration (only if STORAGE_PROVIDER=gcs)
+# GCS_BUCKET_NAME=your-bucket-name
+# GCS_PROJECT_ID=your-project-id
+# GCS_CREDENTIALS_JSON={"type":"service_account",...}
 ```
 
 ### Frontend (`frontend/.env`)
