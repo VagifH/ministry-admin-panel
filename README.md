@@ -319,6 +319,14 @@ done
 1. Check file size (max 100MB)
 2. Verify file type (mp4, webm, mov, avi, wmv)
 3. Check disk space on server
+4. If using GCS, verify credentials and bucket permissions
+
+### GCS Storage Issues
+
+1. Verify `GCS_CREDENTIALS_JSON` is valid JSON
+2. Check service account has Storage Object Admin role on bucket
+3. Verify bucket exists and is accessible
+4. Test with: `curl -I https://storage.googleapis.com/<bucket>`
 
 ---
 
