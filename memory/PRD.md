@@ -47,12 +47,20 @@ Build a web admin panel for a Ministry with a Microsoft/Fluent-inspired UI, supp
 - Created downloadable archive: `ministry_panel_export.tar.gz` (24MB)
 - Excludes: node_modules, .git, __pycache__, .env files
 
+### Phase 6: Pluggable Cloud Storage (Complete - Feb 2026)
+- Added GCS (Google Cloud Storage) as optional storage provider
+- Factory pattern for storage provider selection via `STORAGE_PROVIDER` env var
+- Local storage remains default (no breaking changes)
+- GCS streams through backend (keeps bucket private)
+- Full documentation at `/app/docs/STORAGE.md`
+
 ## Tech Stack
 - **Frontend:** React, Tailwind CSS, Shadcn UI
 - **Backend:** FastAPI, Python
 - **Database:** MongoDB
 - **Auth:** JWT tokens
 - **Security:** slowapi rate limiting
+- **Storage:** Local filesystem (default) or Google Cloud Storage
 
 ## Test Credentials
 - Admin: `admin@ministry.local` / `ChangeMe123!`
